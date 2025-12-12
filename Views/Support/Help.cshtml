@@ -1,50 +1,197 @@
-﻿@{
+@{
     ViewData["Title"] = "Help";
 }
 
-<h2 class="text-primary mb-3">Help — Comprehensive Assessment Tool for Adults with Intellectual Disabilities</h2>
+<h2 class="text-primary mb-3">Help — Comprehensive Vocational Assessment Tool (CVAT)</h2>
 
-<div class="card p-4" style="text-align: justify; line-height: 1.6;">
-    @*
-Paste the content below exactly — already formatted
-*@
+<div class="card p-4" style="text-align: justify; line-height: 1.7; font-size: 16px;">
+
+    <!-- 1. INTRODUCTION -->
+    <h4 class="fw-bold">1. Introduction</h4>
     <p>
-        <b>Introduction to the Tool</b><br>
-        The “Comprehensive Assessment Tool for Adults with Intellectual Disabilities” (CAT-AID) is a standardized assessment tool for comprehensive evaluation of skills, aptitudes, interests and work-related competencies required for skill training, employability and independent living...
+        The <b>Comprehensive Vocational Assessment Tool (CVAT)</b> is a digital system used to evaluate
+        functional abilities, work skills, vocational aptitude, interests, and workplace behaviour of adults with
+        intellectual disabilities. The portal digitizes assessment, review, reporting, comparison, and progress tracking.
     </p>
 
     <hr />
-    <h4 class="mt-3">Scope / Utility of the Tool</h4>
-    <ul>
-        <li>Useful for adults with Intellectual Disabilities (18+ years) for vocational training and independent living</li>
-        <li>Professionals working in vocational rehabilitation</li>
-        <li>Employers for job opportunities to adults with Intellectual Disabilities</li>
-    </ul>
-    <p>When useful: transition stage, vocational assessment, training, placement services.</p>
 
-    <hr />
-    <h4 class="mt-3">How the Tool is Used</h4>
+    <!-- 2. PURPOSE -->
+    <h4 class="fw-bold">2. Purpose & Utility</h4>
+    <p>The tool is used for:</p>
     <ul>
-        <li>To assess skills, abilities, aptitudes, interests</li>
-        <li>To determine occupation suitability</li>
-        <li>To facilitate work performance and employment outcomes</li>
-        <li>To determine placement decisions</li>
+        <li>Vocational skill assessment for adults aged 18+</li>
+        <li>Training need identification</li>
+        <li>Employability evaluation</li>
+        <li>Career planning & job role mapping</li>
+        <li>Recording long-term progress</li>
     </ul>
 
-    <hr />
-    <h4 class="mt-3">Tool Structure</h4>
-    <p>
-        <b>PART-A:</b> 8 Domains — Personal Care, Communication, Social-Emotional, Cognitive, Motor, Work Academics, Sex Education, Self-Advocacy <br>
-        <b>PART-B:</b> Vocational Aptitude & Workplace Behaviour <br>
-        <b>PART-C:</b> SCPwD Job Roles & Job Aids
-    </p>
+    <h5 class="fw-bold mt-3">When is it used?</h5>
+    <ul>
+        <li>During transition-to-work phase</li>
+        <li>When designing individualized vocational training plans</li>
+        <li>For placement decisions</li>
+        <li>During periodic reviews</li>
+    </ul>
 
     <hr />
+
+    <!-- 3. TOOL STRUCTURE -->
+    <h4 class="fw-bold">3. Structure of the CVAT Tool</h4>
+
+    <p><b>PART A — Functional Skills (8 Domains)</b></p>
+    <ul>
+        <li>Personal Care</li>
+        <li>Communication</li>
+        <li>Social–Emotional</li>
+        <li>Cognitive</li>
+        <li>Motor Skills</li>
+        <li>Work Academics</li>
+        <li>Sex Education & Safety</li>
+        <li>Self-Advocacy</li>
+    </ul>
+
+    <p><b>PART B — Vocational Aptitude & Workplace Behaviour</b></p>
+    <ul>
+        <li>Motivation, interests</li>
+        <li>Task performance ability</li>
+        <li>Work habits & adaptability</li>
+    </ul>
+
+    <p><b>PART C — SCPwD Job Role Mapping</b></p>
+    <ul>
+        <li>Suitable job roles</li>
+        <li>Required job aids</li>
+        <li>Accommodation needs</li>
+    </ul>
+
+    <p><b>Recommended Duration:</b> 35–50 minutes for Part A</p>
+
+    <hr />
+
+    <!-- 4. USER ROLES DIAGRAM -->
+    <h4 class="fw-bold">4. User Roles & Responsibilities</h4>
+
+    <p>The system has three key roles:</p>
+    <ul>
+        <li><b>Admin:</b> Manages users, system settings, question bank</li>
+        <li><b>Lead Assessor:</b> Manages candidates, supervises assessments, approves reports</li>
+        <li><b>Assessor:</b> Performs assessments and uploads evidence</li>
+    </ul>
+
+    <h5 class="fw-bold mt-3">User Role Flow Diagram</h5>
+
+    
+::contentReference[oaicite:1]{index=1}
+
+
+    <hr />
+
+    <!-- 5. PORTAL NAVIGATION -->
+    <h4 class="fw-bold">5. Portal Navigation Overview</h4>
+    <p>Each role sees different menus:</p>
+    <ul>
+        <li><b>Admin:</b> Users, Question Bank, Support</li>
+        <li><b>Lead Assessor:</b> Candidates, Review Queue, Question Bank, Support</li>
+        <li><b>Assessor:</b> My Assessments, Support</li>
+    </ul>
+
+    <hr />
+
+    <!-- 6. PORTAL WORKFLOW WITH DIAGRAM -->
+    <h4 class="fw-bold">6. How the Portal Works (Complete Workflow)</h4>
+
+    <h5 class="fw-bold mt-3">6.1 End-to-End Assessment Flow Diagram</h5>
+
+    
+::contentReference[oaicite:2]{index=2}
+
+
+    <h5 class="fw-bold mt-4">6.2 Step-by-Step Process</h5>
+
+    <b>Step 1 — Candidate Creation (Lead Assessor)</b>
+    <ul>
+        <li>Add candidate profile</li>
+        <li>Assign assessment to an Assessor</li>
+    </ul>
+
+    <b>Step 2 — Assessment Execution (Assessor)</b>
+    <ul>
+        <li>Open <b>My Assessments</b></li>
+        <li>Record ratings, comments</li>
+        <li>Upload evidence (images/documents)</li>
+        <li>Save draft or submit</li>
+    </ul>
+
+    <b>Step 3 — Review & Approval (Lead Assessor)</b>
+    <ul>
+        <li>Open <b>Review Queue</b></li>
+        <li>Validate scoring & remarks</li>
+        <li>Approve OR return for corrections</li>
+    </ul>
+
+    <b>Step 4 — Report Generation</b>
+    <ul>
+        <li>Full Assessment PDF</li>
+        <li>Comparison Report</li>
+        <li>Progress Report</li>
+    </ul>
+
+    <hr />
+
+    <!-- 7. REPORTS -->
+    <h4 class="fw-bold">7. Reports Generated by the System</h4>
+    <ul>
+        <li><b>Full Assessment Report:</b> Scores, comments, charts, recommendations</li>
+        <li><b>Progress Report:</b> Multi-assessment growth chart</li>
+        <li><b>Comparison Report:</b> Side-by-side domain comparisons</li>
+    </ul>
+
+    <hr />
+
+    <!-- 8. EVIDENCE -->
+    <h4 class="fw-bold">8. Evidence Guidelines</h4>
+    <ul>
+        <li>Accepted formats: PNG, JPG, PDF, DOCX</li>
+        <li>Evidence appears in reports and candidate profile</li>
+    </ul>
+
+    <hr />
+
+    <!-- 9. TROUBLESHOOTING -->
+    <h4 class="fw-bold">9. Troubleshooting</h4>
+
+    <b>Images not loading?</b>
+    <ul>
+        <li>Ensure files exist under <code>wwwroot/Images</code></li>
+        <li>Use correct path: <code>~/Images/filename.png</code></li>
+    </ul>
+
+    <b>Assessment cannot be submitted?</b>
+    <ul>
+        <li>All domains must be completed</li>
+        <li>Check internet connectivity</li>
+    </ul>
+
+    <b>Login problems?</b>
+    <ul>
+        <li>Check email spelling</li>
+        <li>Ask Admin for password reset</li>
+    </ul>
+
+    <hr />
+
+    <!-- 10. SUPPORT -->
+    <h4 class="fw-bold">10. Support</h4>
     <p>
-        <b>Instructional Guidelines — Assessment Duration:</b> 35 – 50 minutes (Part-A)
+        For technical help:<br />
+        📧 <b>support@yourdomain.com</b><br />
+        📞 NIEPID IT Support Desk
     </p>
 
-    <div class="alert alert-info mt-3">
-        For complete reference, please consult the official CAT-AID manual.
+    <div class="alert alert-info mt-4">
+        Refer to the official CAT-AID Manual for complete scoring and theoretical framework.
     </div>
+
 </div>
