@@ -1,9 +1,9 @@
-﻿using CAT.AID.Models;
+using CAT.AID.Models;
 using CAT.AID.Models.DTO;
 using CAT.AID.Web.Models.DTO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.Text;
+using System.Text.Json;
 
 namespace CAT.AID.Web.Services.Pdf
 {
@@ -17,10 +17,26 @@ namespace CAT.AID.Web.Services.Pdf
             byte[] barChart,
             byte[] doughnutChart)
         {
-            using (var ms = new MemoryStream())
+            // Defensive: ensure non-null inputs
+            a ??= new Assessment { Candidate = new Candidate { FullName = "Unknown" } };
+            sections ??= new List<AssessmentSection>();
+            recommendations ??= new Dictionary<string, List<string>>();
+            score ??= new AssessmentScoreDTO();
+
+            // Parse saved answers once
+            Dictionary<string, string> answers = string.IsNullOrWhiteSpace(a.AssessmentResultJson)
+                ? new Dictionary<string, string>()
+                : JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson)
+                    ?? new Dictionary<string, string>();
+
+            using var ms = new MemoryStream();
+
+            var doc = new Document(PageSize.A4, 40, 40, 40, 40);
+
+            // Use PdfWriter within using so it gets disposed
+            var writer = PdfWriter.GetInstance(doc, ms);
+            try
             {
-                var doc = new Document(PageSize.A4, 40, 40, 40, 40);
-                PdfWriter writer = PdfWriter.GetInstance(doc, ms);
                 doc.Open();
 
                 // ---------- FONT STYLES ----------
@@ -33,21 +49,26 @@ namespace CAT.AID.Web.Services.Pdf
 
                 // ---------- TITLE ----------
                 doc.Add(new Paragraph("ASSESSMENT REPORT", titleFont) { Alignment = Element.ALIGN_CENTER });
-                doc.Add(new Paragraph($"{a.Candidate.FullName} — {a.SubmittedAt?.ToString("dd-MMM-yyyy")}", textFont)
-                { Alignment = Element.ALIGN_CENTER });
+
+                string submitted = a.SubmittedAt.HasValue
+                    ? a.SubmittedAt.Value.ToString("dd-MMM-yyyy")
+                    : "—";
+                doc.Add(new Paragraph($"{a.Candidate?.FullName} — {submitted}", textFont) { Alignment = Element.ALIGN_CENTER });
                 doc.Add(new Paragraph("\n"));
 
                 // ---------- SUMMARY ----------
                 doc.Add(new Paragraph("📌 SUMMARY", sectionFont));
                 doc.Add(new Paragraph($"Total Score: {score.TotalScore} / {score.MaxScore}", textFont));
-                double iqPercent = Math.Round((double)score.TotalScore / score.MaxScore * 100, 2);
+                double iqPercent = score.MaxScore > 0
+                    ? Math.Round((double)score.TotalScore / score.MaxScore * 100, 2)
+                    : 0;
                 doc.Add(new Paragraph($"IQ %: {iqPercent}%", textFont));
                 doc.Add(new Paragraph($"Status: {a.Status}", textFont));
                 doc.Add(new Paragraph("\n"));
 
                 // ---------- RECOMMENDATIONS ----------
                 doc.Add(new Paragraph("🎯 RECOMMENDATIONS", sectionFont));
-                if (recommendations != null && recommendations.Any())
+                if (recommendations.Any())
                 {
                     foreach (var sec in recommendations)
                     {
@@ -56,7 +77,6 @@ namespace CAT.AID.Web.Services.Pdf
                         var ul = new List(List.UNORDERED);
                         foreach (var rec in sec.Value)
                             ul.Add(new ListItem(rec, textFont));
-
                         doc.Add(ul);
                     }
                 }
@@ -81,25 +101,25 @@ namespace CAT.AID.Web.Services.Pdf
                     };
                     table.SetWidths(new float[] { 60f, 10f, 30f });
 
-                    table.AddCell(new Phrase("Question", textFont));
-                    table.AddCell(new Phrase("Score", textFont));
-                    table.AddCell(new Phrase("Comments", textFont));
+                    // Header row (bold)
+                    var hdrFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11);
+                    table.AddCell(new PdfPCell(new Phrase("Question", hdrFont)) { Padding = 6 });
+                    table.AddCell(new PdfPCell(new Phrase("Score", hdrFont)) { Padding = 6, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table.AddCell(new PdfPCell(new Phrase("Comments", hdrFont)) { Padding = 6 });
 
                     foreach (var q in sec.Questions)
                     {
-                        string ans = a.AssessmentResultJson != null
-                            && System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson)
-                            .TryGetValue($"ANS_{q.Id}", out string value) ? value : "-";
+                        answers.TryGetValue($"ANS_{q.Id}", out string ans);
+                        answers.TryGetValue($"SCORE_{q.Id}", out string scr);
+                        answers.TryGetValue($"CMT_{q.Id}", out string cmt);
 
-                        string scr = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson)
-                            .TryGetValue($"SCORE_{q.Id}", out string scrValue) ? scrValue : "0";
+                        ans = string.IsNullOrWhiteSpace(ans) ? "-" : ans;
+                        scr = string.IsNullOrWhiteSpace(scr) ? "0" : scr;
+                        cmt = string.IsNullOrWhiteSpace(cmt) ? "-" : cmt;
 
-                        string cmt = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson)
-                            .TryGetValue($"CMT_{q.Id}", out string cmtValue) ? cmtValue : "-";
-
-                        table.AddCell(new Phrase(q.Text, textFont));
-                        table.AddCell(new Phrase(scr, textFont));
-                        table.AddCell(new Phrase(cmt, textFont));
+                        table.AddCell(new PdfPCell(new Phrase(q.Text, textFont)) { Padding = 6 });
+                        table.AddCell(new PdfPCell(new Phrase(scr, textFont)) { Padding = 6, HorizontalAlignment = Element.ALIGN_CENTER });
+                        table.AddCell(new PdfPCell(new Phrase(cmt, textFont)) { Padding = 6 });
                     }
 
                     doc.Add(table);
@@ -107,25 +127,47 @@ namespace CAT.AID.Web.Services.Pdf
                 }
 
                 // ---------- CHART IMAGES ----------
-                if (barChart.Length > 0)
+                // iTextSharp Image.GetInstance accepts byte[] directly
+                if (barChart != null && barChart.Length > 0)
                 {
-                    Image chart1 = Image.GetInstance(barChart);
-                    chart1.ScaleToFit(420f, 250f);
-                    chart1.Alignment = Element.ALIGN_CENTER;
-                    doc.Add(chart1);
-                }
-                if (doughnutChart.Length > 0)
-                {
-                    Image chart2 = Image.GetInstance(doughnutChart);
-                    chart2.ScaleToFit(300f, 200f);
-                    chart2.Alignment = Element.ALIGN_CENTER;
-                    doc.Add(chart2);
+                    try
+                    {
+                        var chart1 = iTextSharp.text.Image.GetInstance(barChart);
+                        chart1.ScaleToFit(420f, 250f);
+                        chart1.Alignment = Element.ALIGN_CENTER;
+                        doc.Add(chart1);
+                        doc.Add(new Paragraph("\n"));
+                    }
+                    catch
+                    {
+                        // ignore chart if invalid image bytes
+                    }
                 }
 
-                doc.Close();
-                writer.Close();
-                return ms.ToArray();
+                if (doughnutChart != null && doughnutChart.Length > 0)
+                {
+                    try
+                    {
+                        var chart2 = iTextSharp.text.Image.GetInstance(doughnutChart);
+                        chart2.ScaleToFit(300f, 200f);
+                        chart2.Alignment = Element.ALIGN_CENTER;
+                        doc.Add(chart2);
+                        doc.Add(new Paragraph("\n"));
+                    }
+                    catch
+                    {
+                        // ignore invalid chart bytes
+                    }
+                }
             }
+            finally
+            {
+                // ensure document & writer are closed
+                if (doc.IsOpen()) doc.Close();
+                writer?.Close();
+            }
+
+            return ms.ToArray();
         }
     }
 }
