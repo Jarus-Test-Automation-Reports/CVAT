@@ -1,33 +1,33 @@
-# ---------------------------
-# BASE IMAGE FOR BUILD
-# ---------------------------
+# ===========================
+# 1️⃣ Build Stage
+# ===========================
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-
 WORKDIR /src
 
-# Copy everything
+# Copy only project file first (better caching)
+COPY CAT.AID.Web.csproj ./ 
+RUN dotnet restore CAT.AID.Web.csproj --disable-parallel
+
+# Copy full solution
 COPY . .
 
-# NuGet restore with retry + no parallel (avoids 503 rate limit errors)
-RUN dotnet restore \
-    --disable-parallel \
-    --ignore-failed-sources \
-    || (echo "Retrying restore after 5 sec..." && sleep 5 && dotnet restore --disable-parallel)
+# Publish the app
+RUN dotnet publish CAT.AID.Web.csproj -c Release -o /app/publish
 
-# Build + publish
-RUN dotnet publish "CAT.AID.Web.csproj" -c Release -o /out --no-restore
-
-
-# ---------------------------
-# FINAL RUNTIME IMAGE
-# ---------------------------
+# ===========================
+# 2️⃣ Runtime Stage
+# ===========================
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
-
 WORKDIR /app
-COPY --from=build /out .
 
-# Expose port (Render uses PORT env)
-EXPOSE 8080
+# Disable HTTPS (Render containers do not provide certs)
+ENV ASPNETCORE_URLS=http://+:10000
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
-# Run the app
+# Copy published app
+COPY --from=build /app/publish .
+
+# Expose Render port
+EXPOSE 10000
+
 ENTRYPOINT ["dotnet", "CAT.AID.Web.dll"]
