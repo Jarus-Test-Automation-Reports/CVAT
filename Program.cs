@@ -3,91 +3,74 @@ using CAT.AID.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// -------------------------------------------------------
-// DATABASE CONFIG
-// -------------------------------------------------------
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-
-// -------------------------------------------------------
-// IDENTITY CONFIG
-// -------------------------------------------------------
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+namespace CAT.AID.Web
 {
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
-
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Account/Login";
-});
-
-// -------------------------------------------------------
-// MVC + RAZOR
-// -------------------------------------------------------
-builder.Services.AddControllersWithViews();
-
-var app = builder.Build();
-
-// -------------------------------------------------------
-// AUTO MIGRATIONS + SEEDING (REQUIRED FOR RENDER)
-// -------------------------------------------------------
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    try
+    public class Program
     {
-        var db = services.GetRequiredService<ApplicationDbContext>();
+        public static async Task Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-        // 🔥 Apply migrations automatically on startup
-        db.Database.Migrate();
+            // ------------------- DATABASE -------------------
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+            );
 
-        // 🔥 Seed initial roles/users
-        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+            // ------------------- IDENTITY -------------------
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 6;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
-        await SeedData.InitializeAsync(userManager, roleManager);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("❌ Migration/Seeding failed: " + ex.Message);
-        Console.WriteLine(ex.StackTrace);
-        throw;
+            builder.Services.AddControllersWithViews();
+
+            var app = builder.Build();
+
+            // ------------------- APPLY MIGRATIONS + SEED DATA -------------------
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                try
+                {
+                    // 1️⃣ Create tables if missing
+                    db.Database.Migrate();
+
+                    // 2️⃣ Seed user roles + accounts
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                    await SeedData.InitializeAsync(userManager, roleManager);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("❌ Migration/Seeding FAILED: " + ex.Message);
+                    Console.WriteLine(ex);
+                    throw;
+                }
+            }
+
+            // ------------------- MIDDLEWARE -------------------
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Account}/{action=Login}/{id?}");
+
+            await app.RunAsync();
+        }
     }
 }
-
-// -------------------------------------------------------
-// MIDDLEWARE PIPELINE
-// -------------------------------------------------------
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
-
-// -------------------------------------------------------
-// DEFAULT ROUTE
-// -------------------------------------------------------
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
-);
-
-app.Run();
