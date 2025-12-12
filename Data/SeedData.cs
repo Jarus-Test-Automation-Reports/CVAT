@@ -1,4 +1,4 @@
-using CAT.AID.Web.Data;
+/*using CAT.AID.Web.Data;
 using CAT.AID.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -65,4 +65,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-app.Run();
+app.Run();*/
+
