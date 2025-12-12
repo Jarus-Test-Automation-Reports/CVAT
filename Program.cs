@@ -2,6 +2,8 @@ using CAT.AID.Web.Data;
 using CAT.AID.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using QuestPDF.Infrastructure;
 
 namespace CAT.AID.Web
 {
@@ -11,66 +13,71 @@ namespace CAT.AID.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ------------------- DATABASE -------------------
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-            );
+            // QuestPDF
+            QuestPDF.Settings.License = LicenseType.Community;
 
-            // ------------------- IDENTITY -------------------
+            // EPPlus
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            // Database
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                options.Password.RequireDigit = true;
-                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
+
+            // Cookie settings
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
 
             var app = builder.Build();
 
-            // ------------------- APPLY MIGRATIONS + SEED DATA -------------------
+            // ---- SEED ROLES + USERS ----
             using (var scope = app.Services.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var services = scope.ServiceProvider;
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                try
-                {
-                    // 1️⃣ Create tables if missing
-                    db.Database.Migrate();
-
-                    // 2️⃣ Seed user roles + accounts
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    await SeedData.InitializeAsync(userManager, roleManager);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("❌ Migration/Seeding FAILED: " + ex.Message);
-                    Console.WriteLine(ex);
-                    throw;
-                }
+                await SeedData.InitializeAsync(userManager, roleManager);
             }
 
-            // ------------------- MIDDLEWARE -------------------
+            // Middleware
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapRazorPages();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}"
+            );
 
-            await app.RunAsync();
+            app.Run();
         }
     }
 }
