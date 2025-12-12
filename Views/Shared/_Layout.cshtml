@@ -20,12 +20,16 @@
             background-attachment: fixed;
         }
 
+        /* --------------------------------------------
+                   🔥 3D GLASS HEADER
+                -------------------------------------------- */
         .brand-header {
             padding: 20px 0;
             backdrop-filter: blur(12px);
             background: rgba(255, 255, 255, 0.8);
             border-bottom: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateZ(25px);
         }
 
         .brand-title {
@@ -37,27 +41,31 @@
             text-shadow: 0 3px 5px rgba(0,0,0,0.15);
         }
 
+        /* --------------------------------------------
+                   🔵 3D Glassmorphism Navigation Bar
+                -------------------------------------------- */
         .navbar {
             backdrop-filter: blur(15px);
             background: rgba(0, 51, 102, 0.75) !important;
-            padding: 12px;
             border-radius: 0 0 15px 15px;
+            padding: 12px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            transform: translateZ(20px);
         }
 
-        .navbar .nav-link {
-            color: #ffeb8d !important;
-            font-weight: 600;
-            padding: 10px 14px;
-            border-radius: 6px;
-            transition: 0.25s ease-in-out;
-        }
+            .navbar .nav-link {
+                color: #ffeb8d !important;
+                font-weight: 600;
+                padding: 10px 14px;
+                border-radius: 6px;
+                transition: 0.25s ease-in-out;
+            }
 
-        .navbar .nav-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(255,255,255,0.4);
-        }
+                .navbar .nav-link:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                    transform: translateY(-3px);
+                    box-shadow: 0 4px 10px rgba(255,255,255,0.4);
+                }
 
         .dropdown-menu {
             background: rgba(0,0,0,0.8);
@@ -68,52 +76,69 @@
             color: #ffdb69 !important;
         }
 
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+            .dropdown-item:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
 
+        /* --------------------------------------------
+                   🧊 CONTENT WRAPPER - 3D Floating Card Layout
+                -------------------------------------------- */
         .content-wrapper {
             margin-top: 30px;
             margin-bottom: 40px;
             animation: fadeIn 0.6s ease-in-out;
         }
 
-        /* ✔ FIXED KEYFRAMES BLOCK — NO RAZOR ERROR */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .container {
+            transform: translateZ(15px);
         }
 
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* --------------------------------------------
+                   ⚡ FUTURISTIC FOOTER
+                -------------------------------------------- */
         .footer {
-            background: linear-gradient(90deg, #3c2d03, #6f4e07);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 500;
-            border-top-left-radius: 18px;
-            border-top-right-radius: 18px;
-            box-shadow: 0 -8px 20px rgba(0,0,0,0.2);
-        }
+    background: linear-gradient(90deg, #3c2d03, #6f4e07);
+    color: white; /* FIXED */
+    padding: 25px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.2);
+}
 
+        /* --------------------------------------------
+                   SMALL LOGO ANIMATION
+                -------------------------------------------- */
         .header-logo {
             transition: transform 0.4s ease;
         }
 
-        .header-logo:hover {
-            transform: scale(1.1) rotate(2deg);
-        }
+            .header-logo:hover {
+                transform: scale(1.1) rotate(2deg);
+            }
     </style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
+    <!-- 🔥 3D Glass Header -->
     <div class="brand-header">
         <div class="container d-flex justify-content-between align-items-center">
 
-            <!-- LEFT LOGO -->
-            <img src="~/Images/20240912282747915.png" height="90" class="header-logo" />
+            <img src="/images/20240912282747915.png" height="90" class="header-logo" />
 
             <div class="brand-title text-center">
                 CVAT – Comprehensive Vocational Assessment Tool<br />
@@ -122,12 +147,12 @@
                 </small>
             </div>
 
-            <!-- RIGHT LOGO -->
-            <img src="~/Images/202409121913074416.png" height="90" class="header-logo" />
+            <img src="/images/202409121913074416.png" height="90" class="header-logo" />
         </div>
     </div>
 
-    <!-- NAVIGATION BAR -->
+
+    <!-- 🔵 3D Navigation Bar -->
     <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container">
 
@@ -141,23 +166,23 @@
 
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/Admin/Users">📚 Users</a></li>
                         }
 
-                        if (User.IsInRole("LeadAssessor"))
+                        @if (User.IsInRole("LeadAssessor"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/Candidates">👤 Candidates</a></li>
                             <li class="nav-item"><a class="nav-link" href="/Assessments/ReviewQueue">📝 Review Queue</a></li>
                         }
 
-                        if (User.IsInRole("Assessor"))
+                        @if (User.IsInRole("Assessor"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/Assessments/MyTasks">📌 My Assessments</a></li>
                         }
 
-                        if (User.IsInRole("Admin") || User.IsInRole("LeadAssessor"))
+                        @if (User.IsInRole("Admin") || User.IsInRole("LeadAssessor"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/QuestionBank">📘 Question Bank</a></li>
                         }
@@ -187,7 +212,9 @@
                                 <li>
                                     <form asp-controller="Account" asp-action="Logout" method="post">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="dropdown-item text-warning fw-bold">🔓 Logout</button>
+                                        <button type="submit" class="dropdown-item text-warning fw-bold">
+                                            🔓 Logout
+                                        </button>
                                     </form>
                                 </li>
                             </ul>
@@ -199,7 +226,7 @@
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
+    <!-- PAGE CONTENT -->
     <div class="container content-wrapper">
         @RenderBody()
     </div>
@@ -207,7 +234,7 @@
     <!-- FOOTER -->
     <div class="footer">
         © @DateTime.Now.Year NATIONAL INSTITUTE FOR THE EMPOWERMENT OF PERSONS WITH INTELLECTUAL DISABILITIES (NIEPID),
-        Secunderabad, Telangana – 500009. All Rights Reserved.
+        Manovikas Nagar, Secunderabad, Telangana – 500009. All Rights Reserved.
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
