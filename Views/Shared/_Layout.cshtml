@@ -26,7 +26,6 @@
             background: rgba(255, 255, 255, 0.8);
             border-bottom: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            transform: translateZ(25px);
         }
 
         .brand-title {
@@ -41,10 +40,9 @@
         .navbar {
             backdrop-filter: blur(15px);
             background: rgba(0, 51, 102, 0.75) !important;
-            border-radius: 0 0 15px 15px;
             padding: 12px;
+            border-radius: 0 0 15px 15px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-            transform: translateZ(20px);
         }
 
         .navbar .nav-link {
@@ -80,6 +78,7 @@
             animation: fadeIn 0.6s ease-in-out;
         }
 
+        /* ✔ FIXED KEYFRAMES BLOCK — NO RAZOR ERROR */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -114,8 +113,7 @@
         <div class="container d-flex justify-content-between align-items-center">
 
             <!-- LEFT LOGO -->
-            <img src="@Url.Content("~/Images/20240912282747915.png")"
-                 height="90" class="header-logo" />
+            <img src="~/Images/20240912282747915.png" height="90" class="header-logo" />
 
             <div class="brand-title text-center">
                 CVAT – Comprehensive Vocational Assessment Tool<br />
@@ -125,12 +123,11 @@
             </div>
 
             <!-- RIGHT LOGO -->
-            <img src="@Url.Content("~/Images/202409121913074416.png")"
-                 height="90" class="header-logo" />
+            <img src="~/Images/202409121913074416.png" height="90" class="header-logo" />
         </div>
     </div>
 
-    <!-- NAVBAR -->
+    <!-- NAVIGATION BAR -->
     <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container">
 
@@ -141,6 +138,7 @@
             <div class="collapse navbar-collapse" id="mainNav">
 
                 <ul class="navbar-nav me-auto gap-2">
+
                     @if (SignInManager.IsSignedIn(User))
                     {
                         if (User.IsInRole("Admin"))
@@ -173,6 +171,7 @@
                             </ul>
                         </li>
                     }
+
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
@@ -182,6 +181,7 @@
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                 👤 @User.Identity?.Name
                             </a>
+
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
@@ -199,7 +199,7 @@
         </div>
     </nav>
 
-    <!-- CONTENT -->
+    <!-- MAIN CONTENT -->
     <div class="container content-wrapper">
         @RenderBody()
     </div>
