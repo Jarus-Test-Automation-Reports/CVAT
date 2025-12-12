@@ -17,28 +17,26 @@
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="EPPlus" Version="7.2.5" />
     <PackageReference Include="EPPlus.Interfaces" Version="8.1.0" />
-    <PackageReference Include="itext7" Version="9.4.0" />
-    <PackageReference Include="itextsharp.xmlworker" Version="5.5.13.4" />
 
-    <!-- ASP.NET & EF Core 8 Compatible -->
+    <!-- Remove iText7 v9.x (incompatible with .NET 8) -->
+    <!--<PackageReference Include="itext7" Version="9.4.0" />-->
+
+    <!-- Use .NET 8 compatible version -->
+    <PackageReference Include="itext7" Version="8.0.3" />
+
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.1" />
-
-    <!-- QuestPDF must match compatible version -->
     <PackageReference Include="QuestPDF" Version="2025.7.4" />
-
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
-  </ItemGroup>
+</ItemGroup>
+
 
   <ItemGroup>
     <Folder Include="Migrations\" />
@@ -50,3 +48,4 @@
   </ItemGroup>
 
 </Project>
+
