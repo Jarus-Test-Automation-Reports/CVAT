@@ -10,13 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 // QuestPDF
 QuestPDF.Settings.License = LicenseType.Community;
 
-// EPPlus (Excel)
-ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+// EPPlus
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
+// Read connection string from Render environment variable (recommended)
+var connectionString =
+    Environment.GetEnvironmentVariable("DefaultConnection")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 // DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -52,7 +56,12 @@ using (var scope = app.Services.CreateScope())
     await SeedData.InitializeAsync(userManager, roleManager);
 }
 
-app.UseHttpsRedirection();
+// DO NOT enable HTTPS redirection inside Docker on Render (it already handles SSL)
+if (!app.Environment.IsDevelopment())
+{
+    // No UseHttpsRedirection() — Render handles SSL before container
+}
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
