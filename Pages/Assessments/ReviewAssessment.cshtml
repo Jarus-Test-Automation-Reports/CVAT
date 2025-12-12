@@ -1,0 +1,41 @@
+﻿@if (Model.ParsedResults != null && Model.ParsedResults.Any())
+{
+    foreach (var sec in Model.ParsedResults)
+    {
+        <h4 class="mt-4 text-primary">@sec.Section</h4>
+        <table class="table table-bordered bg-white">
+            <thead>
+                <tr>
+                    <th style="width:40%">Question</th>
+                    <th style="width:20%">Answer</th>
+                    <th style="width:25%">Comments</th>
+                    <th style="width:15%">Attachment</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var q in sec.Questions)
+                {
+                    <tr>
+                        <td>@q.Text</td>
+                        <td>@q.Answer</td>
+                        <td>@q.Comments</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(q.FileUrl))
+                            {
+                                <a href="@q.FileUrl" target="_blank" class="btn btn-sm btn-info">View File</a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <div class="alert alert-warning">No formatted result available.</div>
+}

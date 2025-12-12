@@ -1,0 +1,197 @@
+﻿@using CAT.AID.Models
+@model Candidate
+
+@{
+    var attachments = ViewBag.Attachments as List<CandidateAttachment>;
+    int age = DateTime.UtcNow.Year - Model.DOB.Year -
+              (DateTime.UtcNow.DayOfYear < Model.DOB.DayOfYear ? 1 : 0);
+}
+
+<h2 class="fw-bold text-primary mb-4">👤 Candidate Profile</h2>
+
+@if (TempData["msg"] != null)
+{
+    <div class="alert alert-info fw-bold">@TempData["msg"]</div>
+}
+
+<div class="glass-card p-4 mb-4">
+
+    <div class="row">
+
+        <!-- LEFT: DETAILS -->
+        <div class="col-md-8">
+
+            <h4 class="section-title">Identification Details</h4>
+
+            <table class="table table-borderless profile-table">
+                <tr><th>Full Name</th><td>@Model.FullName</td></tr>
+                <tr><th>Gender</th><td>@Model.Gender</td></tr>
+                <tr><th>Date of Birth</th><td>@Model.DOB:dd-MMM-yyyy</td></tr>
+                <tr><th>Age</th><td>@age years</td></tr>
+                <tr><th>Intellectual Level</th><td>@Model.IntellectualLevel</td></tr>
+                <tr><th>Marital Status</th><td>@Model.MaritalStatus</td></tr>
+                <tr><th>Education</th><td>@Model.Education</td></tr>
+            </table>
+
+            <h4 class="section-title mt-4">Parent / Guardian Details</h4>
+
+            <table class="table table-borderless profile-table">
+                <tr><th>Father / Guardian</th><td>@Model.FatherName</td></tr>
+                <tr><th>Father's Education</th><td>@Model.FatherEducation</td></tr>
+                <tr><th>Father's Occupation</th><td>@Model.FatherOccupation</td></tr>
+                <tr><th>Mother / Guardian</th><td>@Model.MotherName</td></tr>
+                <tr><th>Mother's Education</th><td>@Model.MotherEducation</td></tr>
+                <tr><th>Mother's Occupation</th><td>@Model.MotherOccupation</td></tr>
+                <tr><th>Mother Tongue</th><td>@Model.MotherTongue</td></tr>
+                <tr><th>Other Languages</th><td>@Model.OtherLanguages</td></tr>
+            </table>
+
+            <h4 class="section-title mt-4">Family & Contact</h4>
+
+            <table class="table table-borderless profile-table">
+                <tr><th>Family Type</th><td>@Model.FamilyType</td></tr>
+                <tr><th>Disability History</th><td>@Model.FamilyDisabilityHistory</td></tr>
+                <tr><th>Disability Type</th><td>@Model.DisabilityType</td></tr>
+                <tr><th>Monthly Income</th><td>@Model.MonthlyIncome</td></tr>
+                <tr><th>Residential Area</th><td>@Model.ResidentialArea</td></tr>
+                <tr><th>Contact Number</th><td>@Model.ContactNumber</td></tr>
+                <tr><th>Address</th><td>@Model.CommunicationAddress</td></tr>
+            </table>
+
+        </div>
+
+        <!-- RIGHT: PHOTO -->
+        <div class="col-md-4 text-center">
+
+            <div class="glass-card photo-card p-3">
+                <h6 class="fw-bold mb-3">Candidate Photo</h6>
+
+                <img src="@(Model.PhotoFilePath ?? "/images/no-photo.png")"
+                     class="profile-photo" />
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- DOCUMENT SECTION -->
+<div class="glass-card p-4 mt-3">
+    <h4 class="section-title">Supporting Documents</h4>
+
+    @if (attachments != null && attachments.Any())
+    {
+        <div class="d-flex flex-wrap gap-4 mt-3">
+
+            @foreach (var a in attachments)
+            {
+                <div class="doc-box text-center">
+
+                    <a href="/uploads/candidates/@a.FilePath" target="_blank">
+
+                        @if (a.FileType.StartsWith("image"))
+                        {
+                            <img src="/uploads/candidates/@a.FilePath" class="doc-thumb" />
+                        }
+                        else if (a.FileType.Contains("pdf"))
+                        {
+                            <img src="/images/pdf-icon.png" class="doc-icon" />
+                        }
+                        else
+                        {
+                            <img src="/images/doc-icon.png" class="doc-icon" />
+                        }
+                    </a>
+
+                    <div class="small mt-2 text-truncate" style="max-width:120px;">
+                        @a.FileName
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">No supporting documents uploaded.</div>
+    }
+</div>
+
+<!-- BUTTONS -->
+<div class="mt-4">
+    <a href="/Candidates/Edit/@Model.Id" class="btn btn-primary px-4">✏ Edit</a>
+    <a href="/Candidates/Index" class="btn btn-secondary px-4 ms-2">Back</a>
+</div>
+
+<style>
+
+    /* ---------- GLASS CARD ---------- */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        transition: 0.3s ease;
+    }
+
+        .glass-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+        }
+
+    .section-title {
+        font-weight: 700;
+        font-size: 20px;
+        color: #003366;
+    }
+
+    /* ---------- PHOTO ---------- */
+    .profile-photo {
+        width: 180px;
+        height: 210px;
+        border-radius: 12px;
+        object-fit: cover;
+        box-shadow: 0 7px 18px rgba(0,0,0,0.25);
+        transition: transform 0.3s ease;
+    }
+
+        .profile-photo:hover {
+            transform: scale(1.05);
+        }
+
+    /* ---------- DOCUMENT BOX ---------- */
+    .doc-box {
+        width: 130px;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.6);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: 0.3s;
+    }
+
+        .doc-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+    .doc-thumb {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .doc-icon {
+        height: 60px;
+        opacity: 0.85;
+    }
+
+    /* ---------- TABLE STYLE ---------- */
+    .profile-table th {
+        width: 200px;
+        color: #555;
+        font-weight: 600;
+    }
+</style>

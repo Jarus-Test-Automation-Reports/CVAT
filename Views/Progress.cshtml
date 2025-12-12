@@ -1,0 +1,64 @@
+﻿@model List<CAT.AID.Models.DTO.CandidateProgressDTO>
+@{
+    var candidate = ViewBag.Candidate;
+}
+
+<h2 class="mb-3 text-primary">
+    Progress — @candidate.FullName
+</h2>
+
+<!-- TOTAL SCORE TREND -->
+<canvas id="totalChart" style="height: 300px;"></canvas>
+
+<hr />
+
+<!-- DOMAIN WISE TREND -->
+<h4 class="mt-4 text-secondary">Domain-wise Progress</h4>
+<canvas id="domainChart" style="height: 350px;"></canvas>
+
+<br />
+<a class="btn btn-success" href="/Candidates/ExportProgress/@candidate.Id">📄 Export Progress PDF</a>
+<a class="btn btn-warning btn-sm" href="/Assessments/Compare/@ViewBag.Candidate.Id">
+    🔄 Compare Assessments
+</a>
+
+<a class="btn btn-primary" href="/Assessments/History/@candidate.Id">📚 View Assessment History</a>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+    // Total Chart Data
+    const labels = data.map(x => x.date.split("T")[0]);
+    const totals = data.map(x => x.percentage);
+
+    new Chart(document.getElementById("totalChart"), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Percentage Progress',
+                data: totals,
+                borderWidth: 3,
+                tension: 0.4
+            }]
+        }
+    });
+
+    // Domain Chart
+    const domainNames = Object.keys(data[0].sectionScores);
+    const datasets = domainNames.map((name, i) => ({
+        label: name,
+        data: data.map(x => x.sectionScores[name] || 0),
+        borderWidth: 2,
+        tension: 0.4
+    }));
+
+    new Chart(document.getElementById("domainChart"), {
+        type: 'line',
+        data: {
+            labels,
+            datasets
+        }
+    });
+</script>

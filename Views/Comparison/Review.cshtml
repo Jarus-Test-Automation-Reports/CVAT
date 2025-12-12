@@ -1,0 +1,9 @@
+﻿@model CAT.AID.Models.DTO.ComparisonReportVM
+
+<h2 class="text-primary">🧾 Review Comparison — @Model.CandidateName</h2>
+
+<div class="alert alert-info">
+    <b>Status:</b> @Model.Status
+</div>
+
+<partial name="CompareReport" model="Model" />

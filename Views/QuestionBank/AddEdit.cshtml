@@ -1,0 +1,129 @@
+﻿@using CAT.AID.Web.Models.DTO
+@model (string section, AssessmentQuestion q, List<AssessmentSection> all)
+
+<h3 class="fw-bold mb-4" style="color:#003366;">
+    @((Model.q == null) ? "➕ Add New Question" : "✏ Edit Question")
+</h3>
+
+<style>
+    .glass-box {
+        background: rgba(255,255,255,0.75);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        padding: 25px;
+        box-shadow: 0px 10px 25px rgba(0,0,0,0.12);
+        border: 1px solid #d5e1f3;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #003366;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #b4c7dd;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #003366;
+        box-shadow: 0 0 5px rgba(0,51,102,0.3);
+    }
+
+    .btn-navy {
+        background: #003366;
+        color: #fff;
+        font-weight: 600;
+        padding: 8px 20px;
+        border-radius: 8px;
+    }
+
+    .btn-navy:hover {
+        background: #00254d;
+        color: #fff;
+    }
+
+    .btn-secondary {
+        border-radius: 8px;
+        padding: 8px 20px;
+    }
+</style>
+
+
+<div class="glass-box">
+
+    <form method="post">
+
+        <!-- SECTION DROPDOWN -->
+        <label class="form-label">Section / Domain</label>
+        <select name="section" class="form-select mb-3" required>
+            <option value="">-- Select Section --</option>
+
+            @foreach (var s in Model.all)
+            {
+                <option value="@s.Category" selected="@(Model.section == s.Category)">
+                    @s.Category
+                </option>
+            }
+        </select>
+
+
+
+        <!-- QUESTION ID -->
+        <label class="form-label">Question ID</label>
+        <input name="Id"
+               class="form-control mb-3"
+               placeholder="Enter Question ID"
+               value="@Model.q?.Id"
+               @(Model.q != null ? "readonly" : "")
+               required />
+
+
+        <!-- QUESTION TEXT -->
+        <label class="form-label">Question Text</label>
+        <textarea name="Text"
+                  class="form-control mb-3"
+                  rows="3"
+                  placeholder="Write the question here..."
+                  required>@Model.q?.Text</textarea>
+
+
+        <!-- OPTIONS CSV -->
+        <label class="form-label">Options (comma separated)</label>
+        <input name="Options"
+               class="form-control mb-3"
+               placeholder="Option1, Option2, Option3"
+               value="@(Model.q == null ? "" : string.Join(",", Model.q.Options))"
+               required />
+
+
+        <!-- CORRECT ANSWER -->
+        <label class="form-label">Correct Answer (optional)</label>
+        <input name="Correct"
+               class="form-control mb-3"
+               placeholder="Enter correct option"
+               value="@Model.q?.Correct" />
+
+
+        <!-- SCORE WEIGHT -->
+        <label class="form-label">Score Weight (0 - 3)</label>
+        <input type="number"
+               min="0"
+               max="3"
+               name="ScoreWeight"
+               class="form-control mb-4"
+               value="@(Model.q?.ScoreWeight ?? 0)"
+               required />
+
+
+        <!-- ACTION BUTTONS -->
+        <div class="text-end">
+            <button class="btn btn-navy me-2">💾 Save Question</button>
+            <a href="/QuestionBank" class="btn btn-secondary">Back</a>
+        </div>
+
+    </form>
+
+</div>

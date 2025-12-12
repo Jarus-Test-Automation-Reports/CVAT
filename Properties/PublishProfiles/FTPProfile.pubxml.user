@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword />
+    <_PublishTargetUrl>ftp://192.168.1.6/C:\Users\jagathpraveenk\Desktop\New folder</_PublishTargetUrl>
+    <History>False|2025-12-11T14:58:47.5481432Z||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DatabaseConnection">
+      <Value>Host=localhost%3bPort=5432%3bDatabase=CAT_AIT_DB%3bUsername=postgres%3bPassword=postgres</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

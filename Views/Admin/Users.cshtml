@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CAT.AID.Web.Models
+@inject UserManager<ApplicationUser> UserManager
+@model IEnumerable<ApplicationUser>
+
+@{
+    ViewData["Title"] = "Users Management";
+}
+
+<h2 class="text-primary fw-bold mt-3 mb-3">👥 Users Management</h2>
+
+<a class="btn btn-primary mb-3 fw-bold" href="/Admin/Create">➕ Create New User</a>
+
+<table class="table table-striped table-hover shadow-sm align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Location</th>
+            <th>Roles</th>
+            <th>Status</th>
+            <th style="width: 260px;">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model)
+        {
+            var roles = await UserManager.GetRolesAsync(u);
+
+            <tr>
+                <td>@u.FullName</td>
+
+                <td>@u.Email</td>
+
+                <td>@(!string.IsNullOrWhiteSpace(u.Location) ? u.Location : "—")</td>
+
+                <td>
+                    @foreach (var r in roles)
+                    {
+                        var badge = r switch
+                        {
+                            "Admin" => "bg-danger",
+                            "LeadAssessor" => "bg-primary",
+                            "Assessor" => "bg-secondary",
+                            _ => "bg-dark"
+                        };
+
+                        <span class="badge @badge me-1">@r</span>
+                    }
+                </td>
+
+                <td>
+                    @if (u.LockoutEnd != null && u.LockoutEnd > DateTime.UtcNow)
+                    {
+                        <span class="badge bg-warning text-dark fw-bold">Locked</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success fw-bold">Active</span>
+                    }
+                </td>
+
+                <td>
+                    <a href="/Admin/Edit/@u.Id" class="btn btn-sm btn-warning me-1">
+                        ✏ Edit
+                    </a>
+
+                    <a href="/Admin/Delete/@u.Id"
+                       class="btn btn-sm btn-danger me-1"
+                       onclick="return confirm('Are you sure you want to delete this user?');">
+                        🗑 Delete
+                    </a>
+
+                    @if (u.LockoutEnd == null || u.LockoutEnd <= DateTime.UtcNow)
+                    {
+                        <a href="/Admin/Lock/@u.Id" class="btn btn-sm btn-secondary">
+                            🔒 Lock
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/Unlock/@u.Id" class="btn btn-sm btn-success">
+                            🔓 Unlock
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

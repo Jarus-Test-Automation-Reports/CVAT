@@ -1,0 +1,186 @@
+﻿@model List<CAT.AID.Models.DTO.CandidateProgressDTO>
+@{
+    var candidate = ViewBag.Candidate;
+    Layout = "_Layout";
+}
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .glass-box {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transition: 0.3s ease;
+    }
+
+        .glass-box:hover {
+            transform: translateY(-4px);
+        }
+
+    h2, h4 {
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* 3D Styled Table */
+    .table-3d {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+    }
+
+        .table-3d thead {
+            background: linear-gradient(135deg, #003366, #0066aa);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .table-3d tbody tr {
+            transition: 0.2s ease;
+        }
+
+            .table-3d tbody tr:hover {
+                background: #f3f8ff !important;
+                transform: scale(1.01);
+            }
+
+    /* Buttons */
+    .btn-modern {
+        border-radius: 10px;
+        padding: 8px 18px;
+        font-weight: 600;
+        transition: 0.25s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+        .btn-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+        }
+
+    /* Chart Containers */
+    .chart-card {
+        background: rgba(255,255,255,0.55);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 26px rgba(0,0,0,0.15);
+    }
+</style>
+
+<h2 class="text-primary mb-3">
+    📊 Assessment Comparison — @candidate.FullName
+</h2>
+
+<div class="d-flex gap-2 mb-3">
+    <a href="/Candidates/Progress/@candidate.Id" class="btn btn-secondary btn-sm btn-modern">⬅ Back to Progress</a>
+    <a href="/Assessments/ProgressReport/@candidate.Id" class="btn btn-danger btn-sm btn-modern">📄 Download Progress PDF</a>
+</div>
+
+<hr />
+
+<!-- ================= SUMMARY TABLE ================= -->
+<h4 class="text-primary">Assessment Summary Table</h4>
+
+<div class="glass-box mb-4">
+    <table class="table table-bordered table-striped shadow-sm table-3d">
+        <thead>
+            <tr>
+                <th>Assessment ID</th>
+                <th>Date</th>
+                <th>Total Score</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.AssessmentId</td>
+                    <td>@a.Date.ToString("dd-MMM-yyyy")</td>
+                    <td>@a.Total / @a.Max</td>
+                    <td>@a.Percentage.ToString("0.0")%</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= TREND CHART ================= -->
+<h4 class="text-primary">📈 Percentage Improvement Trend</h4>
+
+<div class="chart-card">
+    <canvas id="trendChart" height="120"></canvas>
+</div>
+
+<!-- ================= DOMAIN CHART ================= -->
+<h4 class="text-primary">🧠 Domain-wise Performance Comparison</h4>
+
+<div class="chart-card">
+    <canvas id="domainChart" height="160"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // ========== TREND CHART ==========
+    var labels = [@string.Join(",", Model.Select(x => "\"" + x.Date.ToString("dd-MMM") + "\""))];
+    var percentages = [@string.Join(",", Model.Select(x => x.Percentage.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)))];
+
+    new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Overall Percentage",
+                data: percentages,
+                borderWidth: 3,
+                borderColor: "#007bff",
+                backgroundColor: "rgba(0,123,255,0.15)",
+                fill: true,
+                tension: 0.25
+            }]
+        }
+    });
+
+    // ========== DOMAIN CHART ==========
+    var domainLabels = [];
+    var datasets = [];
+
+    // domain labels from first assessment
+    @foreach (var entry in Model.First().SectionScores)
+    {
+            @:domainLabels.push("@entry.Key");
+    }
+
+    @foreach (var x in Model)
+    {
+            <text>
+                datasets.push({
+                    label: "Assessment @x.AssessmentId",
+                    data: [
+                        @string.Join(",", x.SectionScores.Select(v =>
+                            ((v.Value / (x.Max / x.SectionScores.Count)) * 100)
+                            .ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
+                                        ))
+                ],
+                borderWidth: 3,
+                tension: 0.25
+            });
+        </text>
+        }
+
+    new Chart(document.getElementById("domainChart"), {
+        type: "line",
+        data: {
+            labels: domainLabels,
+            datasets: datasets
+        }
+    });
+
+</script>

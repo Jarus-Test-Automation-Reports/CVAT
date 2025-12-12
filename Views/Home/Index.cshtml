@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CAT.AID.Web.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Welcome";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+<div class="main-wrapper">
+
+    <!-- LEFT HERO SIDE -->
+    <div class="hero-left">
+        <img src="~/images/nimhnew.png" class="hero-image" />
+    </div>
+
+    <!-- RIGHT LOGIN CARD -->
+    @if (!SignInManager.IsSignedIn(User))
+    {
+        <div class="login-card shadow">
+            <div class="login-header">🔐 Login to CVAT</div>
+
+            <form asp-controller="Account" asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+
+                <label class="form-label">Email</label>
+                <input class="form-control input-box" name="Email" required />
+
+                <label class="form-label mt-3">Password</label>
+                <div class="eye-wrapper">
+                    <input class="form-control input-box" id="passwordField" name="Password" type="password" required />
+                    <span class="eye-btn" onclick="togglePassword()">👁</span>
+                </div>
+
+                <button class="btn btn-primary login-btn">Login</button>
+
+                <div class="text-center mt-2 small">
+                    <a asp-controller="Account" asp-action="ForgotPassword">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+    }
+</div>
+
+<script>
+    function togglePassword() {
+        let f = document.getElementById("passwordField");
+        f.type = f.type === "password" ? "text" : "password";
+    }
+</script>

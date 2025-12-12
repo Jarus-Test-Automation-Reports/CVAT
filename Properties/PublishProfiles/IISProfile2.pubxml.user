@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword />
+    <History>True|2025-12-11T03:32:45.8595958Z||;False|2025-12-11T08:51:31.9549434+05:30||;False|2025-12-11T08:47:26.3818094+05:30||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DatabaseConnection">
+      <Value>Host=localhost%3bPort=5432%3bDatabase=CAT_AIT_DB%3bUsername=postgres%3bPassword=postgres</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

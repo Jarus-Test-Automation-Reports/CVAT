@@ -1,0 +1,103 @@
+﻿@model IEnumerable<CAT.AID.Web.Models.ApplicationUser>
+
+<h2 class="fw-bold mb-3" style="color:#003366;">👥 Users Management</h2>
+
+<style>
+    .glass-box {
+        background: rgba(255,255,255,0.8);
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        border: 1px solid #d3e0f5;
+        backdrop-filter: blur(8px);
+    }
+
+    .table thead th {
+        background: #003366;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .btn-navy {
+        background: #003366;
+        color: #fff;
+        font-weight: 600;
+    }
+    .btn-navy:hover {
+        background: #00254d;
+        color: #fff;
+    }
+
+    .search-box {
+        width: 260px;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="glass-box mb-3">
+
+    <!-- Search Bar -->
+    <div class="d-flex justify-content-between mb-3">
+        <input type="text" id="search" placeholder="🔍 Search user..."
+               class="form-control search-box" onkeyup="filterUsers()" />
+
+        <a href="/Admin/Users/Create" class="btn btn-success fw-bold">
+            ➕ Add User
+        </a>
+    </div>
+
+    <!-- Users Table -->
+    <table class="table table-bordered table-hover" id="usersTable">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Location</th>
+                <th style="width:260px;">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.Email</td>
+                    <td>@u.Location</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary me-1" href="/Admin/Users/Edit/@u.Id">
+                            ✏ Edit
+                        </a>
+
+                        <a class="btn btn-sm btn-warning me-1"
+                           href="/Admin/Users/ResetPassword/@u.Id">
+                            🔐 Reset Password
+                        </a>
+
+                        <a class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this user?')"
+                           href="/Admin/Users/Delete/@u.Id">
+                            🗑 Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    function filterUsers() {
+        let input = document.getElementById("search").value.toLowerCase();
+        let rows = document.querySelectorAll("#usersTable tbody tr");
+
+        rows.forEach(row => {
+            let email = row.children[0].textContent.toLowerCase();
+            let location = row.children[1].textContent.toLowerCase();
+
+            row.style.display =
+                email.includes(input) || location.includes(input)
+                ? ""
+                : "none";
+        });
+    }
+</script>

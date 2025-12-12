@@ -1,0 +1,134 @@
+﻿body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #ffffff;
+    height: 100vh;
+}
+
+/************  LAYOUT  ************/
+.main-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 35px 50px; /* reduced padding */
+    gap: 30px; /* slightly smaller gap */
+}
+
+/************  HERO SECTION LEFT  ************/
+.hero-left {
+    flex: 1;
+    color: #222;
+    margin-top: -10px;
+}
+
+.hero-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.hero-sub {
+    font-size: 15px;
+    max-width: 550px;
+    margin-bottom: 16px;
+    line-height: 22px;
+    color: #444;
+}
+
+/***** IMAGE FIXED + REDUCED HEIGHT *****/
+.hero-image {
+    max-width: 320px; /* 🔽 reduced from 420px */
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/************  LOGIN CARD RIGHT  ************/
+.login-card {
+    width: 320px; /* 🔽 was 360px */
+    background: white;
+    border-radius: 12px;
+    padding: 22px; /* 🔽 was 28px */
+    box-shadow: 0 5px 18px rgba(0,0,0,0.22);
+}
+
+    .login-card .form-label {
+        font-size: 14px;
+    }
+
+.input-box {
+    height: 40px; /* 🔽 was 45px */
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+/************  BUTTONS  ************/
+.login-btn {
+    width: 100%;
+    margin-top: 18px; /* 🔽 reduced margin */
+    padding: 9px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px; /* 🔽 smaller */
+}
+
+/************  FOOTER  ************/
+.footer {
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+/************  RESPONSIVE  ************/
+@media (max-width: 992px) {
+
+    body {
+        height: auto;
+    }
+
+    .main-wrapper {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .hero-left {
+        margin-top: 0;
+    }
+
+    .hero-image {
+        max-width: 60vw; /* 🔽 smaller in mobile */
+        margin: 0 auto;
+    }
+
+    .login-card {
+        width: 92%;
+        margin-top: 12px;
+    }
+
+    
+
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

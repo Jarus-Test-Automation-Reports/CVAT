@@ -1,0 +1,102 @@
+﻿@using CAT.AID.Models.DTO
+@model ComparisonReportVM
+
+<h2 class="fw-bold text-primary mb-3">
+    Progress Comparison – @Model.CandidateName
+</h2>
+
+@if (TempData["msg"] != null)
+{
+    <div class="alert alert-warning">@TempData["msg"]</div>
+}
+
+<!-- Selected Assessments Info -->
+<div class="alert alert-info p-2 mb-3">
+    <b>Compared Assessments:</b>
+    @foreach (var a in Model.Assessments)
+    {
+        <span class="badge bg-secondary mx-1">
+            @a.SubmittedAt?.ToString("dd-MMM-yyyy") (@a.Status)
+        </span>
+    }
+</div>
+
+<!-- Tabs per Domain -->
+<ul class="nav nav-tabs mb-3" role="tablist">
+    @{
+        var grouped = Model.Rows.GroupBy(x => x.Domain).ToList();
+        for (int i = 0; i < grouped.Count; i++)
+        {
+            <li class="nav-item">
+                <button class="nav-link @(i == 0 ? "active" : "")"
+                        data-bs-toggle="tab"
+                        data-bs-target="#d@i"
+                        type="button">
+                    @grouped[i].Key
+                </button>
+            </li>
+        }
+    }
+</ul>
+
+<div class="tab-content">
+    @for (int i = 0; i < grouped.Count; i++)
+    {
+        var domain = grouped[i];
+        <div class="tab-pane fade @(i == 0 ? "show active" : "") border p-3 rounded bg-white" id="d@i">
+
+            @foreach (var q in domain)
+            {
+                var first = q.Scores.First();
+                var last = q.Scores.Last();
+
+                string diffText = "";
+                string diffClass = "";
+
+                if (q.Difference.HasValue)
+                {
+                    if (q.Difference > 0) { diffText = $"▲ +{q.Difference}"; diffClass = "text-success fw-bold"; }
+                    else if (q.Difference < 0) { diffText = $"▼ {q.Difference}"; diffClass = "text-primary fw-bold fw-bold"; }
+                    else { diffText = "• 0"; diffClass = "text-secondary fw-bold"; }
+                }
+
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <p class="fw-bold text-dark">@q.QuestionText</p>
+
+                    <table class="table table-sm table-bordered mb-2 bg-white">
+                        <thead class="table-primary">
+                            <tr>
+                                @foreach (var a in Model.Assessments)
+                                {
+                                    <th class="text-center">@a.SubmittedAt?.ToString("dd-MMM-yyyy")</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                @foreach (var score in q.Scores)
+                                {
+                                    <td class="text-center fw-bold">@score</td>
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="@diffClass fs-6">
+                        Difference: @diffText
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div class="text-end mt-4">
+    <a href="javascript:history.back()" class="btn btn-secondary">
+        ⬅ Back
+    </a>
+    <a href="/Assessments/ExportComparisonPdf?candidateId=@Model.CandidateId&ids=@string.Join(",", Model.AssessmentIds)"
+       class="btn btn-danger">
+        📄 Export PDF
+    </a>
+</div>

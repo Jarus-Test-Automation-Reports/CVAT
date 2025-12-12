@@ -1,0 +1,245 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CAT.AID.Web.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CVAT – Comprehensive Vocational Assessment Tool</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff, #e7e7e7);
+            background-attachment: fixed;
+        }
+
+        /* --------------------------------------------
+                   🔥 3D GLASS HEADER
+                -------------------------------------------- */
+        .brand-header {
+            padding: 20px 0;
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateZ(25px);
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #3e2c01;
+            letter-spacing: 1px;
+            text-shadow: 0 3px 5px rgba(0,0,0,0.15);
+        }
+
+        /* --------------------------------------------
+                   🔵 3D Glassmorphism Navigation Bar
+                -------------------------------------------- */
+        .navbar {
+            backdrop-filter: blur(15px);
+            background: rgba(0, 51, 102, 0.75) !important;
+            border-radius: 0 0 15px 15px;
+            padding: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            transform: translateZ(20px);
+        }
+
+            .navbar .nav-link {
+                color: #ffeb8d !important;
+                font-weight: 600;
+                padding: 10px 14px;
+                border-radius: 6px;
+                transition: 0.25s ease-in-out;
+            }
+
+                .navbar .nav-link:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                    transform: translateY(-3px);
+                    box-shadow: 0 4px 10px rgba(255,255,255,0.4);
+                }
+
+        .dropdown-menu {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .dropdown-item {
+            color: #ffdb69 !important;
+        }
+
+            .dropdown-item:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+        /* --------------------------------------------
+                   🧊 CONTENT WRAPPER - 3D Floating Card Layout
+                -------------------------------------------- */
+        .content-wrapper {
+            margin-top: 30px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .container {
+            transform: translateZ(15px);
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* --------------------------------------------
+                   ⚡ FUTURISTIC FOOTER
+                -------------------------------------------- */
+        .footer {
+    background: linear-gradient(90deg, #3c2d03, #6f4e07);
+    color: white; /* FIXED */
+    padding: 25px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.2);
+}
+
+        /* --------------------------------------------
+                   SMALL LOGO ANIMATION
+                -------------------------------------------- */
+        .header-logo {
+            transition: transform 0.4s ease;
+        }
+
+            .header-logo:hover {
+                transform: scale(1.1) rotate(2deg);
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- 🔥 3D Glass Header -->
+    <div class="brand-header">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <img src="/images/20240912282747915.png" height="90" class="header-logo" />
+
+            <div class="brand-title text-center">
+                CVAT – Comprehensive Vocational Assessment Tool<br />
+                <small style="font-size:14px; font-weight:400; color:#333;">
+                    A Digital Platform for Vocational Evaluation, Skill Assessment & Career Planning
+                </small>
+            </div>
+
+            <img src="/images/202409121913074416.png" height="90" class="header-logo" />
+        </div>
+    </div>
+
+
+    <!-- 🔵 3D Navigation Bar -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
+        <div class="container">
+
+            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+
+                <ul class="navbar-nav me-auto gap-2">
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link" href="/Admin/Users">📚 Users</a></li>
+                        }
+
+                        @if (User.IsInRole("LeadAssessor"))
+                        {
+                            <li class="nav-item"><a class="nav-link" href="/Candidates">👤 Candidates</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/Assessments/ReviewQueue">📝 Review Queue</a></li>
+                        }
+
+                        @if (User.IsInRole("Assessor"))
+                        {
+                            <li class="nav-item"><a class="nav-link" href="/Assessments/MyTasks">📌 My Assessments</a></li>
+                        }
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("LeadAssessor"))
+                        {
+                            <li class="nav-item"><a class="nav-link" href="/QuestionBank">📘 Question Bank</a></li>
+                        }
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">💬 Support</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/Support/FAQ">FAQs</a></li>
+                                <li><a class="dropdown-item" href="/Support/Help">Help</a></li>
+                                <li><a class="dropdown-item" href="/Support/Contact">Contact</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                👤 @User.Identity?.Name
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item text-warning fw-bold">
+                                            🔓 Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE CONTENT -->
+    <div class="container content-wrapper">
+        @RenderBody()
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        © @DateTime.Now.Year NATIONAL INSTITUTE FOR THE EMPOWERMENT OF PERSONS WITH INTELLECTUAL DISABILITIES (NIEPID),
+        Manovikas Nagar, Secunderabad, Telangana – 500009. All Rights Reserved.
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

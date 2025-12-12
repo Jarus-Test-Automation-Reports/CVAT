@@ -1,0 +1,160 @@
+﻿@model IEnumerable<CAT.AID.Models.Assessment>
+
+<h3 class="text-primary fw-bold mb-4" style="letter-spacing:0.5px;">
+    <i class="bi bi-hourglass-split"></i> Pending Assessments
+</h3>
+
+<style>
+    /* Glass Container */
+    .glass-table {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(12px);
+        padding: 18px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        animation: fadeIn 0.5s ease;
+    }
+
+    /* Table Styling */
+    table {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background: linear-gradient(90deg, #003366, #1F5CAA) !important;
+        color: #fff !important;
+        border-bottom: none !important;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+    }
+
+    .table-hover tbody tr:hover {
+        background: #eef4ff !important;
+        transition: 0.25s ease;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    /* Action Buttons */
+    .action-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        border: none;
+    }
+
+    .btn-review {
+        background: #1F5CAA;
+        color: #fff;
+    }
+    .btn-review:hover { background: #0f3a6d; }
+
+    .btn-approve {
+        background: #2e8b57;
+        color: white;
+    }
+    .btn-approve:hover { background: #1f6a42; }
+
+    .btn-reject {
+        background: #c62828;
+        color: white;
+    }
+    .btn-reject:hover { background: #9b1f1f; }
+
+    .btn-sendback {
+        background: #f7c948;
+        color: #3b2f00;
+    }
+    .btn-sendback:hover { background: #d0a434; }
+
+    /* Row badges */
+    .badge-role {
+        background: #e3ebff;
+        color: #003366;
+        font-size: 12px;
+        padding: 3px 7px;
+        border-radius: 6px;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="glass-table">
+
+    <table class="table table-bordered table-striped table-hover align-middle shadow-sm">
+        <thead>
+            <tr>
+                <th style="width:70px;">ID</th>
+                <th>Candidate</th>
+                <th>Created</th>
+                <th>Assessor</th>
+                <th style="width:320px;">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@item.Id</td>
+
+                    <td>
+                        <i class="bi bi-person-circle text-primary"></i>
+                        <span class="fw-semibold">@item.Candidate.FullName</span>
+                    </td>
+
+                    <td>
+                        <i class="bi bi-calendar text-secondary"></i>
+                        @item.CreatedAt.ToString("dd-MMM-yyyy")
+                    </td>
+
+                    <td>
+                        @if (item.Assessor != null)
+                        {
+                            <i class="bi bi-person-badge text-success"></i>
+                            <span class="fw-semibold">@item.Assessor.FullName</span>
+                            <span class="badge-role">Assessor</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Not Assigned</span>
+                        }
+                    </td>
+
+                    <td>
+                        <form method="post" asp-action="UpdateStatus" class="d-flex gap-2">
+
+                            <input type="hidden" name="id" value="@item.Id" />
+
+                            <a href="/Assessments/Review/@item.Id"
+                               class="btn btn-review action-btn">
+                                <i class="bi bi-search"></i> Review
+                            </a>
+
+                            <button name="action" value="approve" class="btn btn-approve action-btn">
+                                ✔ Approve
+                            </button>
+
+                            <button name="action" value="reject" class="btn btn-reject action-btn">
+                                ✖ Reject
+                            </button>
+
+                            <button name="action" value="sendback" class="btn btn-sendback action-btn">
+                                🔄 Send Back
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

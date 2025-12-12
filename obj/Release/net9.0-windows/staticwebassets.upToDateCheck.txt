@@ -1,0 +1,151 @@
+wwwroot\css\site.css
+wwwroot\data\assessment_questions.json
+wwwroot\data\recommendations.json
+wwwroot\favicon.ico
+wwwroot\Images\202409121913074416.png
+wwwroot\Images\20240912282747915.png
+wwwroot\Images\nimhnew.png
+wwwroot\Images\nimhnew1.png
+wwwroot\js\site.js
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\templates\202409121913074416.png
+wwwroot\templates\20240912282747915.png
+wwwroot\uploads\2c9e2cde-3676-41f8-a8c9-10af353788a8_Picture1.jpg
+wwwroot\uploads\4bc4e695-60d0-4037-8e36-46470a19eb0e_recommendations.json
+wwwroot\uploads\52bfcc13-4808-4f27-9c3c-7c604b73bb62_assessment_questions.json
+wwwroot\uploads\candidates\08a499ea-8a5e-49e6-b094-5ba52a7c0692.png
+wwwroot\uploads\candidates\12559862-4141-446a-b18b-4b091bab7574.png
+wwwroot\uploads\candidates\160bb346-c337-4667-a980-453beea6e0cb.pdf
+wwwroot\uploads\candidates\1eb68d9a-6188-4531-b647-99c457989a8b.png
+wwwroot\uploads\candidates\433cd3d4-2752-4494-a174-8d8f756258ad.png
+wwwroot\uploads\candidates\48735257-bb28-46fb-a06e-44fd95ae05dd.png
+wwwroot\uploads\candidates\48cb1ac8-6f36-44d3-9c13-e74bd83af9e6.pdf
+wwwroot\uploads\candidates\62c66334-eedd-4f33-af90-c1487a25ce87.pdf
+wwwroot\uploads\candidates\6581240f-b4f7-4c68-b31b-814c88d5326b.pdf
+wwwroot\uploads\candidates\98ea7c9a-1719-4cf0-ade4-8d83ba9773d5.pdf
+wwwroot\uploads\candidates\ada636de-5bed-472f-bb1d-7ca544ce458b.pdf
+wwwroot\uploads\candidates\be1cdd19-eac2-4097-bcf8-b3c80d2975a9.png
+wwwroot\uploads\candidates\c04823d6-8f2e-4fa4-9aff-05deb86d0f96.png
+wwwroot\uploads\candidates\cbf252a8-1fc7-46d5-8e55-deebadf7c82b.pdf
+wwwroot\uploads\candidates\f3564686-3a5e-4763-ad3e-3106ac07867e.png
+wwwroot\uploads\candidates\f5f24632-8e2e-4390-a3ec-7e06f75465d7.png
+wwwroot\uploads\candidates\f9e9b94a-942f-40ad-b07d-c4a30d169c9e.png
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\uploads\52bfcc13-4808-4f27-9c3c-7c604b73bb62_assessment_questions.json
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\uploads\4bc4e695-60d0-4037-8e36-46470a19eb0e_recommendations.json
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery\LICENSE.txt
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery\dist\jquery.min.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery\dist\jquery.min.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery\dist\jquery.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation\LICENSE.md
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation\dist\jquery.validate.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation\dist\additional-methods.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\js\site.js
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\favicon.ico
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\data\recommendations.json
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\data\assessment_questions.json
+D:\Personal\new ass tool\CAT\CAT.AID.Web (3)\CAT.AID.Web\CAT.AID.Web\wwwroot\css\site.css

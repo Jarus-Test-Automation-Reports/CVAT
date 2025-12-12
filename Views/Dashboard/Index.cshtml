@@ -1,0 +1,151 @@
+﻿@using CAT.AID.Web.Models.DTO
+@model DashboardDTO
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    /* Summary Cards */
+    .summary-card {
+        background: #f1f5fb;
+        border-left: 6px solid #163d89;
+        border-radius: 6px;
+        padding: 15px;
+        font-weight: 600;
+        color: #163d89;
+        margin-bottom: 12px;
+    }
+
+    /* Graph Container */
+    .chart-box {
+        background: white;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 18px;
+        margin-bottom: 25px;
+    }
+
+        .chart-box h5 {
+            font-weight: bold;
+            font-size: 18px;
+            color: #163d89;
+            margin-bottom: 12px;
+        }
+
+    .dashboard-container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .export-btn {
+        background: #163d89;
+        border: none;
+    }
+</style>
+
+<div class="dashboard-container">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 style="color:#163d89; font-weight:700">📊 Assessment Dashboard</h3>
+        <a class="btn btn-primary export-btn" asp-controller="Dashboard" asp-action="ExportDashboardPdf">
+            ⬇ Download PDF
+        </a>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-card">Total Assessments: <span class="float-end">@Model.TotalAssessments</span></div>
+    <div class="summary-card">Submitted Assessments: <span class="float-end">@Model.SubmittedCount</span></div>
+    <div class="summary-card">Pending Assessments: <span class="float-end">@Model.PendingCount</span></div>
+    <div class="summary-card">Approved Assessments: <span class="float-end">@Model.ApprovedCount</span></div>
+
+    <!-- MONTHLY TREND -->
+    <div class="chart-box">
+        <h5>📅 Assessments Trend (Last Months)</h5>
+        <canvas id="trendChart" height="260"></canvas>
+    </div>
+
+    <!-- ASSESSOR PERFORMANCE -->
+    <div class="chart-box">
+        <h5>🧑‍🏫 Assessor Performance (Completed Assessments)</h5>
+        <canvas id="assessorChart" height="260"></canvas>
+    </div>
+
+    <!-- LOW DOMAIN SCORES -->
+    <div class="chart-box">
+        <h5>⚠ Low Performing Domains</h5>
+        <canvas id="lowDomainChart" height="260"></canvas>
+    </div>
+
+    <!-- LAST 30 DAYS TIMELINE -->
+    <div class="chart-box">
+        <h5>📌 Activity Timeline (Last 30 Days)</h5>
+        <canvas id="timelineChart" height="260"></canvas>
+    </div>
+
+</div>
+
+
+
+<!-- ===================== CHART JS ===================== -->
+<script>
+    /* Trend Chart */
+    new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.MonthLabels)),
+            datasets: [{
+                label: "Assessments",
+                data: @Html.Raw(Json.Serialize(Model.MonthCounts)),
+                borderWidth: 2,
+                borderColor: "#163d89",
+                fill: false,
+                tension: 0.35
+            }]
+        }
+    });
+
+    /* Assessor Chart */
+    new Chart(document.getElementById("assessorChart"), {
+        type: "bar",
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.AssessorNames)),
+            datasets: [{
+                label: "Completed",
+                data: @Html.Raw(Json.Serialize(Model.AssessorCounts)),
+                backgroundColor: "#90b4e8"
+            }]
+        }
+    });
+
+    /* Low Domain Chart */
+    new Chart(document.getElementById("lowDomainChart"), {
+        type: "bar",
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.LowDomains.Keys)),
+            datasets: [{
+                label: "Average Score",
+                data: @Html.Raw(Json.Serialize(Model.LowDomains.Values)),
+                backgroundColor: "#e67a7a"
+            }]
+        }
+    });
+
+    /* Activity Timeline */
+    new Chart(document.getElementById("timelineChart"), {
+        type: "line",
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.RecentDates)),
+            datasets: [{
+                label: "Assessments",
+                data: @Html.Raw(Json.Serialize(Model.RecentCounts)),
+                borderColor: "#2d7dd2",
+                borderWidth: 2,
+                tension: 0.35
+            }]
+        }
+    });
+</script>

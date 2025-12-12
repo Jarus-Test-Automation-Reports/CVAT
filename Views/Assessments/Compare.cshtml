@@ -1,0 +1,158 @@
+﻿@using CAT.AID.Web.Models.DTO
+@model List<AssessmentCompareVM>
+
+@{
+    var assessments = ViewBag.Assessments as List<CAT.AID.Models.Assessment>;
+}
+
+<style>
+
+    /* ---- GLOBAL MODERN UI ---- */
+    body {
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .glass-box {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        transition: 0.3s ease;
+    }
+
+        .glass-box:hover {
+            transform: translateY(-4px);
+        }
+
+    .report-header {
+        font-size: 28px;
+        font-weight: 800;
+        color: #003366;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+    }
+
+    /* ---- TABLE STYLING ---- */
+    .compare-table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        background: white;
+    }
+
+        .compare-table th {
+            background: linear-gradient(135deg, #003366, #004d80);
+            color: white;
+            font-size: 15px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .compare-table tbody tr {
+            transition: 0.25s;
+        }
+
+            .compare-table tbody tr:hover {
+                background: #f0f7ff;
+                transform: scale(1.01);
+            }
+
+    /* ---- SCORE COLORS ---- */
+    .score-3 {
+        background: #c7f7c7 !important;
+        font-weight: 700;
+        box-shadow: inset 0 0 6px rgba(0, 128, 0, 0.35);
+    }
+
+    .score-2 {
+        background: #fff4b8 !important;
+        font-weight: 700;
+        box-shadow: inset 0 0 6px rgba(255, 200, 0, 0.35);
+    }
+
+    .score-1 {
+        background: #ffd9b8 !important;
+        font-weight: 700;
+        box-shadow: inset 0 0 6px rgba(255, 128, 0, 0.35);
+    }
+
+    .score-0 {
+        background: #ffb8b8 !important;
+        font-weight: 700;
+        box-shadow: inset 0 0 6px rgba(255, 0, 0, 0.35);
+    }
+
+    .no-score {
+        background: #f7f7f7 !important;
+        color: #777;
+        font-style: italic;
+    }
+
+    /* ---- BUTTON ---- */
+    .btn-modern {
+        border-radius: 8px;
+        padding: 10px 25px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+        .btn-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+
+</style>
+
+<h2 class="report-header mb-4">📊 Assessment Comparison Report</h2>
+
+<div class="glass-box mb-4">
+
+    <table class="table table-bordered table-sm compare-table">
+        <thead>
+            <tr>
+                <th style="width:140px;">Section</th>
+                <th style="width:260px;">Question</th>
+
+                @foreach (var a in assessments)
+                {
+                    <th>
+                        @a.Candidate.FullName <br />
+                        <span class="text-warning small">(Assessment #@a.Id)</span>
+                    </th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var row in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@row.Section</td>
+                    <td>@row.Question</td>
+
+                    @foreach (var a in assessments)
+                    {
+                        var score = row.Scores.ContainsKey(a.Id) ? row.Scores[a.Id] : null;
+
+                        string scoreClass =
+                        score == null ? "no-score" :
+                        score == 3 ? "score-3" :
+                        score == 2 ? "score-2" :
+                        score == 1 ? "score-1" :
+                        "score-0";
+
+                        <td class="@scoreClass text-center">
+                            @(score?.ToString() ?? "—")
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<div class="text-end mt-4">
+    <a asp-action="MyTasks" class="btn btn-secondary btn-modern">⬅ Back to My Tasks</a>
+</div>

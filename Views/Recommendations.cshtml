@@ -1,0 +1,36 @@
+﻿@using CAT.AID.Models.DTO
+@model Dictionary<string, List<string>>
+@{
+    var score = (AssessmentScoreDTO)ViewBag.Score;
+}
+
+<h2 class="text-primary mb-3">Training & Vocational Recommendations</h2>
+
+<div class="card p-4 mb-4">
+    <h4>Candidate Score: <b>@score.TotalScore / @score.MaxScore</b></h4>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-success">
+        👍 All domains show strong performance — ideal for job placement.
+    </div>
+}
+else
+{
+    @foreach (var m in Model)
+    {
+        <div class="card mb-3 p-3">
+            <h5 class="text-primary">@m.Key (Needs Support)</h5>
+            <ul>
+                @foreach (var r in m.Value)
+                {
+                    <li>@r</li>
+                }
+            </ul>
+        </div>
+    }
+}
+
+<a href="/Assessments/Summary/@ViewBag.Id" class="btn btn-secondary mt-3">⬅ Back to Summary</a>
+<a href="/Assessments/Report/@ViewBag.Id" class="btn btn-danger mt-3">📄 Download PDF</a>

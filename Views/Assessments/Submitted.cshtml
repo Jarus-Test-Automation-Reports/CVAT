@@ -1,0 +1,235 @@
+﻿@using CAT.AID.Models
+@using CAT.AID.Models.DTO
+@using CAT.AID.Web.Models.DTO
+@model Assessment
+
+@{
+    var sections = ViewBag.Sections as List<AssessmentSection>;
+    var saved = string.IsNullOrWhiteSpace(Model.AssessmentResultJson)
+        ? new Dictionary<string, string>()
+        : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(Model.AssessmentResultJson);
+
+    var score = string.IsNullOrWhiteSpace(Model.ScoreJson)
+        ? new AssessmentScoreDTO()
+        : System.Text.Json.JsonSerializer.Deserialize<AssessmentScoreDTO>(Model.ScoreJson);
+
+    // Answer badge helper
+    Func<string, string> answerBadge = (val) =>
+    {
+        return val switch
+        {
+            "0" => "<span class='badge bg-danger'>Dependent / No Exposure / Not Applicable</span>",
+            "1" => "<span class='badge bg-warning text-dark'>Physical Prompting</span>",
+            "2" => "<span class='badge bg-primary'>Verbal Prompting</span>",
+            "3" => "<span class='badge bg-success'>Independent</span>",
+            _ => "<span class='badge bg-secondary'>-</span>"
+        };
+    };
+}
+
+<h3 class="text-primary fw-bold mb-3">Assessment Result — @Model.Candidate.FullName</h3>
+
+<div class="alert alert-secondary">
+    <strong>Candidate:</strong> @Model.Candidate.FullName <br />
+
+    <strong>Assessor:</strong>
+    @(Model.Assessor?.FullName ?? "N/A") <br />
+
+    <strong>Status:</strong>
+    <span class="fw-bold @(Model.Status == AssessmentStatus.Submitted ? "text-primary" : "text-success")">
+        @Model.Status
+    </span>
+    <br />
+
+    <strong>Completed At:</strong>
+    @(Model.SubmittedAt?.ToString("dd-MMM-yyyy HH:mm") ?? "N/A")
+</div>
+
+<!-- NAVIGATION TABS -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#report">📊 Report</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#score">🧾 Score & Comments</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#details">📑 Detailed Report</a></li>
+</ul>
+
+<div class="tab-content border border-top-0 p-3 bg-white">
+
+    <!-- ===========================
+         TAB 1 : SUMMARY REPORT
+         =========================== -->
+    <div id="report" class="tab-pane fade show active">
+
+        <div class="row text-center">
+            <div class="col-md-6 mb-3"><canvas id="barChart" height="220"></canvas></div>
+            <div class="col-md-6 mb-3"><canvas id="doughnutChart" height="220"></canvas></div>
+        </div>
+
+        <hr />
+        <h5 class="fw-bold">Key Metrics</h5>
+        <ul>
+            <li><strong>Total Score:</strong> @score.TotalScore / @score.MaxScore</li>
+            <li><strong>Percentage:</strong> @((score.TotalScore * 100 / (score.MaxScore == 0 ? 1 : score.MaxScore)).ToString("0.0"))%</li>
+        </ul>
+
+        <hr />
+
+        <!-- SECTION WISE RESULTS -->
+        @foreach (var sec in sections)
+        {
+            <h6 class="mt-3 text-primary fw-bold">@sec.Category</h6>
+
+            <table class="table table-bordered table-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Q ID</th>
+                        <th>Question</th>
+                        <th>Answer</th>
+                        <th>Score</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var q in sec.Questions)
+                    {
+                        saved.TryGetValue($"ANS_{q.Id}", out string ans);
+                        saved.TryGetValue($"SCORE_{q.Id}", out string scr);
+                        saved.TryGetValue($"CMT_{q.Id}", out string cmt);
+
+                        <tr>
+                            <td>@q.Id</td>
+                            <td>@q.Text</td>
+
+                            <!-- Answer Badge -->
+                            <td>@Html.Raw(string.IsNullOrEmpty(ans) ? "<span class='badge bg-secondary'>-</span>" : answerBadge(ans))</td>
+
+                            <!-- Score Badge -->
+                            <td>
+                                @{
+                                    string badge = scr switch
+                                    {
+                                        "3" => "<span class='badge bg-success'>3</span>",
+                                        "2" => "<span class='badge bg-primary'>2</span>",
+                                        "1" => "<span class='badge bg-warning text-dark'>1</span>",
+                                        "0" => "<span class='badge bg-danger'>0</span>",
+                                        _ => "<span class='badge bg-secondary'>-</span>"
+                                    };
+                                }
+                                @Html.Raw(badge)
+                            </td>
+
+                            <td>@(string.IsNullOrEmpty(cmt) ? "-" : cmt)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <div class="text-end mt-3">
+            <a href="/Assessments/ExportReportPdf/@Model.Id" class="btn btn-danger">📄 Download PDF</a>
+            <a href="/Assessments/MyTasks" class="btn btn-secondary">⬅ Back to My Tasks</a>
+        </div>
+
+    </div>
+
+    <!-- ===========================
+         TAB 2 : SCORE SUMMARY
+         =========================== -->
+    <div id="score" class="tab-pane fade">
+
+        <h4 class="fw-bold text-primary mb-3">Section Scores</h4>
+
+        <table class="table table-bordered table-sm w-50">
+            <thead class="table-light"><tr><th>Section</th><th>Score</th></tr></thead>
+            <tbody>
+                @foreach (var sec in score.SectionScores)
+                {
+                    <tr>
+                        <td>@sec.Key</td>
+                        <td>@sec.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <hr />
+
+        <h5 class="fw-bold">Assessor Comments</h5>
+        <textarea class="form-control mb-3" rows="3" disabled>@Model.AssessorComments</textarea>
+
+        <h5 class="fw-bold">Lead Reviewer Comments</h5>
+        <textarea class="form-control" rows="3" disabled>@Model.LeadComments</textarea>
+
+    </div>
+
+    <!-- ===========================
+         TAB 3 : FULL DETAILS TABLE
+         =========================== -->
+    <div id="details" class="tab-pane fade">
+
+        @foreach (var sec in sections)
+        {
+            <h5 class="mt-3 text-primary fw-bold">@sec.Category</h5>
+
+            <table class="table table-bordered table-sm">
+                <thead class="table-light">
+                    <tr><th>Q ID</th><th>Question</th><th>Answer</th><th>Score</th><th>Comments</th></tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var q in sec.Questions)
+                    {
+                        saved.TryGetValue($"ANS_{q.Id}", out string ans);
+                        saved.TryGetValue($"SCORE_{q.Id}", out string scr);
+                        saved.TryGetValue($"CMT_{q.Id}", out string cmt);
+
+                        <tr>
+                            <td>@q.Id</td>
+                            <td>@q.Text</td>
+                            <td>@Html.Raw(string.IsNullOrEmpty(ans) ? "<span class='badge bg-secondary'>-</span>" : answerBadge(ans))</td>
+                            <td>@(string.IsNullOrEmpty(scr) ? "-" : scr)</td>
+                            <td>@(string.IsNullOrEmpty(cmt) ? "-" : cmt)</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        }
+
+    </div>
+</div>
+
+
+<!-- ===========================
+     CHART JS SCRIPTS
+     =========================== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = @Html.Raw(Json.Serialize(score.SectionScores.Keys));
+    const values = @Html.Raw(Json.Serialize(score.SectionScores.Values));
+
+    new Chart(document.getElementById("barChart"), {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: 'Score',
+                data: values,
+                backgroundColor: '#1F5CAA',
+                borderColor: '#003366',
+                borderWidth: 2
+            }]
+        }
+    });
+
+    new Chart(document.getElementById("doughnutChart"), {
+        type: "doughnut",
+        data: {
+            labels: ["Score", "Remaining"],
+            datasets: [{
+                data: [@score.TotalScore, @score.MaxScore - @score.TotalScore],
+                backgroundColor: ["#003366", "#9bbde6"]
+            }]
+        }
+    });
+</script>

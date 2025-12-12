@@ -1,0 +1,133 @@
+﻿@model IEnumerable<CAT.AID.Models.Candidate>
+
+@{
+    ViewBag.Title = "Candidates";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">Candidates</h2>
+
+    <a class="btn btn-success fw-bold shadow-sm" href="@Url.Action("Create", "Candidates")">
+        ➕ Add Candidate
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-primary">
+                <tr>
+                    <th style="width:60px;">Photo</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th style="width:150px;">Status</th>
+                    <th style="width:140px;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <!-- PHOTO -->
+                        <td>
+                            <img src="@c.PhotoFilePath"
+                                 onerror="this.src='/images/no-photo.png'"
+                                 class="rounded shadow-sm"
+                                 style="width:55px;height:65px;object-fit:cover;" />
+                        </td>
+
+                        <!-- NAME -->
+                        <td class="fw-bold">@c.FullName</td>
+
+                        <!-- LOCATION -->
+                        <td>@c.CommunicationAddress</td>
+
+                        <!-- STATUS -->
+                        <td>
+                            @if (!c.IsArchived)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Blocked</span>
+                            }
+                        </td>
+
+                        <!-- ACTIONS -->
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                    ⋮
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("Edit", new { id = c.Id })">
+                                            ✏ Edit
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("Details", new { id = c.Id })">
+                                            👁 View Profile
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("Assign", new { id = c.Id })">
+                                            📝 Assign Assessment
+                                        </a>
+                                    </li>
+
+                                    <li><hr class="dropdown-divider" /></li>
+
+                                    @if (!c.IsArchived)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item text-warning"
+                                               href="@Url.Action("Archive", new { id = c.Id })">
+                                                🚫 Block Candidate
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="dropdown-item text-success"
+                                               href="@Url.Action("Unarchive", new { id = c.Id })">
+                                                ♻ Restore Candidate
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <li><hr class="dropdown-divider" /></li>
+
+                                   
+                                </ul>
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background: #f1f7ff;
+        transition: 0.2s ease;
+    }
+
+    .dropdown-menu a.dropdown-item:hover {
+        background: #e2ecff;
+        font-weight: 600;
+    }
+</style>

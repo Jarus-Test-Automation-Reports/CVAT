@@ -1,0 +1,32 @@
+﻿@model IEnumerable<CAT.AID.Models.ComparisonMaster>
+
+<h2 class="text-primary mb-3">🗂 Comparison History</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Created Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Id</td>
+                <td>@c.CreatedDate.ToString("dd-MMM-yyyy HH:mm")</td>
+                <td>@c.Status</td>
+                <td>
+                    <a asp-action="GenerateReport" asp-route-id="@c.Id" class="btn btn-sm btn-primary">
+                        View
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Dashboard" asp-route-candidateId="@ViewBag.CandidateId"
+   class="btn btn-info mb-3">📈 View Comparison Dashboard</a>

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<CAT.AID.Models.ComparisonMaster>
+@{
+    ViewBag.Title = "Comparison Dashboard";
+}
+<h2 class="text-primary">📊 Comparison Dashboard — @ViewBag.Candidate.FullName</h2>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<canvas id="trend" height="140"></canvas>
+
+<script>
+    var labels = [@string.Join(",", Model.Select(x => $"\"{x.CreatedDate:dd-MMM}\""))];
+    var scores = [@string.Join(",", Model.Select(x =>
+                {
+                        var details = x.Details?.Average(d => d.Difference) ?? 0;
+                        return details.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+                }
+        ))];
+
+    new Chart(document.getElementById("trend"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Average Score Improvement",
+                data: scores,
+                borderWidth: 3,
+                fill: false,
+                tension: 0.4
+            }]
+        }
+    });
+</script>

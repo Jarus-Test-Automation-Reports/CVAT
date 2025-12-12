@@ -1,0 +1,187 @@
+﻿@using CAT.AID.Web.Models.DTO
+@model IEnumerable<CandidateAssessmentPivotVM>
+
+@{
+    var timestamps = ViewBag.Timestamps as List<DateTime>;
+}
+
+<h2 class="mb-3 text-primary fw-bold">
+    <i class="bi bi-clipboard-check"></i> My Assessments
+</h2>
+
+<style>
+    /* ---- GLASS CARD ---- */
+    .glass-box {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        animation: fadeIn 0.4s ease;
+    }
+
+    /* ---- TABLE 3D ---- */
+    .table-3d {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.20);
+    }
+
+        .table-3d thead {
+            background: linear-gradient(135deg, #003366, #004a99);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .table-3d tbody tr {
+            transition: 0.25s ease;
+        }
+
+            .table-3d tbody tr:hover {
+                transform: scale(1.01);
+                background: #eef5ff !important;
+            }
+
+    /* ---- STATUS BUTTONS ---- */
+    .btn-sm {
+        border-radius: 6px !important;
+        font-size: 12px;
+        padding: 6px 4px;
+    }
+
+    /* ---- Checkbox alignment ---- */
+    .compare-box {
+        transform: scale(1.2);
+        margin-bottom: 5px;
+    }
+
+    /* Fade animation */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+
+<div class="glass-box">
+
+    <form method="get" action="/Assessments/Compare">
+
+        <table class="table table-bordered table-hover table-sm table-3d align-middle">
+            <thead>
+                <tr>
+                    <th style="width:200px;">Candidate</th>
+
+                    @foreach (var ts in timestamps)
+                    {
+                        <th class="text-center">@ts.ToString("dd-MMM-yyyy HH:mm")</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var row in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@row.CandidateName</td>
+
+                        @foreach (var ts in timestamps)
+                        {
+                            var entry = row.AssessmentIds.FirstOrDefault(x => x.Key == ts);
+                            var id = entry.Value;
+
+                            if (id.HasValue)
+                            {
+                                var status = row.StatusMapping[id.Value];
+                                bool canEdit = status == "Assigned" || status == "InProgress" || status == "SentBack";
+
+                                string url = canEdit
+                                ? $"/Assessments/Perform/{id}"
+                                : $"/Assessments/View/{id}";
+
+                                /* Unified status color mapping */
+                                string btnClass = status switch
+                                {
+                                    "Approved" => "btn-success",
+                                    "Submitted" => "btn-primary",
+                                    "InProgress" => "btn-warning",
+                                    "Assigned" => "btn-warning",
+                                    "SentBack" => "btn-warning",
+                                    "Rejected" => "btn-secondary",
+                                    _ => "btn-secondary"
+                                };
+
+                                <td class="text-center">
+
+                                    <!-- Compare checkbox -->
+                                    <input type="checkbox"
+                                           name="ids"
+                                           value="@id"
+                                           data-candidate="@row.CandidateId"
+                                           class="compare-box" />
+
+                                    <!-- Status button -->
+                                    <a href="@url" class="btn btn-sm w-100 fw-bold @btnClass">
+                                        @status
+                                    </a>
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center text-muted">—</td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Hidden selected candidateId -->
+        <input type="hidden" id="candidateId" name="candidateId" />
+
+        <button id="compareBtn" class="btn btn-primary fw-bold mt-2" disabled>
+            <i class="bi bi-search"></i> Compare Selected
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+    const boxes = document.querySelectorAll(".compare-box");
+    const btn = document.getElementById("compareBtn");
+    const candidateField = document.getElementById("candidateId");
+
+    boxes.forEach(cb => {
+        cb.addEventListener("change", () => {
+
+            const selected = [...boxes].filter(x => x.checked);
+
+            if (selected.length < 2) {
+                btn.disabled = true;
+                candidateField.value = "";
+                return;
+            }
+
+            const candidateIds = [...new Set(selected.map(x => x.dataset.candidate))];
+
+            if (candidateIds.length === 1) {
+                candidateField.value = candidateIds[0];
+                btn.disabled = false;
+            } else {
+                alert("⚠ Please select assessments for the SAME candidate only.");
+                cb.checked = false;
+                btn.disabled = true;
+                candidateField.value = "";
+            }
+        });
+    });
+</script>

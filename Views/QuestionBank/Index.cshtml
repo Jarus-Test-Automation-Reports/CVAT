@@ -1,0 +1,130 @@
+﻿@using CAT.AID.Web.Models.DTO
+@model List<AssessmentSection>
+
+<h3 class="fw-bold mb-3" style="color:#003366;">📚 Question Bank</h3>
+
+<style>
+    .glass-box {
+        background: rgba(255,255,255,0.65);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+        border: 1px solid #dbe6f5;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #003366;
+        margin-top: 25px;
+        padding-bottom: 4px;
+        border-bottom: 2px solid #003366;
+    }
+
+    .btn-navy {
+        background: #003366;
+        color: #fff;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 6px 16px;
+    }
+
+        .btn-navy:hover {
+            background: #00254d;
+        }
+
+    .table thead {
+        background: #003366;
+        color: white;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .import-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-right: 10px;
+    }
+
+    .file-input {
+        width: 250px;
+        border-radius: 8px;
+    }
+</style>
+
+<!-- ========================= ACTION BAR ========================= -->
+<div class="glass-box">
+
+    <div class="d-flex flex-wrap align-items-center gap-3">
+
+        <a href="/QuestionBank/Edit" class="btn btn-success">
+            ➕ Add New Question
+        </a>
+
+        <!-- IMPORT EXCEL -->
+        <form method="post" enctype="multipart/form-data" asp-action="Upload" class="import-box">
+            <input type="file" name="file" class="form-control file-input" required />
+            <button class="btn btn-primary">⬆ Import Excel</button>
+        </form>
+
+        <!-- EXPORT EXCEL -->
+        <a href="/QuestionBank/Download" class="btn btn-navy">
+            ⬇ Export Excel
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= SECTIONS ========================= -->
+@foreach (var sec in Model)
+{
+    <div class="glass-box">
+
+        <h5 class="section-title">@sec.Category</h5>
+
+        <table class="table table-bordered table-hover table-sm mt-2">
+            <thead>
+                <tr>
+                    <th style="width:80px;">ID</th>
+                    <th>Question</th>
+                    <th style="width:130px;">Correct</th>
+                    <th style="width:100px;">Weight</th>
+                    <th style="width:160px;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var q in sec.Questions)
+                {
+                    <tr>
+                        <td class="fw-bold">@q.Id</td>
+                        <td>@q.Text</td>
+                        <td>@(string.IsNullOrWhiteSpace(q.Correct) ? "-" : q.Correct)</td>
+                        <td class="fw-bold">@q.ScoreWeight</td>
+
+                        <td>
+                            <a href="/QuestionBank/Edit?id=@q.Id"
+                               class="btn btn-sm btn-primary me-1">
+                                ✏ Edit
+                            </a>
+
+                            <a href="/QuestionBank/Delete/@q.Id"
+                               onclick="return confirm('Delete this question?')"
+                               class="btn btn-sm btn-danger">
+                                🗑 Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+}

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\jagathpraveenk\Documents\GitHub\Neipid</_PublishTargetUrl>
+    <History>True|2025-12-11T04:25:30.9117150Z||;True|2025-12-11T09:30:47.8407227+05:30||;False|2025-12-11T09:29:32.3320804+05:30||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DatabaseConnection">
+      <Value>Host=dpg-d4t3rnshg0os73cksf00-a.frankfurt-postgres.render.com%3bPort=5432%3bDatabase=cat_aid_db%3bUsername=cat_aid_db_user%3bPassword=YB9wimWo9omqJveLVKOSvu8T4WpIqWJl%3bSSL Mode=Require%3bTrust Server Certificate=true</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

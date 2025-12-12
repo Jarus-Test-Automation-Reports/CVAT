@@ -1,0 +1,37 @@
+﻿@using CAT.AID.Models
+@{
+    var candidate = ViewBag.Candidate as Candidate;
+    var assessors = ViewBag.Assessors as List<ApplicationUser>;
+}
+
+<h2>Assign Candidate to Assessor</h2>
+
+<div class="border p-3 mb-4">
+    <h4>Candidate Details</h4>
+    <p><strong>Name:</strong> @candidate.FullName</p>
+    <p><strong>Location:</strong> @candidate.CommunicationAddress</p>
+</div>
+
+<form asp-action="Assign" asp-route-id="@candidate.Id" method="post">
+    <div class="form-group mb-3">
+        <label>Select Assessor</label>
+       <select class="form-select" name="assessorId" required>
+    <option value="">-- Select Assessor --</option>
+    @if (assessors != null && assessors.Any())
+    {
+        foreach (var a in assessors)
+        {
+            <option value="@a.Id">@a.FullName (@a.Location)</option>
+        }
+    }
+    else
+    {
+        <option disabled>No assessors found</option>
+    }
+</select>
+
+    </div>
+
+    <button class="btn btn-primary">Assign</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

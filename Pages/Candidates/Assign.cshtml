@@ -1,0 +1,22 @@
+﻿@page
+@model CAT.AID.Web.Pages.Candidates.AssignModel
+
+<h2>Assign Candidate to Assessment</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Candidate</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model.Assessments)
+        {
+            <tr>
+                <td>@a.Candidate?.FullName</td>
+                <td>@a.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

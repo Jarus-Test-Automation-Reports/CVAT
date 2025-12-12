@@ -1,0 +1,205 @@
+﻿@using CAT.AID.Models
+@using CAT.AID.Models.DTO
+@model Dictionary<int, AssessmentScoreDTO>
+
+@{
+    var assessments = ViewBag.Assessments as List<Assessment>;
+
+    var allSections = Model.Values
+        .SelectMany(a => a.SectionScores.Keys)
+        .Distinct()
+        .ToList();
+
+    var ids = ViewBag.AssessmentIds as IEnumerable<int> ?? Enumerable.Empty<int>();
+    var urlQuery = string.Join("&", ids.Select(id => $"ids={id}"));
+}
+
+<style>
+
+    /* ---------- GLOBAL UI ---------- */
+    body {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .glass-card {
+        background: rgba(255,255,255,0.65);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        transition: 0.3s ease;
+    }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+        }
+
+    .header-title {
+        font-size: 28px;
+        font-weight: 800;
+        color: #003366;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    /* ---------- TABLE STYLING ---------- */
+    .compare-table {
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        background: white;
+    }
+
+        .compare-table thead th {
+            background: linear-gradient(135deg, #003366, #005599);
+            color: #fff;
+            padding: 12px;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        .compare-table tbody tr {
+            transition: 0.2s ease-in-out;
+        }
+
+            .compare-table tbody tr:hover {
+                background: #eef6ff;
+                transform: scale(1.01);
+            }
+
+    /* ---------- SCORE COLORS ---------- */
+    .score-high {
+        background: #c7f7c7 !important;
+        font-weight: 700;
+        box-shadow: inset 0 0 6px rgba(0, 128, 0, 0.35);
+    }
+
+    .score-med {
+        background: #fff4b8 !important;
+        font-weight: 700;
+        box-shadow: inset 0 0 6px rgba(255, 200, 0, 0.35);
+    }
+
+    .score-low {
+        background: #ffd9b8 !important;
+        font-weight: 700;
+        box-shadow: inset 0 0 6px rgba(255, 128, 0, 0.35);
+    }
+
+    .score-none {
+        background: #f4f4f4 !important;
+        font-style: italic;
+        color: #777;
+    }
+
+    .section-header {
+        background: #f0f6ff;
+        font-size: 15px;
+    }
+
+    /* BUTTONS */
+    .btn-modern {
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.3s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+        .btn-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+
+</style>
+
+<h2 class="header-title mb-4">
+    📊 Assessment Comparison – @assessments.First().Candidate.FullName
+</h2>
+
+<div class="glass-card mb-4">
+
+    <table class="table table-sm table-bordered align-middle compare-table">
+        <thead>
+            <tr>
+                <th style="width:200px;">Section</th>
+                @foreach (var a in assessments)
+                {
+                    <th>
+                        @a.CreatedAt.ToString("dd-MMM-yyyy hh:mm tt")<br />
+                        <span class="small text-warning">Assessment #@a.Id</span>
+                    </th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var sec in allSections)
+            {
+                <tr class="section-header fw-bold">
+                    <td colspan="@(assessments.Count + 1)">
+                        🔹 @sec
+                    </td>
+                </tr>
+
+                <!-- unique questions inside this section -->
+                var allQs = Model.Values
+                .Where(m => m.SectionQuestionScores?.ContainsKey(sec) == true)
+                .SelectMany(m => m.SectionQuestionScores[sec].Keys)
+                .Distinct()
+                .ToList();
+
+                foreach (var q in allQs)
+                {
+                    <tr>
+                        <td class="ps-4">@q</td>
+
+                        @foreach (var a in assessments)
+                        {
+                            int? val = null;
+
+                            if (Model[a.Id].SectionQuestionScores?
+                            .TryGetValue(sec, out var qMap) == true &&
+                            qMap.TryGetValue(q, out var v))
+                            {
+                                val = v;
+                            }
+
+                            string css =
+                            val == null ? "score-none" :
+                            val >= 3 ? "score-high" :
+                            val == 2 ? "score-med" :
+                            "score-low";
+
+                            <td class="text-center @css">@((val?.ToString()) ?? "—")</td>
+                        }
+                    </tr>
+                }
+            }
+
+            <!-- TOTAL SCORE ROW -->
+            <tr class="table-primary fw-bold">
+                <td>Total Score</td>
+                @foreach (var a in assessments)
+                {
+                    <td class="text-center">
+                        @Model[a.Id].TotalScore / @Model[a.Id].MaxScore
+                    </td>
+                }
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div class="mt-4 d-flex justify-content-between">
+
+    <a class="btn btn-danger btn-modern"
+       href="/Assessments/ExportComparisonPdf?@urlQuery">
+        📄 Export Comparison PDF
+    </a>
+
+    <a class="btn btn-secondary btn-modern" href="/Assessments/MyTasks">
+        ⬅ Back to My Assessments
+    </a>
+
+</div>

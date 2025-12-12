@@ -1,0 +1,302 @@
+﻿@using CAT.AID.Models
+@model Candidate
+
+<h2 class="mb-3 text-primary fw-bold">Add Candidate</h2>
+
+@if (TempData["msg"] != null)
+{
+    <div class="alert alert-info fw-bold">@TempData["msg"]</div>
+}
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger fw-bold mb-2"></div>
+
+    <div class="row">
+
+        <!-- LEFT: IDENTIFICATION SECTION -->
+        <div class="col-md-8">
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">
+                    Section 1 – Identification Data
+                </div>
+
+                <div class="card-body row g-3">
+
+                    <div class="col-md-6">
+                        <label class="fw-bold">Name *</label>
+                        <input asp-for="FullName" class="form-control" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">Gender *</label>
+                        <select asp-for="Gender" class="form-select">
+                            <option value="">-- Select --</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Transgender</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">DOB *</label>
+                        <input asp-for="DOB" type="date" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold">Intellectual Disability</label>
+                        <select asp-for="IntellectualLevel" class="form-select">
+                            <option>Mild</option>
+                            <option>Moderate</option>
+                            <option>Severe</option>
+                            <option>Profound</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">Marital Status</label>
+                        <select asp-for="MaritalStatus" class="form-select">
+                            <option>Single</option>
+                            <option>Married</option>
+                            <option>Separated</option>
+                            <option>Widow/Widower</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">Education</label>
+                        <input asp-for="Education" class="form-control" />
+                    </div>
+
+                    <div class="col-12"><hr /></div>
+                    <h5 class="fw-bold text-primary">Parent / Guardian Details</h5>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold">Father Name</label>
+                        <input asp-for="FatherName" class="form-control" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">Father's Education</label>
+                        <input asp-for="FatherEducation" class="form-control" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">Father's Occupation</label>
+                        <input asp-for="FatherOccupation" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold">Mother Name</label>
+                        <input asp-for="MotherName" class="form-control" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">Mother's Education</label>
+                        <input asp-for="MotherEducation" class="form-control" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold">Mother's Occupation</label>
+                        <input asp-for="MotherOccupation" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold">Mother Tongue</label>
+                        <input asp-for="MotherTongue" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold">Other Languages</label>
+                        <input asp-for="OtherLanguages" class="form-control" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: PHOTO SECTION -->
+        <div class="col-md-4 text-center">
+
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold">Candidate Photo</h6>
+
+                <img id="photoPreview"
+                     src="/images/no-photo.png"
+                     style="width:140px;height:160px;object-fit:cover;border-radius:8px;border:1px solid #ccc;" />
+
+                <label class="fw-bold mt-3">Upload Photo</label>
+                <input type="file" name="PhotoFile" accept="image/*"
+                       class="form-control" onchange="previewPhoto(event)" />
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- SECTION 2 – FAMILY HISTORY -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white fw-bold">
+            Section 2 – Family History
+        </div>
+
+        <div class="card-body row g-3">
+
+            <div class="col-md-4">
+                <label class="fw-bold">Family Type</label>
+                <select asp-for="FamilyType" class="form-select">
+                    <option>Joint</option>
+                    <option>Nuclear</option>
+                    <option>Single Parent</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="fw-bold">Disability History</label>
+                <select asp-for="FamilyDisabilityHistory" class="form-select">
+                    <option>No</option>
+                    <option>Yes</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="fw-bold">If Yes, Type</label>
+                <input asp-for="DisabilityType" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="fw-bold">Monthly Income</label>
+                <input asp-for="MonthlyIncome" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="fw-bold">Residential Area</label>
+                <select asp-for="ResidentialArea" class="form-select">
+                    <option>Rural</option>
+                    <option>Semi-Urban</option>
+                    <option>Urban</option>
+                    <option>Tribal</option>
+                    <option>Gated</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="fw-bold">Contact</label>
+                <input asp-for="ContactNumber" class="form-control" />
+            </div>
+
+            <div class="col-12">
+                <label class="fw-bold">Address</label>
+                <textarea asp-for="CommunicationAddress" rows="3" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- DOCUMENTS SECTION -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white fw-bold">
+            Supporting Documents
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-8">
+                    <input type="file" id="docPicker" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                           class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-secondary w-100"
+                            onclick="addDocument()">
+                        ➕ Add Document
+                    </button>
+                </div>
+            </div>
+
+            <div id="documentsPreview" class="d-flex flex-wrap gap-3"></div>
+
+            <!-- Hidden field stores number of documents -->
+            <input type="hidden" id="docCounter" value="0" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success px-4">Save</button>
+    <a href="/Candidates/Index" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+@section Scripts {
+    <script>
+
+        // ------------------------------------------------------------
+        // PHOTO PREVIEW
+        // ------------------------------------------------------------
+        function previewPhoto(e) {
+            document.getElementById("photoPreview").src =
+                URL.createObjectURL(e.target.files[0]);
+        }
+
+        // ------------------------------------------------------------
+        // ADD DOCUMENT
+        // ------------------------------------------------------------
+        function addDocument() {
+            let picker = document.getElementById("docPicker");
+            if (picker.files.length === 0) return;
+
+            let file = picker.files[0];
+            let fileURL = URL.createObjectURL(file);
+
+            let index = parseInt(document.getElementById("docCounter").value);
+
+            // Create NEW file input (required since FileList cannot be copied)
+            let hiddenInput = document.createElement("input");
+            hiddenInput.type = "file";
+            hiddenInput.name = "AttachmentFiles";
+            hiddenInput.hidden = true;
+
+            hiddenInput.files = picker.files; // browser-supported clone
+
+            // Preview block
+            let div = document.createElement("div");
+            div.id = "doc_" + index;
+            div.className = "p-2 border text-center";
+            div.style.width = "120px";
+
+            let removeBtn = `<button class='btn btn-sm btn-danger mt-1' onclick='removeDocument(${index})'>X</button>`;
+
+            if (file.type.startsWith("image")) {
+                div.innerHTML = `<img src='${fileURL}' style='width:80px;height:80px;object-fit:cover;border-radius:5px;' />
+                                 <div class='small mt-2'>${file.name}</div>${removeBtn}`;
+            }
+            else if (file.type.includes("pdf")) {
+                div.innerHTML = `<img src='/images/pdf-icon.png' style='height:50px;' />
+                                 <div class='small mt-2'>${file.name}</div>${removeBtn}`;
+            }
+            else {
+                div.innerHTML = `<img src='/images/doc-icon.png' style='height:50px;' />
+                                 <div class='small mt-2'>${file.name}</div>${removeBtn}`;
+            }
+
+            div.appendChild(hiddenInput);
+            document.getElementById("documentsPreview").appendChild(div);
+
+            // Increase counter
+            document.getElementById("docCounter").value = index + 1;
+
+            picker.value = "";
+        }
+
+        // ------------------------------------------------------------
+        // REMOVE DOCUMENT
+        // ------------------------------------------------------------
+        function removeDocument(i) {
+            document.getElementById("doc_" + i).remove();
+        }
+
+    </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

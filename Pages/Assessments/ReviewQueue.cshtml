@@ -1,0 +1,45 @@
+﻿@model IEnumerable<CAT.AID.Models.Assessment>
+
+<h2 class="mt-3">Review Queue</h2>
+
+<table class="table table-bordered table-striped table-sm align-middle">
+    <thead class="table-primary">
+        <tr>
+            <th>Candidate</th>
+            <th>Status</th>
+            <th>Lead Comments</th>
+            <th>Submitted / Created</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td class="fw-bold">@a.Candidate?.FullName</td>
+
+                <td class="text-center">
+                    <span class="badge bg-info text-dark">@a.Status</span>
+                </td>
+
+                <td>@(string.IsNullOrWhiteSpace(a.LeadComments) ? "-" : a.LeadComments)</td>
+
+                <td>
+                    @(a.SubmittedAt?.ToString("dd-MMM-yyyy HH:mm")
+                                    ?? a.CreatedAt.ToString("dd-MMM-yyyy HH:mm"))
+            </td>
+
+                <td class="text-center">
+                @if (User.IsInRole("LeadAssessor") || User.IsInRole("Admin"))
+                    {
+                        <a href="/Assessments/Review/@a.Id" class="btn btn-primary btn-sm px-3">Review</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No access</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

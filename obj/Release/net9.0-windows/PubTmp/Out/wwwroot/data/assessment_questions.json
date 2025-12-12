@@ -1,0 +1,2690 @@
+[
+  {
+    "Category": "Personal Care \u0026 Safety Skills",
+    "Questions": [
+      {
+        "Id": 102,
+        "Text": "Uses toilet appropriately at homes",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 103,
+        "Text": "Uses toilet appropriately at public places",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 104,
+        "Text": "Brushes teeth independently",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 105,
+        "Text": "Follows eating routines (Breakfast-Lunch-Dinner)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 106,
+        "Text": "Dresses independently",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 107,
+        "Text": "Takes bath independently",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 108,
+        "Text": "Follows meal time manners with in family",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 109,
+        "Text": "Maintains own clothing neat and clean",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 110,
+        "Text": "Takes care of personal belongings",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 111,
+        "Text": "Wears appropriate clothes for different occasions /weather conditions",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 112,
+        "Text": "Follows meal time manners in public places( restaurant, social functions)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 113,
+        "Text": "Grooms by self (combing hair ,applying powder )",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 114,
+        "Text": "Safeguards from fire accident/ hazards",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 115,
+        "Text": "Cleans utensils",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 116,
+        "Text": "Performs daily routine household work (cleaning the house)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 117,
+        "Text": "Manages menstrual hygiene(women)/shaving (men)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 118,
+        "Text": "Washes clothes",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 119,
+        "Text": "Aware of hazardous health habits (consumption of tobacco, alcohol.)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 120,
+        "Text": "Takes care of self when sick/injured",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 121,
+        "Text": "Prepares tea /coffee",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 122,
+        "Text": "Takes precautions while using electronic appliances",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 123,
+        "Text": "Uses electronic appliances( mixer, iron box, heater, washing machine)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 124,
+        "Text": "Practice yoga/exercises to keep self-fit",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 125,
+        "Text": "Aware of emergency helpline numbers-(Ambulance-108, Fire-101 , Police -100)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 931,
+        "Text": "Eats by self",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  },
+  {
+    "Category": "Communication and Interpersonal",
+    "Questions": [
+      {
+        "Id": 201,
+        "Text": "Pays attention when someone talks to him/her",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 202,
+        "Text": "Comprehends simple instructions",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 203,
+        "Text": "Follows simple instructions",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 204,
+        "Text": "Tells the names of his/her family members, friends",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 205,
+        "Text": "Speaks in phrases",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 206,
+        "Text": "Gives appropriate answers to simple questions",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 207,
+        "Text": "Speaks in simple sentences",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 208,
+        "Text": "Comprehends emotional expressions during conversation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 209,
+        "Text": "Comprehends gestures during conversation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 210,
+        "Text": "Maintains personal space during conversation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 211,
+        "Text": "Waits for turn to speak",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 212,
+        "Text": "Gives an account of an incident in simple words",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 213,
+        "Text": "Initiates conversation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 214,
+        "Text": "Engages in meaningful conversation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 215,
+        "Text": "Gives an account of personal details in logical order",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 216,
+        "Text": "Seeks clarification",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 217,
+        "Text": "Follows instructions when in a group of people (3 or more than 3)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 218,
+        "Text": "Comprehends formal situations",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 219,
+        "Text": "Communicates over the phone, what\u2019s app e-mail etc (any one specify)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 220,
+        "Text": "Follows multiple instructions at a time (two or more than two instructions)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 221,
+        "Text": "Involves in formal conversation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 222,
+        "Text": "Comes/Arrives at an agreement during a given situation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 223,
+        "Text": "Summarizes the programme/story in simple words/phrases/sentences",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  },
+  {
+    "Category": "Social-Emotional Maturity Skills",
+    "Questions": [
+      {
+        "Id": 301,
+        "Text": "Responds to greetings from others",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 302,
+        "Text": "Intimates family members when relatives/guest come home",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 303,
+        "Text": "Greets others(saying Namaste, shaking hands, smiling, waving hand)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 304,
+        "Text": "Understands jokes or humour of others",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 305,
+        "Text": "Shows respect to others",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 306,
+        "Text": "Shares feelings with friends/immediate family members",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 307,
+        "Text": "Maintains discipline in a given situation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 308,
+        "Text": "Attends family functions such as marriages, birthday parties, festivals",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 309,
+        "Text": "Aware of community resources/services(Hospital, Post office ,Shops,\u0026 so on)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 310,
+        "Text": "Uses please ,thank you, sorry whenever required",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 311,
+        "Text": "Shows sympathy for others",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 312,
+        "Text": "Seeks permission before starting a work at home or work place",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 313,
+        "Text": "Obtains permission to use other\u2019s articles",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 314,
+        "Text": "Goes around neighbourhood",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 315,
+        "Text": "Participates in recreational activities",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 316,
+        "Text": "Tells about one\u2019s own acceptance in the family",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 317,
+        "Text": "Compliments others to express one\u2019s own view",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 318,
+        "Text": "Offers tea and snacks for guests",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 319,
+        "Text": "Adheres to community rules",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 320,
+        "Text": "Greets appropriately during social interactions (birthday, wedding wishes)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 321,
+        "Text": "Introduces self to others Follows local events",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 322,
+        "Text": "Participates in cultural activities on special occasions /celebrations",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 323,
+        "Text": "Shows emotional control in different situations",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 324,
+        "Text": "Understands the source of income of the family",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 325,
+        "Text": "Introduces people to each other",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 326,
+        "Text": "Introduces people to each other",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 327,
+        "Text": "Uses community resources/services(Hospital, Post office ,Shops,\u0026 so on)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 328,
+        "Text": "Travels independently to nearby (by bicycle/bus/train/aeroplane)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  },
+  {
+    "Category": "Cognitive Skills",
+    "Questions": [
+      {
+        "Id": 501,
+        "Text": "Completes a simple task as per instruction",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 502,
+        "Text": "Inserts the given paper/card in the envelope",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 503,
+        "Text": "Differentiates the texture of objects -smooth, rough, soft hard",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 504,
+        "Text": "Differentiates between big- small, short-long, more-less(any 2) and equal",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 505,
+        "Text": "Locates the objects in the environment",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 506,
+        "Text": "Differentiates the relative position of space, objects and people( inside- outside,  top-bottom , front-behind ,corner-edge ) (any 3)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 507,
+        "Text": "Relates given set of objects with the correct picture (Ex:pen, paper, eraser with a picture of writing)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 508,
+        "Text": "Discriminates right and left on one\u2019s own self/sides",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 509,
+        "Text": "Separates objects/pictures as per categories(any 2 categories ) Learns new concept by observing",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 510,
+        "Text": "Describes shapes seen in real objects/forms in the environment(2 shapes)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 511,
+        "Text": "Differentiates shape descriptors- (any 3)straight, round, curve,  pointy, sharp,",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 512,
+        "Text": "Learns new concept by observing",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 513,
+        "Text": "Learns new concept by observing",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 514,
+        "Text": "Gives landmarks near one\u2019s own home/workplace",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 515,
+        "Text": "Performs two activities simultaneously",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 516,
+        "Text": "Tells his/her date of birth(D-M-Y)/age",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 517,
+        "Text": "Gives 2-3 details of the task accomplished/completed",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 518,
+        "Text": "Gives relevant details from the picture cards of job roles shown (any two details in one picture card)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 519,
+        "Text": "Monitors work by self",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 520,
+        "Text": "Practices to master the skill/task",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 521,
+        "Text": "Makes use of available/alternate material to complete a task.",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 522,
+        "Text": "Discuss with others while learning a new task",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 523,
+        "Text": "Uses the learned skill in different settings and situations",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 524,
+        "Text": "Discriminates right and left on an counter/opposite side",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 525,
+        "Text": "Searches/Scans the environment for a given set of cues/codes",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 526,
+        "Text": "Accomplishes multiple tasks timely",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 527,
+        "Text": "Arranges the given task in sequential order (3 out of 5 steps)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  },
+  {
+    "Category": "Motor Skills",
+    "Questions": [
+      {
+        "Id": 601,
+        "Text": "Switches between positions (sitting, standing and squatting)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 602,
+        "Text": "Walks properly",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 603,
+        "Text": "Climbs stairs up and down",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 604,
+        "Text": "Opens door knob/latch/ handle",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 605,
+        "Text": "Picks up small pellets",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 606,
+        "Text": "Turns pages of a book",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 607,
+        "Text": "Places pegs into holes on a peg board",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 608,
+        "Text": "Carries objects (backpack, lunch bag)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 609,
+        "Text": "Throws ball",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 610,
+        "Text": "Opens lunch box",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 611,
+        "Text": "Catches ball with both hands",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 612,
+        "Text": "Transfers vegetables to different containers/baskets",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 613,
+        "Text": "Folds the paper to half twice",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 614,
+        "Text": "Runs with average speed over specified distances",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 615,
+        "Text": "Applies glue",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 616,
+        "Text": "Jumps up",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 617,
+        "Text": "Open the lock with key",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 618,
+        "Text": "Colours/paints pictures",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 619,
+        "Text": "Refills solids/items in jars",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 620,
+        "Text": "Refills liquids in bottles/bowl",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 621,
+        "Text": "Positions the objects appropriately to perform an activity/task",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 622,
+        "Text": "Lifts heavy objects (grocery bag, bucket filled with water)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 623,
+        "Text": "Lights match stick using match box/lighter",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 624,
+        "Text": "Cuts simple shapes using scissors",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 625,
+        "Text": "Screws and unscrews",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 626,
+        "Text": "Uses key board on the cell phone, computer etc..",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 627,
+        "Text": "Threads sewing needle",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 628,
+        "Text": "Ties shoe laces",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 629,
+        "Text": "Rides a bicycle",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  },
+  {
+    "Category": "Work-Related Functional Academic Skills",
+    "Questions": [
+      {
+        "Id": 701,
+        "Text": "Reads/identifies pictures of objects shown",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 702,
+        "Text": "Reads his/her name",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 703,
+        "Text": "Writes own name(specified language)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 704,
+        "Text": "Identifies currency notes and coins (specify)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 705,
+        "Text": "Follows the common time concepts such as yesterday, today and tomorrow",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 706,
+        "Text": "Writes numbers(specify)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 707,
+        "Text": "Identifies weighing machine",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 708,
+        "Text": "Identifies measuring tape",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 709,
+        "Text": "Uses time concepts such as after, before, later and since",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 710,
+        "Text": "Reads numbers (specify the number)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 711,
+        "Text": "Names currency notes and coins (specify)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 712,
+        "Text": "Counts numbers /objects meaningfully",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 713,
+        "Text": "Identifies days in a week",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 714,
+        "Text": "Writes simple words",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 715,
+        "Text": "Identifies current year",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 716,
+        "Text": "Copies simple paragraph",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 717,
+        "Text": "Identifies months in a year",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 718,
+        "Text": "Writes his/her home address",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 719,
+        "Text": "Reads simple sentence",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 720,
+        "Text": "Reads time in digital/analog watch/clock",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 721,
+        "Text": "Makes simple transactions",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 722,
+        "Text": "Reads price tag on an item",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 723,
+        "Text": "Writes simple sentence",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 724,
+        "Text": "Reads names of public places like railway station, bus station, hospital, bank etc",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 725,
+        "Text": "Gives simple arithmetic solutions orally (add, subtract, multiply \u0026divide)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 726,
+        "Text": "Identifies the weighing measurement (grams and kilograms)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 727,
+        "Text": "Uses calculator for basic arithmetic operations",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 728,
+        "Text": "Identifies liquid measurement (1 litre,2 litre,1/2 litre etc)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 729,
+        "Text": "Weighs objects (digital, analog)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 730,
+        "Text": "Reads newspaper headlines",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 731,
+        "Text": "Aware of savings account in a bank/post office of one\u2019s self",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 732,
+        "Text": "Makes transactions between 100 to 500 rupees",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 733,
+        "Text": "Writes simple application (leave letter)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 734,
+        "Text": "Measures length, width of cloth or object (centimetres, inches, meters etc)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 735,
+        "Text": "Makes transactions above 500 rupees",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 736,
+        "Text": "Uses apps/ debit/ credit cards for paying bills",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 737,
+        "Text": "Withdraws money from ATM",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 738,
+        "Text": "Deposits money in the bank/post office",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  },
+  {
+    "Category": "Sex Education",
+    "Questions": [
+      {
+        "Id": 801,
+        "Text": "Differentiates between men and women",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 802,
+        "Text": "Aware of wearing undergarments",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 803,
+        "Text": "Aware of private body parts",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 804,
+        "Text": "Maintains privacy during bathing \u0026 dressing",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 805,
+        "Text": "Cleans private body parts appropriately",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 806,
+        "Text": "Indicates problems related to private body parts",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 807,
+        "Text": "Able to differentiate between good touch and bad touch",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 808,
+        "Text": "Maintains appropriate physical distance while interacting with opposite sex",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 809,
+        "Text": "Behaves appropriately with opposite sex",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 810,
+        "Text": "Aware of bodily changes",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 811,
+        "Text": "Follows rules/norms of socio-sexual behaviour in public places",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 812,
+        "Text": "Aware of consequences of indecent behaviours",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 813,
+        "Text": "Aware of reporting the incident of exploiting and abuses to immediate family members/authorities",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 814,
+        "Text": "Comprehends the meaning of protecting self from exploiting sexual advances",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 815,
+        "Text": "Understand the concept of entering adulthood and maturation",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 816,
+        "Text": "Exercises control of own sexual feelings.",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 817,
+        "Text": "Maintains privacy during personal intimate times",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 818,
+        "Text": "Understand the relationship in married life",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 819,
+        "Text": "Understands parenting role",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 820,
+        "Text": "Understands the concept of child bearing and delivery",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 821,
+        "Text": "Has understanding on family planning methods",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  },
+  {
+    "Category": "Self-Advocacy",
+    "Questions": [
+      {
+        "Id": 901,
+        "Text": "Makes one\u2019s own choice",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 902,
+        "Text": "Understands the appreciation for the job well done",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 903,
+        "Text": "Chooses friends of same interests",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 904,
+        "Text": "Understands recognition and rewards/awards given for good accomplishments",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 905,
+        "Text": "Takes help from family members/authorities",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 906,
+        "Text": "Adjusts to changes in daily routines as required",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 907,
+        "Text": "Aware of one\u2019s own strengths and weakness",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 908,
+        "Text": "Offers help to others upon request",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 909,
+        "Text": "Understands the concept of getting paid for the work",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 910,
+        "Text": "Learns from consequences/mistakes",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 911,
+        "Text": "Request for needed supports to enhance one\u2019s own performance",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 912,
+        "Text": "Aware of seeking justice for abuse/unfair means/crime",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 913,
+        "Text": "Makes self-dependable person for the given work",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 914,
+        "Text": "Tells personal opinion firmly",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 915,
+        "Text": "Takes care of family needs/responsibilities (parents, wife , children)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 916,
+        "Text": "Defends self",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 917,
+        "Text": "Aware of the right to vote",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 918,
+        "Text": "Defends family members",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 919,
+        "Text": "Aware of citizen\u2019s ID cards ( aadhaar card, voter card, pan card)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 920,
+        "Text": "Awareness of benefits for the Persons with Disabilities-(pension, travel pass)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 921,
+        "Text": "Tells about self in a small group of people (bio-data details-name, age, phone no, training...)",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 922,
+        "Text": "Motivates self",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 923,
+        "Text": "Discusses with others to solve a problem",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 924,
+        "Text": "Set personal goals to learn/achieve",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 925,
+        "Text": "Motivates others",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 926,
+        "Text": "Spends money for family and friends",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 927,
+        "Text": "Aware of Unique ID for Persons with Disabilities (or) Swavlamban card",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 928,
+        "Text": "Uses signature for valid reasons",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      },
+      {
+        "Id": 929,
+        "Text": "Understands the right to reasonable pay for the work performed",
+        "Options": [
+          "Never",
+          "Sometimes",
+          "Often",
+          "Always"
+        ],
+        "Correct": "",
+        "ScoreWeight": 1
+      }
+    ],
+    "MaxScore": 3
+  }
+]

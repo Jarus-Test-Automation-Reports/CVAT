@@ -1,0 +1,315 @@
+﻿@using CAT.AID.Models
+@using CAT.AID.Models.DTO
+@using CAT.AID.Web.Models
+@using CAT.AID.Web.Models.DTO
+
+@model Assessment
+
+@{
+    var recommendations = ViewBag.Recommendations as Dictionary<string, List<string>>;
+    var weakDetails = ViewBag.WeakDetails as Dictionary<string, List<string>>;
+    var sections = ViewBag.Sections as List<AssessmentSection>;
+
+    var saved = string.IsNullOrWhiteSpace(Model.AssessmentResultJson)
+        ? new Dictionary<string, string>()
+        : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(Model.AssessmentResultJson);
+
+    var score = string.IsNullOrWhiteSpace(Model.ScoreJson)
+        ? new AssessmentScoreDTO()
+        : System.Text.Json.JsonSerializer.Deserialize<AssessmentScoreDTO>(Model.ScoreJson);
+
+    var candidate = Model.Candidate;
+
+    // SAFE attachments list
+    var attachments = ViewBag.Attachments as List<CandidateAttachment> ?? new List<CandidateAttachment>();
+}
+
+<h3 class="text-primary fw-bold mb-3">Assessment Result — @candidate.FullName</h3>
+
+@{
+    double iqPercent = score.MaxScore > 0
+        ? Math.Round(((double)score.TotalScore / score.MaxScore) * 100, 2)
+        : 0;
+
+    string iqLevel = iqPercent >= 80 ? "Highly Developed"
+                    : iqPercent >= 60 ? "Above Average"
+                    : iqPercent >= 40 ? "Average"
+                    : "Below Average";
+
+    string iqColor = iqPercent >= 80 ? "#007A33"
+                   : iqPercent >= 60 ? "#003366"
+                   : iqPercent >= 40 ? "#FFA500"
+                   : "#50308A";
+}
+
+<div class="alert alert-info mt-2">
+    <strong>IQ %:</strong>
+    <span style="color:@iqColor;font-weight:bold">@iqPercent%</span>
+    &nbsp;|&nbsp;
+    <strong>IQ Level:</strong>
+    <span style="color:@iqColor;font-weight:bold">@iqLevel</span>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#report">📊 Report</a></li>
+    <li class="nav-item ms-auto"><span class="nav-link disabled fw-bold">IQ %: @iqPercent</span></li>
+</ul>
+
+<div class="tab-content border border-top-0 p-3 bg-white">
+
+    <!-- ===========================================
+         TAB 1 — REPORT
+    =========================================== -->
+    <div id="report" class="tab-pane fade show active">
+
+        <!-- Candidate Information -->
+        <div class="card shadow-sm p-3 mb-4">
+            <h4 class="fw-bold text-primary">🧑‍💼 Candidate Information</h4>
+
+            <div class="row g-3">
+                <div class="col-md-3 text-center">
+                    <img src="@candidate.PhotoFilePath"
+                         class="border rounded"
+                         style="width:140px;height:160px;object-fit:cover;" />
+                </div>
+
+                <div class="col-md-9">
+                    <table class="table table-bordered">
+                        <tr><th>Name</th><td>@candidate.FullName</td></tr>
+                        <tr><th>Gender</th><td>@candidate.Gender</td></tr>
+                        <tr><th>Date of Birth</th><td>@candidate.DOB.ToString("dd-MMM-yyyy")</td></tr>
+                        <tr><th>Intellectual Disability</th><td>@candidate.IntellectualLevel</td></tr>
+                        <tr><th>Education</th><td>@candidate.Education</td></tr>
+                        <tr><th>Marital Status</th><td>@candidate.MaritalStatus</td></tr>
+                    </table>
+                </div>
+
+                <div class="col-12"><hr /></div>
+
+                <!-- Family -->
+                <h5 class="fw-bold text-primary">👪 Family Details</h5>
+
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <tr><th>Father Name</th><td>@candidate.FatherName</td></tr>
+                        <tr><th>Father Education</th><td>@candidate.FatherEducation</td></tr>
+                        <tr><th>Father Occupation</th><td>@candidate.FatherOccupation</td></tr>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <tr><th>Mother Name</th><td>@candidate.MotherName</td></tr>
+                        <tr><th>Mother Education</th><td>@candidate.MotherEducation</td></tr>
+                        <tr><th>Mother Occupation</th><td>@candidate.MotherOccupation</td></tr>
+                    </table>
+                </div>
+
+                <div class="col-12">
+                    <table class="table table-bordered">
+                        <tr><th>Languages</th><td>@candidate.MotherTongue / @candidate.OtherLanguages</td></tr>
+                        <tr><th>Family Type</th><td>@candidate.FamilyType</td></tr>
+                        <tr><th>Residential Area</th><td>@candidate.ResidentialArea</td></tr>
+                        <tr><th>Contact</th><td>@candidate.ContactNumber</td></tr>
+                        <tr><th>Address</th><td>@candidate.CommunicationAddress</td></tr>
+                    </table>
+                </div>
+
+                <!-- Attachments -->
+                <div class="col-12">
+                    <h5 class="fw-bold text-primary">📂 Attachments</h5>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        @if (attachments.Any())
+                        {
+                            foreach (var doc in attachments)
+                            {
+                                <div class="border p-2 text-center" style="width:120px;">
+                                    @if (doc.FileType.StartsWith("image"))
+                                    {
+                                        <img src="/uploads/candidates/@doc.FilePath"
+                                             style="width:80px;height:80px;object-fit:cover;" />
+                                    }
+                                    else if (doc.FileType.Contains("pdf"))
+                                    {
+                                        <img src="/images/pdf-icon.png" style="height:50px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/doc-icon.png" style="height:50px;" />
+                                    }
+
+                                    <div class="small mt-1">@doc.FileName</div>
+
+                                    <a href="/uploads/candidates/@doc.FilePath"
+                                       target="_blank"
+                                       class="btn btn-outline-primary btn-sm mt-1">View</a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-muted">No attachments available.</div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row text-center">
+            <div class="col-md-6 mb-3"><canvas id="barChart"></canvas></div>
+            <div class="col-md-6 mb-3"><canvas id="doughnutChart"></canvas></div>
+        </div>
+
+        <hr />
+
+        <!-- Metrics -->
+        <h5 class="fw-bold">Key Metrics</h5>
+        <ul>
+            <li><strong>Total Score:</strong> @score.TotalScore / @score.MaxScore</li>
+            <li><strong>Completed At:</strong> @(Model.SubmittedAt?.ToString("dd-MMM-yyyy HH:mm") ?? "N/A")</li>
+        </ul>
+
+        <hr />
+
+        <!-- Recommendations -->
+        <h5 class="fw-bold text-primary">🎯 Recommendations</h5>
+        @if (recommendations?.Any() == true)
+        {
+            foreach (var rec in recommendations)
+            {
+                <div class="border p-3 mb-3">
+                    <h6 class="fw-bold">@rec.Key</h6>
+                    <ul>
+                        @foreach (var item in rec.Value)
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+        else
+        {
+
+            <div class="alert alert-primary">No recommendations.</div>
+        }
+
+        <!-- Weak Areas -->
+        @if (weakDetails?.Any() == true)
+        {
+            <h5 class="fw-bold text-primary">🧠 Weak Question Analysis</h5>
+            @foreach (var w in weakDetails)
+            {
+                <div class="border p-3 mb-2 bg-light">
+                    <h6 class="fw-bold">@w.Key</h6>
+                    <ul>
+                        @foreach (var detail in w.Value)
+                        {
+                            <li>@detail</li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+
+        <hr />
+
+        <!-- Questions Table -->
+        @foreach (var sec in sections)
+        {
+            <h5 class="fw-bold text-info mt-4">@sec.Category</h5>
+
+            <table class="table table-bordered table-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Question</th>
+                        <th>Answer</th>
+                        <th>Score</th>
+                        <th>Comments</th>
+                        <th>Evidence</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var q in sec.Questions)
+                    {
+                        saved.TryGetValue($"ANS_{q.Id}", out string ans);
+                        saved.TryGetValue($"SCORE_{q.Id}", out string scr);
+                        saved.TryGetValue($"CMT_{q.Id}", out string cmt);
+
+                        var evidenceFiles = saved
+                        .Where(x => x.Key.StartsWith($"FILE_{q.Id}"))
+                        .Select(x => x.Value)
+                        .ToList();
+
+                        <tr>
+                            <td>@q.Id</td>
+                            <td>@q.Text</td>
+                            <td>@(ans ?? "-")</td>
+                            <td>@(scr ?? "0")</td>
+                            <td>@(cmt ?? "-")</td>
+
+                            <td>
+                                @if (evidenceFiles.Any())
+                                {
+                                    foreach (var f in evidenceFiles)
+                                    {
+                                        <a href="/uploads/@f"
+                                           target="_blank"
+                                           class="btn btn-outline-primary btn-sm mt-1">📎 View</a>
+                                    }
+                                }
+                                else
+                                {
+
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <div class="text-end mt-3">
+            <form method="post" action="/Assessments/ExportReportPdf/@Model.Id">
+                <input type="hidden" id="barChartImage" name="barChartImage" />
+                <input type="hidden" id="doughnutChartImage" name="doughnutChartImage" />
+                <button class="btn btn-primary">📄 Download PDF</button>
+            </form>
+        </div>
+
+    </div> <!-- END REPORT TAB -->
+
+</div> <!-- END TAB CONTENT -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const labels = @Html.Raw(Json.Serialize(score.SectionScores.Keys));
+    const values = @Html.Raw(Json.Serialize(score.SectionScores.Values));
+    const total = @score.TotalScore;
+    const remaining = @score.MaxScore - @score.TotalScore;
+
+    new Chart(document.getElementById("barChart"), {
+        type: "bar",
+        data: { labels, datasets: [{ data: values }] }
+    });
+
+    new Chart(document.getElementById("doughnutChart"), {
+        type: "doughnut",
+        data: { labels: ["Achieved", "Remaining"], datasets: [{ data: [total, remaining] }] }
+    });
+
+    setTimeout(() => {
+        document.getElementById("barChartImage").value =
+            document.getElementById("barChart").toDataURL().split(",")[1];
+
+        document.getElementById("doughnutChartImage").value =
+            document.getElementById("doughnutChart").toDataURL().split(",")[1];
+    }, 1000);
+</script>
