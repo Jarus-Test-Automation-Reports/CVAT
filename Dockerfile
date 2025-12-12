@@ -2,19 +2,19 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
 
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy only the project folder (avoid copying whole 340MB repo!)
-COPY CAT.AID.Web/ ./CAT.AID.Web/
+# Copy everything into the container
+COPY . .
 
-# Restore + publish
-WORKDIR /src/CAT.AID.Web
-RUN dotnet publish -c Release -o /out
+# Publish the project
+RUN dotnet publish "CAT.AID.Web.csproj" -c Release -o /out
 
-# Final runtime image
+# Final container
 FROM base AS final
 WORKDIR /app
 COPY --from=build /out .
