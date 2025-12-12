@@ -4,201 +4,225 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CVAT – Comprehensive Vocational Assessment Tool</title>
+    <title>@ViewData["Title"] – CVAT</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
 
+    <!-- Smooth UI + System Dark Mode -->
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            background: linear-gradient(135deg, #ffffff, #e7e7e7);
-            background-attachment: fixed;
+        :root {
+            --primary: #003366;
+            --primary-light: rgba(0, 51, 102, 0.75);
+            --accent: #ffeb8d;
+            --gold-dark: #6f4e07;
+            --gold-light: #a87b1d;
+            --text-dark: #222;
+            --text-light: #fff;
+
+            /* Shadow presets */
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.22);
+            --shadow-md: 0 6px 15px rgba(0,0,0,0.18);
+            --shadow-soft: 0 2px 8px rgba(0,0,0,0.10);
         }
 
-        /* --------------------------------------------
-                   🔥 3D GLASS HEADER
-                -------------------------------------------- */
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #00509e;
+                --accent: #ffe27a;
+                --text-dark: #ddd;
+                --primary-light: rgba(0, 80, 160, 0.75);
+            }
+            body {
+                background: #101010;
+            }
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #fafafa, #e1e1e1);
+            margin: 0;
+        }
+
+        /* HEADER */
         .brand-header {
-            padding: 20px 0;
-            backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            transform: translateZ(25px);
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            box-shadow: var(--shadow-lg);
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .brand-title {
-            font-size: 28px;
-            font-weight: 900;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
             text-transform: uppercase;
-            color: #3e2c01;
             letter-spacing: 1px;
-            text-shadow: 0 3px 5px rgba(0,0,0,0.15);
         }
 
-        /* --------------------------------------------
-                   🔵 3D Glassmorphism Navigation Bar
-                -------------------------------------------- */
-        .navbar {
-            backdrop-filter: blur(15px);
-            background: rgba(0, 51, 102, 0.75) !important;
-            border-radius: 0 0 15px 15px;
-            padding: 12px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-            transform: translateZ(20px);
-        }
-
-            .navbar .nav-link {
-                color: #ffeb8d !important;
-                font-weight: 600;
-                padding: 10px 14px;
-                border-radius: 6px;
-                transition: 0.25s ease-in-out;
-            }
-
-                .navbar .nav-link:hover {
-                    background: rgba(255, 255, 255, 0.2);
-                    transform: translateY(-3px);
-                    box-shadow: 0 4px 10px rgba(255,255,255,0.4);
-                }
-
-        .dropdown-menu {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-        }
-
-        .dropdown-item {
-            color: #ffdb69 !important;
-        }
-
-            .dropdown-item:hover {
-                background: rgba(255, 255, 255, 0.2);
-            }
-
-        /* --------------------------------------------
-                   🧊 CONTENT WRAPPER - 3D Floating Card Layout
-                -------------------------------------------- */
-        .content-wrapper {
-            margin-top: 30px;
-            margin-bottom: 40px;
-            animation: fadeIn 0.6s ease-in-out;
-        }
-
-        .container {
-            transform: translateZ(15px);
-        }
-
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        /* --------------------------------------------
-                   ⚡ FUTURISTIC FOOTER
-                -------------------------------------------- */
-        .footer {
-    background: linear-gradient(90deg, #3c2d03, #6f4e07);
-    color: white; /* FIXED */
-    padding: 25px;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 500;
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-    box-shadow: 0 -8px 20px rgba(0,0,0,0.2);
-}
-
-        /* --------------------------------------------
-                   SMALL LOGO ANIMATION
-                -------------------------------------------- */
         .header-logo {
-            transition: transform 0.4s ease;
+            transition: 300ms ease;
         }
 
-            .header-logo:hover {
-                transform: scale(1.1) rotate(2deg);
+        .header-logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--primary-light) !important;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-md);
+            padding: 10px 15px;
+        }
+
+        .navbar .nav-link {
+            color: var(--accent) !important;
+            font-weight: 600;
+            transition: 0.25s ease-in-out;
+            border-radius: 6px;
+        }
+
+        .navbar .nav-link:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* CONTENT ANIMATION */
+        .content-wrapper {
+            margin-top: 25px;
+            margin-bottom: 35px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CARD PRESET (usable across pages) */
+        .glass-card {
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(12px);
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .glass-card {
+                background: rgba(50,50,50,0.6);
             }
+        }
+
+        /* FOOTER */
+        .footer {
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+            padding: 20px;
+            text-align: center;
+            font-size: 15px;
+            color: var(--text-light);
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            box-shadow: var(--shadow-md);
+            margin-top: 50px;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+            .brand-title {
+                font-size: 18px;
+            }
+            .header-logo {
+                height: 60px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- 🔥 3D Glass Header -->
-    <div class="brand-header">
+    <!-- HEADER -->
+    <header class="brand-header">
         <div class="container d-flex justify-content-between align-items-center">
 
-            <img src="/images/20240912282747915.png" height="90" class="header-logo" />
+            <img src="~/images/20240912282747915.png"
+                 class="header-logo"
+                 height="80" />
 
-            <div class="brand-title text-center">
-                CVAT – Comprehensive Vocational Assessment Tool<br />
-                <small style="font-size:14px; font-weight:400; color:#333;">
-                    A Digital Platform for Vocational Evaluation, Skill Assessment & Career Planning
+            <div class="text-center brand-title">
+                CVAT – Comprehensive Vocational Assessment Tool
+                <br />
+                <small style="font-size:13px; font-weight:400; color:#444;">
+                    Vocational Evaluation • Skill Assessment • Career Planning
                 </small>
             </div>
 
-            <img src="/images/202409121913074416.png" height="90" class="header-logo" />
+            <img src="~/images/202409121913074416.png"
+                 class="header-logo"
+                 height="80" />
         </div>
-    </div>
+    </header>
 
-
-    <!-- 🔵 3D Navigation Bar -->
-    <nav class="navbar navbar-expand-lg shadow-sm">
+    <!-- NAVIGATION -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
 
-            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="mainNav">
+            <div id="mainNav" class="collapse navbar-collapse">
 
                 <ul class="navbar-nav me-auto gap-2">
 
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        @if (User.IsInRole("Admin"))
+                        if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/Admin/Users">📚 Users</a></li>
                         }
-
-                        @if (User.IsInRole("LeadAssessor"))
+                        if (User.IsInRole("LeadAssessor"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/Candidates">👤 Candidates</a></li>
                             <li class="nav-item"><a class="nav-link" href="/Assessments/ReviewQueue">📝 Review Queue</a></li>
                         }
-
-                        @if (User.IsInRole("Assessor"))
+                        if (User.IsInRole("Assessor"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/Assessments/MyTasks">📌 My Assessments</a></li>
                         }
 
-                        @if (User.IsInRole("Admin") || User.IsInRole("LeadAssessor"))
+                        if (User.IsInRole("Admin") || User.IsInRole("LeadAssessor"))
                         {
                             <li class="nav-item"><a class="nav-link" href="/QuestionBank">📘 Question Bank</a></li>
                         }
 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">💬 Support</a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-menu-dark">
                                 <li><a class="dropdown-item" href="/Support/FAQ">FAQs</a></li>
                                 <li><a class="dropdown-item" href="/Support/Help">Help</a></li>
                                 <li><a class="dropdown-item" href="/Support/Contact">Contact</a></li>
                             </ul>
                         </li>
                     }
-
                 </ul>
 
+                <!-- USER PROFILE -->
                 <ul class="navbar-nav ms-auto">
                     @if (SignInManager.IsSignedIn(User))
                     {
@@ -207,12 +231,12 @@
                                 👤 @User.Identity?.Name
                             </a>
 
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
-                                    <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <form asp-action="Logout" asp-controller="Account" method="post">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="dropdown-item text-warning fw-bold">
+                                        <button class="dropdown-item text-warning fw-bold">
                                             🔓 Logout
                                         </button>
                                     </form>
@@ -226,20 +250,19 @@
         </div>
     </nav>
 
-    <!-- PAGE CONTENT -->
-    <div class="container content-wrapper">
+    <!-- MAIN PAGE CONTENT -->
+    <main class="container content-wrapper">
         @RenderBody()
-    </div>
+    </main>
 
     <!-- FOOTER -->
-    <div class="footer">
+    <footer class="footer">
         © @DateTime.Now.Year NATIONAL INSTITUTE FOR THE EMPOWERMENT OF PERSONS WITH INTELLECTUAL DISABILITIES (NIEPID),
-        Manovikas Nagar, Secunderabad, Telangana – 500009. All Rights Reserved.
-    </div>
+        Secunderabad, Telangana – 500009. All Rights Reserved.
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("Scripts", required: false)
-
 </body>
 </html>
