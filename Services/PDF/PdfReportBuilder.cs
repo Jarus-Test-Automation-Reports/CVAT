@@ -1,6 +1,6 @@
 using CAT.AID.Models;
 
-using CAT.AID.Web.Models.DTO;
+using CAT.AID.Models.DTO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Text.Json;
@@ -151,4 +151,5 @@ public static class PdfReportBuilder
         return ms.ToArray();
     }
 }
+
 
