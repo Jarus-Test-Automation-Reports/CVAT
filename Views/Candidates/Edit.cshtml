@@ -1,4 +1,4 @@
-﻿@using CAT.AID.Models
+@using CAT.AID.Models
 @model Candidate
 
 <h2 class="mb-3 text-primary fw-bold">Edit Candidate</h2>
@@ -15,7 +15,7 @@
 
     <div class="row">
 
-        <!-- LEFT (Identification Section) -->
+        <!-- LEFT SIDE (Identification Section) -->
         <div class="col-md-8">
 
             <div class="card shadow-sm mb-4">
@@ -26,7 +26,7 @@
                 <div class="card-body row g-3">
 
                     <div class="col-md-6">
-                        <label class="fw-bold">Name *</label>
+                        <label class="fw-bold">Full Name *</label>
                         <input asp-for="FullName" class="form-control" />
                     </div>
 
@@ -41,18 +41,26 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="fw-bold">DOB *</label>
+                        <label class="fw-bold">Date of Birth *</label>
                         <input asp-for="DOB" type="date" class="form-control" />
                     </div>
 
+                    <!-- FIXED: Disability Type (Correct Required Field) -->
                     <div class="col-md-6">
-                        <label class="fw-bold">Intellectual Disability</label>
-                        <select asp-for="IntellectualLevel" class="form-select">
-                            <option>Mild</option>
-                            <option>Moderate</option>
-                            <option>Severe</option>
-                            <option>Profound</option>
+                        <label class="fw-bold">Disability Type *</label>
+                        <select asp-for="DisabilityType" class="form-select" required>
+                            <option value="">-- Select Disability Type --</option>
+                            <option>Intellectual Disability – Mild</option>
+                            <option>Intellectual Disability – Moderate</option>
+                            <option>Intellectual Disability – Severe</option>
+                            <option>Intellectual Disability – Profound</option>
+                            <option>Multiple Disabilities</option>
+                            <option>Autism Spectrum Disorder</option>
+                            <option>Cerebral Palsy</option>
+                            <option>Down Syndrome</option>
+                            <option>Other</option>
                         </select>
+                        <span asp-validation-for="DisabilityType" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-3">
@@ -79,12 +87,12 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="fw-bold">Father's Education</label>
+                        <label class="fw-bold">Father Education</label>
                         <input asp-for="FatherEducation" class="form-control" />
                     </div>
 
                     <div class="col-md-3">
-                        <label class="fw-bold">Father's Occupation</label>
+                        <label class="fw-bold">Father Occupation</label>
                         <input asp-for="FatherOccupation" class="form-control" />
                     </div>
 
@@ -94,12 +102,12 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="fw-bold">Mother's Education</label>
+                        <label class="fw-bold">Mother Education</label>
                         <input asp-for="MotherEducation" class="form-control" />
                     </div>
 
                     <div class="col-md-3">
-                        <label class="fw-bold">Mother's Occupation</label>
+                        <label class="fw-bold">Mother Occupation</label>
                         <input asp-for="MotherOccupation" class="form-control" />
                     </div>
 
@@ -117,26 +125,29 @@
             </div>
         </div>
 
-        <!-- RIGHT (Photo Section) -->
-        <div class="col-md-4 text-center">
+        <!-- RIGHT SIDE (Photo Upload) -->
+        <div class="col-md-4">
 
-            <div class="card shadow-sm p-3">
+            <div class="card shadow-sm p-3 text-center">
+
                 <h6 class="fw-bold">Candidate Photo</h6>
 
                 <img id="photoPreview"
                      src="@Model.PhotoFilePath"
-                     style="width:140px;height:160px;object-fit:cover;border-radius:8px;border:1px solid #ccc;" />
+                     onerror="this.src='/images/no-photo.png'"
+                     style="width:140px;height:160px;object-fit:cover;border:1px solid #ccc;border-radius:8px;" />
 
                 <label class="fw-bold mt-3">Change Photo</label>
                 <input type="file" name="PhotoFile" accept="image/*"
                        class="form-control" onchange="previewPhoto(event)" />
+
             </div>
 
         </div>
     </div>
 
 
-    <!-- FAMILY SECTION -->
+    <!-- FAMILY HISTORY -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white fw-bold">
             Section 2 – Family History
@@ -154,16 +165,17 @@
             </div>
 
             <div class="col-md-4">
-                <label class="fw-bold">Disability History</label>
+                <label class="fw-bold">Family Disability History</label>
                 <select asp-for="FamilyDisabilityHistory" class="form-select">
                     <option>No</option>
                     <option>Yes</option>
                 </select>
             </div>
 
+            <!-- FIXED: Correct optional family disability type -->
             <div class="col-md-4">
                 <label class="fw-bold">If Yes, Type</label>
-                <input asp-for="DisabilityType" class="form-control" />
+                <input asp-for="FamilyDisabilityType" class="form-control" />
             </div>
 
             <div class="col-md-4">
@@ -192,11 +204,12 @@
                 <label class="fw-bold">Address</label>
                 <textarea asp-for="CommunicationAddress" rows="3" class="form-control"></textarea>
             </div>
+
         </div>
     </div>
 
 
-    <!-- EXISTING FILES -->
+    <!-- EXISTING DOCUMENTS -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-dark text-white fw-bold">
             Existing Documents
@@ -250,8 +263,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <button type="button" class="btn btn-secondary w-100"
-                            onclick="addDocument()">
+                    <button type="button" class="btn btn-secondary w-100" onclick="addDocument()">
                         ➕ Add Document
                     </button>
                 </div>
@@ -260,74 +272,73 @@
             <div id="documentsPreview" class="d-flex flex-wrap gap-3"></div>
 
             <input type="hidden" id="docIndex" value="0" />
+
         </div>
     </div>
-
 
     <button type="submit" class="btn btn-success px-4">Save Changes</button>
     <a href="/Candidates/Index" class="btn btn-secondary">Cancel</a>
 
 </form>
 
+
 @section Scripts {
-    <script>
+<script>
+    // PHOTO PREVIEW
+    function previewPhoto(e) {
+        document.getElementById("photoPreview").src =
+            URL.createObjectURL(e.target.files[0]);
+    }
 
-        // PHOTO PREVIEW
-        function previewPhoto(e) {
-            document.getElementById("photoPreview").src =
-                URL.createObjectURL(e.target.files[0]);
+    // ADD DOCUMENT
+    function addDocument() {
+        let picker = document.getElementById("docPicker");
+        if (picker.files.length === 0) return;
+
+        let file = picker.files[0];
+        let url = URL.createObjectURL(file);
+
+        let index = parseInt(document.getElementById("docIndex").value);
+
+        let input = document.createElement("input");
+        input.type = "file";
+        input.name = "AttachmentFiles";
+        input.hidden = true;
+        input.files = picker.files;
+
+        let box = document.createElement("div");
+        box.id = "doc_" + index;
+        box.className = "border p-2 text-center";
+        box.style.width = "120px";
+
+        let removeBtn =
+            `<button class='btn btn-sm btn-danger mt-1' onclick='removeDocument(${index})'>X</button>`;
+
+        if (file.type.startsWith("image")) {
+            box.innerHTML = `<img src='${url}' style='width:80px;height:80px;object-fit:cover;border-radius:6px;' />
+                             <div class='small mt-1'>${file.name}</div>${removeBtn}`;
+        }
+        else if (file.type.includes("pdf")) {
+            box.innerHTML = `<img src='/images/pdf-icon.png' style='height:50px;' />
+                             <div class='small mt-1'>${file.name}</div>${removeBtn}`;
+        }
+        else {
+            box.innerHTML = `<img src='/images/doc-icon.png' style='height:50px;' />
+                             <div class='small mt-1'>${file.name}</div>${removeBtn}`;
         }
 
-        // ADD DOCUMENT
-        function addDocument() {
-            let picker = document.getElementById("docPicker");
-            if (picker.files.length === 0) return;
+        box.appendChild(input);
+        document.getElementById("documentsPreview").appendChild(box);
 
-            let file = picker.files[0];
-            let url = URL.createObjectURL(file);
+        document.getElementById("docIndex").value = index + 1;
+        picker.value = "";
+    }
 
-            let index = parseInt(document.getElementById("docIndex").value);
+    function removeDocument(i) {
+        document.getElementById("doc_" + i).remove();
+    }
 
-            // Hidden input to store file
-            let input = document.createElement("input");
-            input.type = "file";
-            input.name = "AttachmentFiles";
-            input.hidden = true;
-            input.files = picker.files;
+</script>
 
-            let box = document.createElement("div");
-            box.id = "doc_" + index;
-            box.className = "border p-2 text-center";
-            box.style.width = "120px";
-
-            let remove =
-                `<button class='btn btn-sm btn-danger mt-1' onclick='removeDocument(${index})'>X</button>`;
-
-            if (file.type.startsWith("image")) {
-                box.innerHTML = `<img src='${url}'
-                                 style='width:80px;height:80px;object-fit:cover;border-radius:5px;' />
-                                 <div class='small mt-1'>${file.name}</div>${remove}`;
-            } else if (file.type.includes("pdf")) {
-                box.innerHTML = `<img src='/images/pdf-icon.png' style='height:50px;' />
-                                 <div class='small mt-1'>${file.name}</div>${remove}`;
-            } else {
-                box.innerHTML = `<img src='/images/doc-icon.png' style='height:50px;' />
-                                 <div class='small mt-1'>${file.name}</div>${remove}`;
-            }
-
-            box.appendChild(input);
-
-            document.getElementById("documentsPreview").appendChild(box);
-
-            document.getElementById("docIndex").value = index + 1;
-            picker.value = "";
-        }
-
-        function removeDocument(i) {
-            document.getElementById("doc_" + i).remove();
-        }
-
-    </script>
-
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+@await Html.PartialAsync("_ValidationScriptsPartial")
 }
