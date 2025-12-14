@@ -1,183 +1,163 @@
 using CAT.AID.Models;
 using CAT.AID.Models.DTO;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QuestPDF.Helpers;
 using System.Text.Json;
 
-namespace CAT.AID.Web.PDF
+namespace CAT.AID.Web.Services.PDF
 {
-    public class ReportGenerator : BasePdfDocument
+    public class ReportGenerator
     {
-        private readonly Assessment _assessment;
-        private readonly AssessmentScoreDTO _score;
-        private readonly List<AssessmentSection> _sections;
+        private const string LogoLeft = "wwwroot/Images/20240912282747915.png";
+        private const string LogoRight = "wwwroot/Images/202409121913074416.png";
 
-        public ReportGenerator(Assessment a, AssessmentScoreDTO score, List<AssessmentSection> sections)
+        public static byte[] BuildAssessmentReport(Assessment a)
         {
-            _assessment = a;
-            _score = score;
-            _sections = sections;
+            // Parse score
+            var score = string.IsNullOrWhiteSpace(a.ScoreJson)
+                ? new AssessmentScoreDTO()
+                : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson) ?? new AssessmentScoreDTO();
 
-            Title = "Comprehensive Vocational Assessment – Summary Report";
+            // Load questions for section counts
+            var questionFile = Path.Combine("wwwroot", "data", "assessment_questions.json");
+            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(File.ReadAllText(questionFile))
+                           ?? new List<AssessmentSection>();
+
+            return new SimpleAssessmentPdf(a, score, sections, LogoLeft, LogoRight).GeneratePdf();
+        }
+    }
+
+    // =====================================================================
+    //                     QUESTPDF DOCUMENT (UNIFORM TEMPLATE)
+    // =====================================================================
+    public class SimpleAssessmentPdf : BasePdfTemplate
+    {
+        private readonly Assessment A;
+        private readonly AssessmentScoreDTO Score;
+        private readonly List<AssessmentSection> Sections;
+
+        public SimpleAssessmentPdf(
+            Assessment a,
+            AssessmentScoreDTO score,
+            List<AssessmentSection> sections,
+            string logoLeft,
+            string logoRight)
+            : base("Assessment Report", logoLeft, logoRight)
+        {
+            A = a;
+            Score = score;
+            Sections = sections;
         }
 
-        public override void ComposeBody(IContainer container)
+        public override void ComposeContent(IContainer container)
         {
-            var answers = string.IsNullOrWhiteSpace(_assessment.AssessmentResultJson)
-                ? new Dictionary<string, string>()
-                : JsonSerializer.Deserialize<Dictionary<string, string>>(
-                    _assessment.AssessmentResultJson
-                ) ?? new Dictionary<string, string>();
-
-            container.PaddingVertical(10).Column(col =>
+            container.Column(col =>
             {
-                // ---------------- Candidate Info ----------------
-                col.Item().Element(e => SectionTitle(e, "Candidate Information"));
-                col.Item().Element(e => CandidateBlock(e, _assessment.Candidate));
+                col.Spacing(20);
 
-                // ---------------- Score Summary ----------------
-                col.Item().Element(e => SectionTitle(e, "Score Summary"));
-                col.Item().Element(e => ScoreSummary(e));
-
-                // ---------------- Section Scores ----------------
-                col.Item().Element(e => SectionTitle(e, "Section-Wise Scores"));
-                col.Item().Element(e => SectionScoreTable(e));
-
-                // ---------------- Question Breakdown (Optional) ----------------
-                col.Item().Element(e => SectionTitle(e, "Key Questions Review"));
-                col.Item().Element(e => QuestionBreakdown(e, answers));
+                col.Item().Element(CandidateSection);
+                col.Item().Element(ScoreSummarySection);
+                col.Item().Element(SectionScoresTable);
             });
         }
 
-        // ======================================================================
-        // Candidate Information Block
-        // ======================================================================
-        private void CandidateBlock(IContainer container, Candidate c)
+        // --------------------------------------------------------------
+        // CANDIDATE DETAILS
+        // --------------------------------------------------------------
+        private void CandidateSection(IContainer container)
         {
-            container.Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10).Row(row =>
+            container.Column(col =>
             {
-                // Photo
-                row.ConstantItem(120).PaddingRight(10).Column(col =>
+                col.Spacing(5);
+
+                col.Item().Text("Candidate Details")
+                    .FontSize(18)
+                    .Bold()
+                    .FontColor("#003366");
+
+                col.Item().Text($"Name: {A.Candidate.FullName}").FontSize(12);
+                col.Item().Text($"DOB: {A.Candidate.DOB:dd-MMM-yyyy}").FontSize(12);
+                col.Item().Text($"Gender: {A.Candidate.Gender}").FontSize(12);
+                col.Item().Text($"Disability: {A.Candidate.DisabilityType}").FontSize(12);
+                col.Item().Text($"Address: {A.Candidate.CommunicationAddress}").FontSize(12);
+
+                if (!string.IsNullOrWhiteSpace(A.Candidate.PhotoFilePath))
                 {
-                    if (!string.IsNullOrWhiteSpace(c.PhotoFilePath))
-                    {
-                        var path = Path.Combine("wwwroot", c.PhotoFilePath.TrimStart('/'));
-                        if (File.Exists(path))
-                            col.Item().Image(path).FitArea();
-                    }
-                });
-
-                // Details
-                row.RelativeItem().Column(col =>
-                {
-                    Detail(col, "Name", c.FullName);
-                    Detail(col, "Gender", c.Gender);
-                    Detail(col, "DOB", c.DOB.ToString("dd-MMM-yyyy"));
-                    Detail(col, "Disability Type", c.DisabilityType);
-                    Detail(col, "Education", c.Education);
-                    Detail(col, "Languages", c.OtherLanguages);
-                    Detail(col, "Address", c.CommunicationAddress);
-                    Detail(col, "Contact", c.ContactNumber);
-                });
-            });
-        }
-
-        private void Detail(ColumnDescriptor col, string label, string value)
-        {
-            col.Item().Text($"{label}: ").SemiBold().Span(value ?? "-");
-        }
-
-        // ======================================================================
-        // Score Summary
-        // ======================================================================
-        private void ScoreSummary(IContainer container)
-        {
-            double pct = _score.MaxScore == 0 ? 0 : Math.Round((double)_score.TotalScore / _score.MaxScore * 100, 2);
-
-            container.Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10)
-            .Column(col =>
-            {
-                col.Item().Text($"Total Score: {_score.TotalScore} / {_score.MaxScore}")
-                    .FontSize(12).Bold();
-
-                col.Item().Text($"Overall Performance: {pct}%")
-                    .FontSize(12).FontColor(Colors.Blue.Medium);
-
-                col.Item().Text($"Assessment Status: {_assessment.Status}")
-                    .FontSize(12).SemiBold();
-            });
-        }
-
-        // ======================================================================
-        // Section Score Table
-        // ======================================================================
-        private void SectionScoreTable(IContainer container)
-        {
-            container.Table(table =>
-            {
-                table.ColumnsDefinition(c =>
-                {
-                    c.RelativeColumn(3);
-                    c.RelativeColumn(1);
-                });
-
-                // Header
-                table.Header(h =>
-                {
-                    h.Cell().Text("Section").SemiBold();
-                    h.Cell().Text("Score").SemiBold();
-                });
-
-                foreach (var sec in _sections)
-                {
-                    int val = _score.SectionScores.ContainsKey(sec.Category)
-                        ? _score.SectionScores[sec.Category]
-                        : 0;
-
-                    table.Cell().Text(sec.Category);
-                    table.Cell().Text(val.ToString());
+                    col.Item().PaddingTop(10)
+                        .Image(A.Candidate.PhotoFilePath, ImageScaling.FitWidth);
                 }
             });
         }
 
-        // ======================================================================
-        // Question Breakdown (Short version)
-        // ======================================================================
-        private void QuestionBreakdown(IContainer container, Dictionary<string, string> ans)
+        // --------------------------------------------------------------
+        // SCORE SUMMARY
+        // --------------------------------------------------------------
+        private void ScoreSummarySection(IContainer container)
         {
-            container.PaddingTop(10).Column(col =>
+            container.Column(col =>
             {
-                foreach (var sec in _sections)
+                col.Spacing(5);
+
+                col.Item().Text("Assessment Summary")
+                    .FontSize(18)
+                    .Bold()
+                    .FontColor("#003366");
+
+                col.Item().Text($"Total Score: {Score.TotalScore}").FontSize(12);
+                col.Item().Text($"Maximum Score: {Score.MaxScore}").FontSize(12);
+
+                double pct = Score.MaxScore > 0
+                    ? (Score.TotalScore * 100.0 / Score.MaxScore)
+                    : 0;
+
+                col.Item().Text($"Percentage: {pct:F1}%").FontSize(12);
+
+                col.Item().Text($"Status: {A.Status}").FontSize(12);
+                col.Item().Text($"Submitted On: {A.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}")
+                    .FontSize(12);
+            });
+        }
+
+        // --------------------------------------------------------------
+        // SECTION SCORES TABLE
+        // --------------------------------------------------------------
+        private void SectionScoresTable(IContainer container)
+        {
+            container.Column(col =>
+            {
+                col.Item().Text("Section Scores")
+                    .FontSize(18)
+                    .Bold()
+                    .FontColor("#003366");
+
+                col.Item().Table(table =>
                 {
-                    col.Item().Text(sec.Category).Bold().FontSize(11);
-
-                    col.Item().Table(t =>
+                    table.ColumnsDefinition(c =>
                     {
-                        t.ColumnsDefinition(c =>
-                        {
-                            c.RelativeColumn(4);
-                            c.RelativeColumn(1);
-                        });
-
-                        t.Header(h =>
-                        {
-                            h.Cell().Text("Question").SemiBold();
-                            h.Cell().Text("Score").SemiBold();
-                        });
-
-                        foreach (var q in sec.Questions)
-                        {
-                            ans.TryGetValue($"SCORE_{q.Id}", out var score);
-                            score ??= "0";
-
-                            t.Cell().Text(q.Text);
-                            t.Cell().Text(score);
-                        }
+                        c.RelativeColumn(3);
+                        c.RelativeColumn(1);
+                        c.RelativeColumn(1);
                     });
 
-                    col.Item().PaddingBottom(10);
-                }
+                    // Header
+                    table.Header(h =>
+                    {
+                        h.Cell().Text("Section").Bold();
+                        h.Cell().Text("Score").Bold();
+                        h.Cell().Text("Max").Bold();
+                    });
+
+                    foreach (var sec in Sections)
+                    {
+                        Score.SectionScores.TryGetValue(sec.Category, out int scr);
+                        int max = sec.Questions.Count * 3;
+
+                        table.Cell().Text(sec.Category);
+                        table.Cell().Text(scr.ToString()).AlignCenter();
+                        table.Cell().Text(max.ToString()).AlignCenter();
+                    }
+                });
             });
         }
     }
