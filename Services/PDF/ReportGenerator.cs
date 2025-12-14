@@ -5,7 +5,6 @@ using QuestPDF.Infrastructure;
 using QuestPDF.Helpers;
 using System.Text.Json;
 
-
 namespace CAT.AID.Web.Services.PDF
 {
     public class ReportGenerator
@@ -18,6 +17,8 @@ namespace CAT.AID.Web.Services.PDF
 
         public static byte[] BuildAssessmentReport(Assessment a)
         {
+            a ??= new Assessment { Candidate = new Candidate { FullName = "Unknown" } };
+
             var score = string.IsNullOrWhiteSpace(a.ScoreJson)
                 ? new AssessmentScoreDTO()
                 : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson)
@@ -27,16 +28,26 @@ namespace CAT.AID.Web.Services.PDF
                 Directory.GetCurrentDirectory(),
                 "wwwroot", "data", "assessment_questions.json");
 
-            var sections = File.Exists(questionFile)
-                ? JsonSerializer.Deserialize<List<AssessmentSection>>(File.ReadAllText(questionFile))
-                    ?? new List<AssessmentSection>()
-                : new List<AssessmentSection>();
+            List<AssessmentSection> sections = new();
+
+            if (File.Exists(questionFile))
+            {
+                try
+                {
+                    sections = JsonSerializer.Deserialize<List<AssessmentSection>>(
+                        File.ReadAllText(questionFile)
+                    ) ?? new List<AssessmentSection>();
+                }
+                catch
+                {
+                    sections = new List<AssessmentSection>();
+                }
+            }
 
             return new SimpleAssessmentPdf(a, score, sections, LogoLeft, LogoRight)
                 .GeneratePdf();
         }
     }
-
 
     // ============================================================================
     //                           SIMPLE ASSESSMENT PDF
@@ -57,92 +68,91 @@ namespace CAT.AID.Web.Services.PDF
         {
             A = a;
             Score = score;
-            Sections = sections;
+            Sections = sections ?? new List<AssessmentSection>();
         }
-
 
         // ============================================================================
         public override void ComposeContent(IContainer container)
         {
             container.Column(col =>
             {
+                col.Spacing(20);
                 col.Item().Element(CandidateSection);
                 col.Item().Element(ScoreSummarySection);
                 col.Item().Element(SectionScoresTable);
             });
         }
 
-
         // ============================================================================
         //                            CANDIDATE DETAILS
         // ============================================================================
         private void CandidateSection(IContainer container)
         {
-            container.Section(section =>
+            container.Column(col =>
             {
-                section.Title("Candidate Details");
+                col.Item().Text("Candidate Details")
+                    .FontSize(18).Bold().FontColor("#003366");
 
-                section.Content().Column(col =>
+                col.Item().Text($"Name: {A.Candidate.FullName}");
+                col.Item().Text($"DOB: {A.Candidate.DOB:dd-MMM-yyyy}");
+                col.Item().Text($"Gender: {A.Candidate.Gender}");
+                col.Item().Text($"Disability: {A.Candidate.DisabilityType}");
+                col.Item().Text($"Address: {A.Candidate.CommunicationAddress}");
+
+                if (!string.IsNullOrWhiteSpace(A.Candidate.PhotoFilePath))
                 {
-                    col.Item().Text($"Name: {A.Candidate.FullName}");
-                    col.Item().Text($"DOB: {A.Candidate.DOB:dd-MMM-yyyy}");
-                    col.Item().Text($"Gender: {A.Candidate.Gender}");
-                    col.Item().Text($"Disability: {A.Candidate.DisabilityType}");
-                    col.Item().Text($"Address: {A.Candidate.CommunicationAddress}");
+                    var absPath = Path.Combine(Directory.GetCurrentDirectory(), A.Candidate.PhotoFilePath);
 
-                    if (!string.IsNullOrWhiteSpace(A.Candidate.PhotoFilePath))
+                    if (File.Exists(absPath))
                     {
-                        var absPath = Path.Combine(Directory.GetCurrentDirectory(), A.Candidate.PhotoFilePath);
-
-                        if (File.Exists(absPath))
-                            col.Item().AlignCenter().Image(absPath);
+                        col.Item()
+                           .PaddingTop(10)
+                           .AlignCenter()
+                           .Image(absPath, ImageScaling.FitWidth);
                     }
-                });
+                }
             });
         }
-
 
         // ============================================================================
         //                            SCORE SUMMARY
         // ============================================================================
         private void ScoreSummarySection(IContainer container)
         {
-            container.Section(section =>
+            container.Column(col =>
             {
-                section.Title("Assessment Summary");
+                col.Item().Text("Assessment Summary")
+                    .FontSize(18).Bold().FontColor("#003366");
 
                 double pct = Score.MaxScore > 0
                     ? (Score.TotalScore * 100.0 / Score.MaxScore)
                     : 0;
 
-                section.Content().Column(col =>
-                {
-                    col.Item().Text($"Total Score: {Score.TotalScore}");
-                    col.Item().Text($"Maximum Score: {Score.MaxScore}");
-                    col.Item().Text($"Percentage: {pct:F1}%");
-                    col.Item().Text($"Status: {A.Status}");
-                    col.Item().Text($"Submitted On: {A.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}");
-                });
+                col.Item().Text($"Total Score: {Score.TotalScore}");
+                col.Item().Text($"Maximum Score: {Score.MaxScore}");
+                col.Item().Text($"Percentage: {pct:F1}%");
+                col.Item().Text($"Status: {A.Status}");
+                col.Item().Text($"Submitted On: {A.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}");
             });
         }
-
 
         // ============================================================================
         //                         SECTION SCORES TABLE
         // ============================================================================
         private void SectionScoresTable(IContainer container)
         {
-            container.Section(section =>
+            container.Column(col =>
             {
-                section.Title("Section Scores");
+                col.Item().Text("Section Scores")
+                    .FontSize(18).Bold().FontColor("#003366");
 
-                section.Content().Table(table =>
+                col.Item().Table(table =>
                 {
                     table.ColumnsDefinition(c =>
                     {
-                        c.RelativeColumn(3);
-                        c.RelativeColumn(1);
-                        c.RelativeColumn(1);
+                        c.RelativeColumn(3); // Section Name
+                        c.RelativeColumn(1); // Score
+                        c.RelativeColumn(1); // Max
                     });
 
                     table.Header(h =>
@@ -158,8 +168,8 @@ namespace CAT.AID.Web.Services.PDF
                         int max = sec.Questions.Count * 3;
 
                         table.Cell().Text(sec.Category);
-                        table.Cell().Text(scr.ToString());
-                        table.Cell().Text(max.ToString());
+                        table.Cell().AlignCenter().Text(scr.ToString());
+                        table.Cell().AlignCenter().Text(max.ToString());
                     }
                 });
             });
