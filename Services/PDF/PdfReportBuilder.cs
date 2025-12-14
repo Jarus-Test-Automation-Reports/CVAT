@@ -1,5 +1,4 @@
 using CAT.AID.Models;
-
 using CAT.AID.Models.DTO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -15,141 +14,165 @@ public static class PdfReportBuilder
         byte[] barChart,
         byte[] doughnutChart)
     {
-        // Defensive defaults
+        // --------------------------------------------------------------------
+        // SAFE DEFAULTS
+        // --------------------------------------------------------------------
         a ??= new Assessment { Candidate = new Candidate { FullName = "Unknown" } };
         sections ??= new List<AssessmentSection>();
         score ??= new AssessmentScoreDTO();
         recommendations ??= new Dictionary<string, List<string>>();
 
-        // Parse saved assessor answers once
-        Dictionary<string, string> answers =
+        var answers =
             string.IsNullOrWhiteSpace(a.AssessmentResultJson)
                 ? new Dictionary<string, string>()
                 : JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson)
                     ?? new Dictionary<string, string>();
 
         using var ms = new MemoryStream();
+
+        // --------------------------------------------------------------------
+        // DOCUMENT
+        // --------------------------------------------------------------------
         var doc = new Document(PageSize.A4, 36, 36, 36, 36);
+        var writer = PdfWriter.GetInstance(doc, ms);
+        doc.Open();
 
-        using (var writer = PdfWriter.GetInstance(doc, ms))
+        // --------------------------------------------------------------------
+        // UNICODE FONT (IMPORTANT FOR TELUGU / HINDI / TAMIL)
+        // --------------------------------------------------------------------
+        string fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
+
+        BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+        var titleFont = new Font(bf, 20, Font.BOLD);
+        var headerFont = new Font(bf, 14, Font.BOLD, new BaseColor(0, 64, 140));
+        var textFont = new Font(bf, 11, Font.NORMAL);
+        var redFont = new Font(bf, 12, Font.BOLD, BaseColor.RED);
+        var greenFont = new Font(bf, 12, Font.BOLD, BaseColor.GREEN);
+        var bold = new Font(bf, 11, Font.BOLD);
+
+        // --------------------------------------------------------------------
+        // TITLE
+        // --------------------------------------------------------------------
+        var title = new Paragraph("ASSESSMENT REPORT", titleFont)
         {
-            doc.Open();
+            Alignment = Element.ALIGN_CENTER
+        };
+        doc.Add(title);
 
-            // ---------------- FONTS ----------------
-            var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20);
-            var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
-            var textFont = FontFactory.GetFont(FontFactory.HELVETICA, 11);
-            var redFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.RED);
-            var greenFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.GREEN);
-            var secFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 13, new BaseColor(0, 64, 140));
+        doc.Add(new Paragraph(" ", textFont));
 
-            // ---------------- TITLE ----------------
-            var title = new Paragraph("ASSESSMENT REPORT", titleFont)
+        // --------------------------------------------------------------------
+        // CANDIDATE SUMMARY
+        // --------------------------------------------------------------------
+        string dateStr = a.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "—";
+
+        doc.Add(new Paragraph($"Name: {a.Candidate.FullName}", textFont));
+        doc.Add(new Paragraph($"DOB: {a.Candidate.DOB:dd-MMM-yyyy}", textFont));
+        doc.Add(new Paragraph($"Gender: {a.Candidate.Gender}", textFont));
+        doc.Add(new Paragraph($"Disability: {a.Candidate.DisabilityType}", textFont));
+        doc.Add(new Paragraph($"Submitted: {dateStr}", textFont));
+        doc.Add(new Paragraph($"Overall Score: {score.TotalScore} / {score.MaxScore}", bold));
+
+        doc.Add(new Paragraph("\n"));
+
+        // --------------------------------------------------------------------
+        // RECOMMENDATIONS
+        // --------------------------------------------------------------------
+        doc.Add(new Paragraph("RECOMMENDATIONS", headerFont));
+
+        if (recommendations.Any())
+        {
+            foreach (var sec in recommendations)
             {
-                Alignment = Element.ALIGN_CENTER
-            };
-            doc.Add(title);
+                doc.Add(new Paragraph(sec.Key, redFont));
 
-            string dateStr = a.SubmittedAt.HasValue ? a.SubmittedAt.Value.ToString("dd-MMM-yyyy") : "—";
-            doc.Add(new Paragraph($"{a.Candidate.FullName} — {dateStr}", textFont));
-            doc.Add(new Paragraph($"Total Score: {score.TotalScore} / {score.MaxScore}", textFont));
-            doc.Add(new Paragraph("\n"));
+                var list = new iTextSharp.text.List(List.UNORDERED, 10f);
+                foreach (var rec in sec.Value)
+                    list.Add(new ListItem(rec, textFont));
 
-
-            // ---------------- RECOMMENDATIONS ----------------
-            doc.Add(new Paragraph("🎯 RECOMMENDATIONS", headerFont));
-
-            if (recommendations.Any())
-            {
-                foreach (var sec in recommendations)
-                {
-                    doc.Add(new Paragraph(sec.Key, redFont));
-
-                    var list = new iTextSharp.text.List(List.UNORDERED);
-                    foreach (var rec in sec.Value)
-                        list.Add(new ListItem(rec, textFont));
-
-                    doc.Add(list);
-                }
+                doc.Add(list);
             }
-            else
-            {
-                doc.Add(new Paragraph(
-                    "🌟 No recommendations required — strong performance across all domains.",
-                    greenFont));
-            }
-
-            doc.Add(new Paragraph("\n"));
-
-
-            // ---------------- SECTION SCORE TABLES ----------------
-            doc.Add(new Paragraph("📑 SECTION BREAKDOWN", headerFont));
-            doc.Add(new Paragraph("\n"));
-
-            foreach (var sec in sections)
-            {
-                doc.Add(new Paragraph(sec.Category, secFont));
-
-                PdfPTable table = new PdfPTable(3)
-                {
-                    WidthPercentage = 100
-                };
-                table.SetWidths(new float[] { 60f, 10f, 30f });
-
-                // Header row
-                var bold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11);
-                table.AddCell(new PdfPCell(new Phrase("Question", bold)) { Padding = 6 });
-                table.AddCell(new PdfPCell(new Phrase("Score", bold)) { Padding = 6, HorizontalAlignment = Element.ALIGN_CENTER });
-                table.AddCell(new PdfPCell(new Phrase("Comments", bold)) { Padding = 6 });
-
-                foreach (var q in sec.Questions)
-                {
-                    answers.TryGetValue($"SCORE_{q.Id}", out string scr);
-                    answers.TryGetValue($"CMT_{q.Id}", out string cmt);
-
-                    scr = scr ?? "0";
-                    cmt = string.IsNullOrWhiteSpace(cmt) ? "-" : cmt;
-
-                    table.AddCell(new PdfPCell(new Phrase(q.Text, textFont)) { Padding = 6 });
-                    table.AddCell(new PdfPCell(new Phrase(scr, textFont)) { Padding = 6, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table.AddCell(new PdfPCell(new Phrase(cmt, textFont)) { Padding = 6 });
-                }
-
-                doc.Add(table);
-                doc.Add(new Paragraph("\n"));
-            }
-
-
-            // ---------------- CHARTS ----------------
-            if (barChart != null && barChart.Length > 0)
-            {
-                try
-                {
-                    var img = Image.GetInstance(barChart);
-                    img.ScaleToFit(420f, 260f);
-                    img.Alignment = Element.ALIGN_CENTER;
-                    doc.Add(img);
-                }
-                catch { /* ignore invalid image */ }
-            }
-
-            if (doughnutChart != null && doughnutChart.Length > 0)
-            {
-                try
-                {
-                    var img2 = Image.GetInstance(doughnutChart);
-                    img2.ScaleToFit(300f, 200f);
-                    img2.Alignment = Element.ALIGN_CENTER;
-                    doc.Add(img2);
-                }
-                catch { }
-            }
-
-            doc.Close();
         }
+        else
+        {
+            doc.Add(new Paragraph("No recommendations required.", greenFont));
+        }
+
+        doc.Add(new Paragraph("\n\n"));
+
+        // --------------------------------------------------------------------
+        // SECTION TABLES
+        // --------------------------------------------------------------------
+        doc.Add(new Paragraph("SECTION BREAKDOWN", headerFont));
+        doc.Add(new Paragraph("\n"));
+
+        foreach (var sec in sections)
+        {
+            doc.Add(new Paragraph(sec.Category, headerFont));
+
+            PdfPTable table = new PdfPTable(3)
+            {
+                WidthPercentage = 100
+            };
+            table.SetWidths(new float[] { 60f, 10f, 30f });
+
+            table.AddCell(new PdfPCell(new Phrase("Question", bold)) { Padding = 6 });
+            table.AddCell(new PdfPCell(new Phrase("Score", bold)) { Padding = 6, HorizontalAlignment = Element.ALIGN_CENTER });
+            table.AddCell(new PdfPCell(new Phrase("Comments", bold)) { Padding = 6 });
+
+            foreach (var q in sec.Questions)
+            {
+                answers.TryGetValue($"SCORE_{q.Id}", out string scr);
+                answers.TryGetValue($"CMT_{q.Id}", out string cmt);
+
+                table.AddCell(new PdfPCell(new Phrase(q.Text, textFont)) { Padding = 6 });
+                table.AddCell(new PdfPCell(new Phrase(scr ?? "0", textFont))
+                {
+                    Padding = 6,
+                    HorizontalAlignment = Element.ALIGN_CENTER
+                });
+                table.AddCell(new PdfPCell(new Phrase(
+                    string.IsNullOrWhiteSpace(cmt) ? "-" : cmt, textFont))
+                {
+                    Padding = 6
+                });
+            }
+
+            doc.Add(table);
+            doc.Add(new Paragraph("\n"));
+        }
+
+        // --------------------------------------------------------------------
+        // CHARTS
+        // --------------------------------------------------------------------
+        AddChart(doc, barChart, maxW: 420, maxH: 260);
+        AddChart(doc, doughnutChart, maxW: 300, maxH: 200);
+
+        // --------------------------------------------------------------------
+        // CLOSE
+        // --------------------------------------------------------------------
+        doc.Close();
+        writer.Close();
 
         return ms.ToArray();
     }
+
+    // ------------------------------------------------------------------------
+    // SAFE CHART IMAGE LOADER
+    // ------------------------------------------------------------------------
+    private static void AddChart(Document doc, byte[] data, float maxW, float maxH)
+    {
+        if (data == null || data.Length == 0) return;
+
+        try
+        {
+            var img = Image.GetInstance(data);
+            img.Alignment = Element.ALIGN_CENTER;
+            img.ScaleToFit(maxW, maxH);
+            doc.Add(img);
+            doc.Add(new Paragraph("\n"));
+        }
+        catch { /* ignore invalid images */ }
+    }
 }
-
-
