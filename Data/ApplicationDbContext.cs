@@ -1,6 +1,6 @@
 ﻿using CAT.AID.Models;
 using CAT.AID.Web.Models;
-using CAT.AID.Web.Models.DTO;
+using CAT.AID.Models.DTO;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,3 +47,4 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<AssessmentSection> AssessmentSections { get; set; }
 
 }
+
