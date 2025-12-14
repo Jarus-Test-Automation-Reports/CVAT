@@ -13,11 +13,11 @@ namespace CAT.AID.Web.Services.PDF
         private readonly byte[]? BarChart;
         private readonly byte[]? LineChart;
 
-        // ----------------------------------------------------------------------
-        // Constructor
-        // ----------------------------------------------------------------------
-        public ProgressReportGenerator(Candidate candidate, List<Assessment> history,
-            byte[]? barChart = null, byte[]? lineChart = null)
+        public ProgressReportGenerator(
+            Candidate candidate,
+            List<Assessment> history,
+            byte[]? barChart = null,
+            byte[]? lineChart = null)
         {
             Candidate = candidate;
             History = history ?? new List<Assessment>();
@@ -25,20 +25,14 @@ namespace CAT.AID.Web.Services.PDF
             LineChart = lineChart;
         }
 
-        // ----------------------------------------------------------------------
-        // Document Metadata
-        // ----------------------------------------------------------------------
+        // Metadata
         public DocumentMetadata GetMetadata() => new DocumentMetadata
         {
             Title = "Progress Assessment Report",
-            Author = "CAT-AID System",
-            Subject = "Vocational Progress Tracking",
-            Keywords = "Assessment, Progress, Candidate"
+            Author = "CAT-AID System"
         };
 
-        // ----------------------------------------------------------------------
-        // Document Layout
-        // ----------------------------------------------------------------------
+        // Document root
         public void Compose(IDocumentContainer container)
         {
             container.Page(page =>
@@ -49,186 +43,196 @@ namespace CAT.AID.Web.Services.PDF
 
                 page.Content().PaddingVertical(10).Element(ComposeBody);
 
-                page.Footer().AlignCenter().Text(x =>
+                page.Footer().AlignCenter().Text(t =>
                 {
-                    x.Span("Page ");
-                    x.CurrentPageNumber();
-                    x.Span(" of ");
-                    x.TotalPages();
+                    t.Span("Page ");
+                    t.CurrentPageNumber();
+                    t.Span(" / ");
+                    t.TotalPages();
                 });
             });
         }
 
-        // ----------------------------------------------------------------------
-        // Header (H-A Style)
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // HEADER
+        // ------------------------------------------------------------
         private void ComposeHeader(IContainer container)
         {
+            var logoLeft  = Path.Combine("wwwroot", "Images", "20240912282747915.png");
+            var logoRight = Path.Combine("wwwroot", "Images", "202409121913074416.png");
+
             container.Row(row =>
             {
-                row.RelativeItem().AlignLeft().Height(50).Image("wwwroot/Images/20240912282747915.png");
-
-                row.ConstantItem(300).AlignCenter().Stack(stack =>
+                row.RelativeItem().Height(50).AlignLeft().Element(x =>
                 {
-                    stack.Spacing(2);
-                    stack.Text("Progress Assessment Report").FontSize(18).SemiBold().FontColor(Colors.Blue.Darken2);
-                    stack.Text("Comprehensive Vocational Assessment Report").FontSize(12);
+                    if (File.Exists(logoLeft))
+                        x.Image(logoLeft);
                 });
 
-                row.RelativeItem().AlignRight().Height(50).Image("wwwroot/Images/202409121913074416.png");
+                row.ConstantItem(300).AlignCenter().Column(col =>
+                {
+                    col.Item().Text("Progress Assessment Report")
+                        .FontSize(18).SemiBold().FontColor(Colors.Blue.Darken2);
+
+                    col.Item().Text("Comprehensive Vocational Assessment Report")
+                        .FontSize(12);
+                });
+
+                row.RelativeItem().Height(50).AlignRight().Element(x =>
+                {
+                    if (File.Exists(logoRight))
+                        x.Image(logoRight);
+                });
             });
         }
 
-        // ----------------------------------------------------------------------
-        // BODY
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // BODY CONTENT
+        // ------------------------------------------------------------
         private void ComposeBody(IContainer container)
         {
-            container.Stack(stack =>
+            container.Column(col =>
             {
-                stack.Spacing(15);
+                col.Spacing(15);
 
-                stack.Element(ComposeCandidateInfo);
-
-                stack.Element(ComposeAssessmentOverview);
-
-                stack.Element(ComposeCharts);
-
-                stack.Element(ComposeSectionComparison);
-
-                stack.Element(ComposeStrengthWeakness);
-
-                stack.Element(ComposeRecommendations);
-
-                stack.Element(ComposeSignatures);
+                col.Item().Element(ComposeCandidateInfo);
+                col.Item().Element(ComposeAssessmentOverview);
+                col.Item().Element(ComposeCharts);
+                col.Item().Element(ComposeSectionComparison);
+                col.Item().Element(ComposeStrengthWeakness);
+                col.Item().Element(ComposeRecommendations);
+                col.Item().Element(ComposeSignatures);
             });
         }
 
-        // ----------------------------------------------------------------------
-        // Candidate Details Section
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // CANDIDATE SECTION
+        // ------------------------------------------------------------
         private void ComposeCandidateInfo(IContainer container)
         {
-            container.Section(section =>
-            {
-                section.Header().Text("Candidate Details")
-                    .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
-
-                section.Content().Padding(10).Border(1).BorderColor(Colors.Grey.Lighten2).Grid(grid =>
+            container.Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10)
+                .Column(col =>
                 {
-                    grid.Columns(2);
+                    col.Item().Text("Candidate Details")
+                        .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
 
-                    grid.Item(1).Text(text =>
+                    col.Item().Row(row =>
                     {
-                        text.Span("Name: ").SemiBold(); text.Span(Candidate.FullName + "\n");
-                        text.Span("Gender: ").SemiBold(); text.Span(Candidate.Gender + "\n");
-                        text.Span("DOB: ").SemiBold(); text.Span(Candidate.DOB.ToShortDateString() + "\n");
-                        text.Span("Disability Type: ").SemiBold(); text.Span(Candidate.DisabilityType + "\n");
-                        text.Span("Education: ").SemiBold(); text.Span(Candidate.Education + "\n");
-                        text.Span("Residential Area: ").SemiBold(); text.Span(Candidate.ResidentialArea + "\n");
-                        text.Span("Contact: ").SemiBold(); text.Span(Candidate.ContactNumber + "\n");
-                        text.Span("Address: ").SemiBold(); text.Span(Candidate.CommunicationAddress + "\n");
-                    });
+                        row.RelativeItem().Column(left =>
+                        {
+                            left.Item().Text(t =>
+                            {
+                                t.Span("Name: ").SemiBold();            t.Span(Candidate.FullName + "\n");
+                                t.Span("Gender: ").SemiBold();          t.Span(Candidate.Gender + "\n");
+                                t.Span("DOB: ").SemiBold();             t.Span(Candidate.DOB.ToShortDateString() + "\n");
+                                t.Span("Disability: ").SemiBold();      t.Span(Candidate.DisabilityType + "\n");
+                                t.Span("Education: ").SemiBold();       t.Span(Candidate.Education + "\n");
+                                t.Span("Area: ").SemiBold();            t.Span(Candidate.ResidentialArea + "\n");
+                                t.Span("Contact: ").SemiBold();         t.Span(Candidate.ContactNumber + "\n");
+                                t.Span("Address: ").SemiBold();         t.Span(Candidate.CommunicationAddress + "\n");
+                            });
+                        });
 
-                    grid.Item(1).AlignRight().Width(120).Height(140).Border(1).Image(
-                        Candidate.PhotoFilePath ?? "wwwroot/Images/no-photo.png",
-                        ImageScaling.FitArea);
+                        row.ConstantItem(120).Height(140).Border(1).Element(img =>
+                        {
+                            var path = Candidate.PhotoFilePath ?? "wwwroot/Images/no-photo.png";
+                            if (File.Exists(path))
+                                img.Image(path);
+                        });
+                    });
                 });
-            });
         }
 
-        // ----------------------------------------------------------------------
-        // Assessment Overview Table
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // OVERVIEW TABLE
+        // ------------------------------------------------------------
         private void ComposeAssessmentOverview(IContainer container)
         {
-            container.Section(section =>
+            container.Column(col =>
             {
-                section.Header().Text("Assessment Overview")
+                col.Item().Text("Assessment Overview")
                     .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
 
-                section.Content().Table(table =>
+                col.Item().Table(table =>
                 {
-                    table.ColumnsDefinition(cols =>
+                    table.ColumnsDefinition(c =>
                     {
-                        cols.RelativeColumn(); // Date
-                        cols.RelativeColumn(); // Total
-                        cols.RelativeColumn(); // Max
-                        cols.RelativeColumn(); // %
-                        cols.RelativeColumn(); // Status
+                        c.RelativeColumn();
+                        c.RelativeColumn();
+                        c.RelativeColumn();
+                        c.RelativeColumn();
+                        c.RelativeColumn();
                     });
 
-                    table.Header(h =>
+                    table.Header(header =>
                     {
-                        h.Cell().Text("Date").SemiBold();
-                        h.Cell().Text("Score").SemiBold();
-                        h.Cell().Text("Max").SemiBold();
-                        h.Cell().Text("Percent").SemiBold();
-                        h.Cell().Text("Status").SemiBold();
+                        header.Cell().Text("Date").SemiBold();
+                        header.Cell().Text("Score").SemiBold();
+                        header.Cell().Text("Max").SemiBold();
+                        header.Cell().Text("%").SemiBold();
+                        header.Cell().Text("Status").SemiBold();
                     });
 
                     foreach (var a in History.OrderBy(x => x.CreatedAt))
                     {
                         var score = string.IsNullOrWhiteSpace(a.ScoreJson)
                             ? new AssessmentScoreDTO()
-                            : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson);
+                            : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson)!;
 
-                        double pct = score.MaxScore > 0
-                            ? Math.Round((double)score.TotalScore / score.MaxScore * 100, 1)
-                            : 0;
+                        double pct = score.MaxScore > 0 ? Math.Round(score.TotalScore * 100.0 / score.MaxScore, 1) : 0;
 
                         table.Cell().Text(a.CreatedAt.ToShortDateString());
                         table.Cell().Text(score.TotalScore.ToString());
                         table.Cell().Text(score.MaxScore.ToString());
-                        table.Cell().Text(pct + "%");
+                        table.Cell().Text($"{pct}%");
                         table.Cell().Text(a.Status.ToString());
                     }
                 });
             });
         }
 
-        // ----------------------------------------------------------------------
-        // Charts
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // CHARTS
+        // ------------------------------------------------------------
         private void ComposeCharts(IContainer container)
         {
-            if ((BarChart == null || BarChart.Length == 0) &&
-                (LineChart == null || LineChart.Length == 0))
+            if (BarChart == null && LineChart == null)
                 return;
 
-            container.Section(section =>
+            container.Column(col =>
             {
-                section.Header().Text("Progress Charts")
+                col.Item().Text("Progress Charts")
                     .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
 
-                section.Content().Row(row =>
+                col.Item().Row(row =>
                 {
                     if (BarChart != null)
-                        row.RelativeItem().Height(200).Image(BarChart, ImageScaling.FitArea);
+                        row.RelativeItem().Height(200).Image(BarChart);
 
                     if (LineChart != null)
-                        row.RelativeItem().Height(200).Image(LineChart, ImageScaling.FitArea);
+                        row.RelativeItem().Height(200).Image(LineChart);
                 });
             });
         }
 
-        // ----------------------------------------------------------------------
-        // Section-wise Comparison (S1: Table + Cards)
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // SECTION COMPARISON
+        // ------------------------------------------------------------
         private void ComposeSectionComparison(IContainer container)
         {
-            container.Section(section =>
+            var latest = History.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+            if (latest == null) return;
+
+            var score = JsonSerializer.Deserialize<AssessmentScoreDTO>(latest.ScoreJson);
+            if (score == null || score.SectionScores == null) return;
+
+            container.Column(col =>
             {
-                section.Header().Text("Section-wise Comparison")
+                col.Item().Text("Section-wise Comparison")
                     .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
 
-                var latest = History.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
-                if (latest == null) return;
-
-                var score = JsonSerializer.Deserialize<AssessmentScoreDTO>(latest.ScoreJson);
-
-                // Table
-                section.Content().Table(table =>
+                // table
+                col.Item().Table(table =>
                 {
                     table.ColumnsDefinition(c =>
                     {
@@ -249,98 +253,82 @@ namespace CAT.AID.Web.Services.PDF
                     }
                 });
 
-                section.Content().PaddingTop(10).Text("Visual Summary:")
-                    .FontSize(12).SemiBold();
+                // visual cards
+                col.Item().PaddingTop(10).Text("Visual Summary:").SemiBold();
 
-                // Cards
-                section.Content().Row(row =>
+                col.Item().Row(row =>
                 {
                     row.Spacing(10);
 
                     foreach (var sec in score.SectionScores)
                     {
-                        row.RelativeItem().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(8).Stack(stack =>
-                        {
-                            stack.Text(sec.Key).SemiBold();
-                            stack.Text("Score: " + sec.Value);
-                        });
+                        row.RelativeItem().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(8)
+                            .Column(c =>
+                            {
+                                c.Item().Text(sec.Key).SemiBold();
+                                c.Item().Text("Score: " + sec.Value);
+                            });
                     }
                 });
             });
         }
 
-        // ----------------------------------------------------------------------
-        // Strengths & Weakness
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // STRENGTH & WEAKNESS
+        // ------------------------------------------------------------
         private void ComposeStrengthWeakness(IContainer container)
         {
-            container.Section(section =>
+            container.Row(row =>
             {
-                section.Header().Text("Strengths & Weaknesses")
-                    .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
-
-                section.Content().Row(row =>
+                row.RelativeItem().Border(1).Padding(8).Column(col =>
                 {
-                    row.RelativeItem().Border(1).Padding(8).Stack(s =>
-                    {
-                        s.Text("Strengths").SemiBold();
-                        s.Text("• Consistent improvement across domains");
-                        s.Text("• Positive learning curve");
-                    });
+                    col.Item().Text("Strengths").SemiBold();
+                    col.Item().Text("• Consistent improvement");
+                    col.Item().Text("• Strong learning curve");
+                });
 
-                    row.RelativeItem().Border(1).Padding(8).Stack(s =>
-                    {
-                        s.Text("Weaknesses").SemiBold();
-                        s.Text("• Areas needing targeted training");
-                        s.Text("• Requires more reinforcement");
-                    });
+                row.RelativeItem().Border(1).Padding(8).Column(col =>
+                {
+                    col.Item().Text("Weaknesses").SemiBold();
+                    col.Item().Text("• Needs reinforcement in difficult tasks");
+                    col.Item().Text("• Areas requiring targeted training");
                 });
             });
         }
 
-        // ----------------------------------------------------------------------
-        // Recommendations
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // RECOMMENDATIONS
+        // ------------------------------------------------------------
         private void ComposeRecommendations(IContainer container)
         {
-            container.Section(section =>
+            container.Column(col =>
             {
-                section.Header().Text("Recommendations")
+                col.Item().Text("Recommendations")
                     .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
 
-                section.Content().Stack(stack =>
-                {
-                    stack.Spacing(5);
-                    stack.Text("• Provide consistent vocational exposure");
-                    stack.Text("• Reinforce skills through practice");
-                    stack.Text("• Monitor progress every 3 months");
-                });
+                col.Item().Text("• Provide vocational exposure");
+                col.Item().Text("• Reinforce through structured practice");
+                col.Item().Text("• Monitor every 3 months");
             });
         }
 
-        // ----------------------------------------------------------------------
-        // Signatures
-        // ----------------------------------------------------------------------
+        // ------------------------------------------------------------
+        // SIGNATURES
+        // ------------------------------------------------------------
         private void ComposeSignatures(IContainer container)
         {
-            container.Section(section =>
+            container.PaddingTop(20).Row(row =>
             {
-                section.Header().Text("Signatures")
-                    .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
-
-                section.Content().PaddingTop(20).Row(row =>
+                row.RelativeItem().Column(c =>
                 {
-                    row.RelativeItem().Stack(s =>
-                    {
-                        s.Text("________________________").SemiBold();
-                        s.Text("Assessor");
-                    });
+                    c.Item().Text("________________________").SemiBold();
+                    c.Item().Text("Assessor");
+                });
 
-                    row.RelativeItem().Stack(s =>
-                    {
-                        s.Text("________________________").SemiBold();
-                        s.Text("Lead");
-                    });
+                row.RelativeItem().Column(c =>
+                {
+                    c.Item().Text("________________________").SemiBold();
+                    c.Item().Text("Lead Assessor");
                 });
             });
         }
