@@ -1,4 +1,4 @@
-﻿@using CAT.AID.Models.DTO
+@using CAT.AID.Models.DTO       // ✔ RIGHT
 @model Dictionary<string, List<string>>
 @{
     var score = (AssessmentScoreDTO)ViewBag.Score;
@@ -34,3 +34,4 @@ else
 
 <a href="/Assessments/Summary/@ViewBag.Id" class="btn btn-secondary mt-3">⬅ Back to Summary</a>
 <a href="/Assessments/Report/@ViewBag.Id" class="btn btn-danger mt-3">📄 Download PDF</a>
+
