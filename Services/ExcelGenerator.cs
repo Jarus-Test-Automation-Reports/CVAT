@@ -1,5 +1,5 @@
 ﻿using CAT.AID.Models;
-using CAT.AID.Models.DTO;
+using CAT.AID.Web.Models.DTO;   // ← ADD THIS (correct)
 using OfficeOpenXml;
 using System.Text.Json;
 
@@ -29,3 +29,4 @@ public static class ExcelGenerator
         return pkg.GetAsByteArray();
     }
 }
+
