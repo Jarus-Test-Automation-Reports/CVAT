@@ -1,4 +1,5 @@
-﻿namespace CAT.AID.Web.Models.DTO
+﻿namespace CAT.AID.Models.DTO
+
 {
     public class AssessmentResultModel
     {
@@ -16,4 +17,5 @@
         public string? FileUrl { get; set; }
     }
 }
+
 
