@@ -1,4 +1,5 @@
-﻿namespace CAT.AID.Web.Models.DTO
+﻿namespace CAT.AID.Models.DTO
+
 {
     public class ComparisonRowVM
     {
@@ -9,4 +10,5 @@
         public string Difference { get; set; }
     }
 }
+
 
