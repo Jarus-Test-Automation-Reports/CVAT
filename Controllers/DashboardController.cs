@@ -1,8 +1,7 @@
 ﻿using CAT.AID.Models;
-using CAT.AID.Web.Models.DTO;
 using CAT.AID.Web.Data;
 using CAT.AID.Web.Helpers;
-using CAT.AID.Web.Models.DTO;
+using CAT.AID.Models.DTO;
 using CAT.AID.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -97,4 +96,5 @@ public class DashboardController : Controller
     // Export Dashboard PDF
   
 }
+
 
