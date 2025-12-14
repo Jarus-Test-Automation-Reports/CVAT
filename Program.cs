@@ -34,24 +34,32 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Seed default users + roles
+// Seed roles + admin
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    await SeedData.InitializeAsync(userManager, roleManager);   // <--- NOW VALID
+    await SeedData.InitializeAsync(userManager, roleManager);
 }
 
-app.UseHttpsRedirection();
+// ❌ REMOVE HTTPS REDIRECTION ON RENDER
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
+// MVC First
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
+
+// Razor pages
+app.MapRazorPages();
 
 app.Run();
