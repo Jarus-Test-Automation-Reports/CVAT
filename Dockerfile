@@ -1,39 +1,44 @@
 # ============================
-# 1) Build Stage
+#   BUILD STAGE
 # ============================
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-
 WORKDIR /src
 
-# Copy csproj FIRST (better cache)
-COPY *.csproj ./
+# Copy only csproj first (better caching)
+COPY CAT.AID.Web.csproj ./
 
 # Restore dependencies
 RUN dotnet restore --disable-parallel
 
-# Copy entire project
+# Copy the rest of the project
 COPY . .
 
-# Publish in Release mode
+# Publish
 RUN dotnet publish -c Release -o /app/publish
 
 
 # ============================
-# 2) Runtime Stage
+#   RUNTIME STAGE
 # ============================
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
-
 WORKDIR /app
 
-# Copy published output to final runtime image
-COPY --from=build /app/publish .
+# Ensure Linux has required global fonts (QuestPDF PDF rendering)
+RUN apt-get update && apt-get install -y \
+    fontconfig \
+    fonts-dejavu \
+    && rm -rf /var/lib/apt/lists/*
 
-# Ensure static files (images, css, js) are included
-RUN ls -R /app/wwwroot || echo "wwwroot not found!"
+# Copy published output
+COPY --from=build /app/publish ./
 
-# Expose port
+# Ensure wwwroot, images, data files are included
+# (sometimes Docker ignores empty folders)
+RUN mkdir -p /app/wwwroot/Images
+RUN mkdir -p /app/wwwroot/data
+
+# Expose Render/Fly.io compatible port
+ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
-ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 
-# Start application
 ENTRYPOINT ["dotnet", "CAT.AID.Web.dll"]
