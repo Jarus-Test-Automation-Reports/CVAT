@@ -1,4 +1,5 @@
-namespace CAT.AID.Web.Models.DTO
+namespace CAT.AID.Models.DTO
+
 {
     public class AssessmentAnswerDTO
     {
@@ -7,3 +8,4 @@ namespace CAT.AID.Web.Models.DTO
         public string? FileName { get; set; }
     }
 }
+
