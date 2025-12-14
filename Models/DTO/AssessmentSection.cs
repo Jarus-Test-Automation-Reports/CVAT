@@ -1,4 +1,5 @@
-namespace CAT.AID.Web.Models.DTO
+namespace CAT.AID.Models.DTO
+
 {
     public class AssessmentSection
     {
@@ -16,3 +17,4 @@ namespace CAT.AID.Web.Models.DTO
         public int ScoreWeight { get; set; } = 1;
     }
 }
+
