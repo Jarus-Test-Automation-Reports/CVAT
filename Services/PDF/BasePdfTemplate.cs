@@ -15,39 +15,69 @@ namespace CAT.AID.Web.Services.PDF
             _title = title;
             _logoLeft = logoLeft;
             _logoRight = logoRight;
+
+            QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        public DocumentMetadata GetMetadata() => new DocumentMetadata();
+        public DocumentMetadata GetMetadata() => new DocumentMetadata
+        {
+            Title = _title,
+            Author = "CAT-AID System"
+        };
+
+        public DocumentSettings GetSettings() => DocumentSettings.Default;
 
         public void Compose(IDocumentContainer container)
         {
             container.Page(page =>
             {
                 page.Margin(40);
+                page.DefaultTextStyle(x => x.FontSize(11).FontFamily("Arial"));
 
-                page.Header().Row(row =>
+                // ---------------- HEADER ----------------
+                page.Header().Element(ComposeHeader);
+
+                // ---------------- CONTENT ----------------
+                page.Content().Element(ComposeContent);
+
+                // ---------------- FOOTER ----------------
+                page.Footer().AlignCenter().Text(t =>
                 {
-                    row.RelativeItem().AlignLeft().Image(_logoLeft, ImageScaling.FitHeight);
-                    row.ConstantItem(300).AlignCenter().Text(_title)
-                        .FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
-                    row.RelativeItem().AlignRight().Image(_logoRight, ImageScaling.FitHeight);
+                    t.Span("Page ");
+                    t.CurrentPageNumber();
+                    t.Span(" of ");
+                    t.TotalPages();
+                }).FontSize(10);
+            });
+        }
+
+        private void ComposeHeader(IContainer container)
+        {
+            container.Row(row =>
+            {
+                // Left Logo
+                row.ConstantItem(100).Height(60).Element(e =>
+                {
+                    if (File.Exists(_logoLeft))
+                        e.Image(_logoLeft);   // new Image API
                 });
 
-                page.Content().Section(sec =>
-                {
-                    sec.Content().Element(ComposeContent);
-                });
+                // Title
+                row.RelativeItem().AlignCenter().Text(_title)
+                    .FontSize(18)
+                    .Bold()
+                    .FontColor(Colors.Blue.Darken2);
 
-                page.Footer().AlignCenter().Text(txt =>
+                // Right Logo
+                row.ConstantItem(100).Height(60).Element(e =>
                 {
-                    txt.Span("Page ");
-                    txt.CurrentPageNumber();
-                    txt.Span(" of ");
-                    txt.TotalPages();
+                    if (File.Exists(_logoRight))
+                        e.Image(_logoRight);  // new Image API
                 });
             });
         }
 
+        // Child class must implement this
         public abstract void ComposeContent(IContainer container);
     }
 }
