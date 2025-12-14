@@ -1,4 +1,4 @@
-﻿using QuestPDF.Fluent;
+using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using QuestPDF.Helpers;
 
@@ -17,6 +17,7 @@ namespace CAT.AID.Web.Services
                 {
                     page.Margin(20);
 
+                    // HEADER
                     page.Header().Column(col =>
                     {
                         col.Item().Text(title)
@@ -32,6 +33,7 @@ namespace CAT.AID.Web.Services
                         }
                     });
 
+                    // CONTENT TABLE
                     page.Content().Table(table =>
                     {
                         table.ColumnsDefinition(columns =>
@@ -45,11 +47,11 @@ namespace CAT.AID.Web.Services
 
                         table.Header(header =>
                         {
-                            header.Cell().Element(StyleHeader).Text("Question");
-                            header.Cell().Element(StyleHeader).Text("1st Score");
-                            header.Cell().Element(StyleHeader).Text("Latest Score");
-                            header.Cell().Element(StyleHeader).Text("Difference");
-                            header.Cell().Element(StyleHeader).Text("Notes");
+                            header.Cell().Element(StyleHeader).Text("Question").FontColor(Colors.White).Bold();
+                            header.Cell().Element(StyleHeader).Text("1st Score").FontColor(Colors.White).Bold();
+                            header.Cell().Element(StyleHeader).Text("Latest Score").FontColor(Colors.White).Bold();
+                            header.Cell().Element(StyleHeader).Text("Difference").FontColor(Colors.White).Bold();
+                            header.Cell().Element(StyleHeader).Text("Notes").FontColor(Colors.White).Bold();
                         });
 
                         foreach (var r in rows)
@@ -62,6 +64,7 @@ namespace CAT.AID.Web.Services
                         }
                     });
 
+                    // FOOTER
                     page.Footer()
                         .AlignCenter()
                         .Text(txt =>
@@ -77,19 +80,22 @@ namespace CAT.AID.Web.Services
             return document.GeneratePdf();
         }
 
-        private static IContainer StyleHeader(IContainer container) =>
-            container
+        // FIXED STYLE WRAPPERS
+        private static IContainer StyleHeader(IContainer container)
+        {
+            return container
                 .Background("#004080")
                 .Padding(5)
                 .AlignCenter();
-              //  .FontColor(Colors.White)
-              //  .Bold();
+        }
 
-        private static IContainer StyleCell(IContainer container) =>
-            container
+        private static IContainer StyleCell(IContainer container)
+        {
+            return container
                 .BorderBottom(0.5f)
                 .BorderColor(Colors.Grey.Lighten3)
                 .PaddingVertical(3)
                 .PaddingHorizontal(2);
+        }
     }
 }
