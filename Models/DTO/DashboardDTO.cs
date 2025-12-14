@@ -1,4 +1,5 @@
-﻿namespace CAT.AID.Web.Models.DTO
+﻿namespace CAT.AID.Models.DTO
+
 {
     public class DashboardDTO
     {
@@ -24,3 +25,4 @@
         public List<int> RecentCounts { get; set; } = new();
     }
 }
+
