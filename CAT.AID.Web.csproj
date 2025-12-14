@@ -9,21 +9,24 @@
     <UserSecretsId>ca9ad2ab-fbe6-45cc-9582-609746ea0f85</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="QuestPDF" Version="2024.5.1" />
 
+    <!-- PDF Generation -->
+    <PackageReference Include="QuestPDF" Version="2025.7.4" />
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
-    <PackageReference Include="EPPlus" Version="7.2.5" />
-    <PackageReference Include="EPPlus.Interfaces" Version="8.1.0" />
-
-    <!-- Use iTextSharp classic (5.x) for Linux + .NET 8 -->
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="iTextSharp.xmlworker" Version="5.5.13.4" />
 
+    <!-- Excel -->
+    <!-- Upgraded because 7.2.5 DOES NOT EXIST on NuGet (Docker restore warning) -->
+    <PackageReference Include="EPPlus" Version="7.3.0" />
+    <PackageReference Include="EPPlus.Interfaces" Version="8.1.0" />
+
+    <!-- Entity Framework Core + Identity -->
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
@@ -31,25 +34,23 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2" />
 
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.1" />
+    <!-- PostgreSQL Provider -->
+    <!-- Upgraded to the version NuGet resolves during Docker build -->
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
 
-    <PackageReference Include="QuestPDF" Version="2025.7.4" />
+    <!-- Logging -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+
+    <!-- Utilities -->
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
-</ItemGroup>
 
+  </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Pages\Account\" />
-    <Folder Include="Pages\Shared\" />
-    <Folder Include="Views\Admin\Users\" />
-    <Folder Include="wwwroot\wkhtmltox\" />
-    <Folder Include="wwwroot\uploads\assessments\" />
+    <Folder Include="Migrations/" />
+    <Folder Include="wwwroot/wkhtmltox/" />
+    <Folder Include="wwwroot/uploads/assessments/" />
   </ItemGroup>
 
 </Project>
-
-
-
