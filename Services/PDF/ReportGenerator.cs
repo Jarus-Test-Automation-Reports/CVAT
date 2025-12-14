@@ -1,9 +1,10 @@
 using CAT.AID.Models;
-using CAT.AID.Web.Models.DTO;
+using CAT.AID.Web.Models.DTO;   // ← ADD THIS (correct)
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using QuestPDF.Helpers;
 using System.Text.Json;
+
 
 namespace CAT.AID.Web.Services.PDF
 {
