@@ -1,5 +1,5 @@
 using CAT.AID.Models;
-using CAT.AID.Web.Models.DTO;
+using CAT.AID.Models.DTO;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using QuestPDF.Helpers;
@@ -294,4 +294,5 @@ namespace CAT.AID.Web.Services.PDF
         }
     }
 }
+
 
