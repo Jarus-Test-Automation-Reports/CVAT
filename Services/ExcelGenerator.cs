@@ -1,63 +1,86 @@
-using CAT.AID.Models;
-using CAT.AID.Models.DTO;
-using OfficeOpenXml;
-using System.Text.Json;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
+using QuestPDF.Helpers;
 
-public static class ExcelGenerator
+namespace CAT.AID.Web.Services.PDF
 {
-    public static byte[] BuildScoreSheet(Assessment a)
+    public abstract class BasePdfTemplate : IDocument
     {
-        // ------------------------------------------------------
-        // EPPlus license (required for .NET / Docker)
-        // ------------------------------------------------------
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        private readonly string _title;
+        private readonly string _logoLeft;
+        private readonly string _logoRight;
 
-        // ------------------------------------------------------
-        // SAFELY PARSE SCORE JSON
-        // ------------------------------------------------------
-        AssessmentScoreDTO score;
+        protected BasePdfTemplate(string title, string logoLeft, string logoRight)
+        {
+            _title = title;
+            _logoLeft = logoLeft;
+            _logoRight = logoRight;
 
-        try
-        {
-            score = string.IsNullOrWhiteSpace(a.ScoreJson)
-                ? new AssessmentScoreDTO()
-                : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson)
-                    ?? new AssessmentScoreDTO();
-        }
-        catch
-        {
-            score = new AssessmentScoreDTO();
+            QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        score.SectionScores ??= new Dictionary<string, int>();
-
-        // ------------------------------------------------------
-        // CREATE EXCEL
-        // ------------------------------------------------------
-        using var pkg = new ExcelPackage();
-        var ws = pkg.Workbook.Worksheets.Add("Scores");
-
-        // Header
-        ws.Cells["A1"].Value = "Section";
-        ws.Cells["B1"].Value = "Score";
-
-        int row = 2;
-
-        // Rows
-        foreach (var s in score.SectionScores)
+        public DocumentMetadata GetMetadata() => new DocumentMetadata
         {
-            ws.Cells[row, 1].Value = s.Key;
-            ws.Cells[row, 2].Value = s.Value;
-            row++;
+            Title = _title,
+            Author = "CAT-AID System"
+        };
+
+        public DocumentSettings GetSettings() => DocumentSettings.Default;
+
+        public void Compose(IDocumentContainer container)
+        {
+            container.Page(page =>
+            {
+                page.Margin(40);
+                page.DefaultTextStyle(x => x.FontSize(11).FontFamily("Arial"));
+
+                page.Header().Element(ComposeHeader);
+                page.Content().Element(ComposeContent);
+
+                page.Footer()
+                    .AlignCenter()
+                    .Text(t =>
+                    {
+                        t.Span("Page ");
+                        t.CurrentPageNumber();
+                        t.Span(" of ");
+                        t.TotalPages();
+                    })
+                    .FontSize(10);
+            });
         }
 
-        // Total at bottom
-        ws.Cells[row + 1, 1].Value = "Total";
-        ws.Cells[row + 1, 2].Value = score.TotalScore;
+        private void ComposeHeader(IContainer container)
+        {
+            container.Row(row =>
+            {
+                // Left logo
+                row.ConstantItem(100).Height(60).Element(e =>
+                {
+                    if (File.Exists(_logoLeft))
+                        e.Image(_logoLeft);
+                });
 
-        // Auto-fit columns
-        ws.Cells[ws.Dimension.Address].AutoFitColumns();
+                // Title — FIXED (AlignCenter cannot be chained)
+                row.RelativeItem().Column(col =>
+                {
+                    col.Item()
+                        .AlignCenter()
+                        .Text(_title)
+                        .FontSize(18)
+                        .Bold()
+                        .FontColor(Colors.Blue.Darken2);
+                });
 
-        return pkg.GetAsByteArray();
+                // Right logo
+                row.ConstantItem(100).Height(60).Element(e =>
+                {
+                    if (File.Exists(_logoRight))
+                        e.Image(_logoRight);
+                });
+            });
+        }
+
+        public abstract void ComposeContent(IContainer container);
     }
 }
