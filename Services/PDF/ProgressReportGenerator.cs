@@ -1,4 +1,5 @@
 using CAT.AID.Models;
+using CAT.AID.Models.DTO;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -34,10 +35,8 @@ namespace CAT.AID.Web.Services.PDF
             LogoRight = Path.Combine(root, "wwwroot", "Images", "202409121913074416.png");
             NoPhoto   = Path.Combine(root, "wwwroot", "Images", "no-photo.png");
 
-            // Register System fonts (for Indian languages)
+            // QuestPDF Licensing (required, but NO FONT REGISTRATION!)
             QuestPDF.Settings.License = LicenseType.Community;
-            FontManager.RegisterFont(File.OpenRead(Path.Combine(root, "wwwroot", "fonts", "NotoSans-Regular.ttf")));
-            FontManager.RegisterFont(File.OpenRead(Path.Combine(root, "wwwroot", "fonts", "NotoSans-Bold.ttf")));
         }
 
         public DocumentMetadata GetMetadata() => new DocumentMetadata
@@ -50,15 +49,15 @@ namespace CAT.AID.Web.Services.PDF
         public DocumentSettings GetSettings() => DocumentSettings.Default;
 
         // ------------------------------------------------------------
-        // ROOT DOCUMENT
-        // ------------------------------------------------------------
         public void Compose(IDocumentContainer container)
         {
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
                 page.Margin(30);
-                page.DefaultTextStyle(x => x.FontFamily("NotoSans").FontSize(11));
+
+                // IMPORTANT: NotoSans must exist in system fonts (you already copied into /usr/share/fonts) 
+                page.DefaultTextStyle(x => x.FontFamily("Noto Sans").FontSize(11));
 
                 page.Header().Element(ComposeHeader);
                 page.Content().PaddingVertical(10).Element(ComposeBody);
@@ -72,8 +71,6 @@ namespace CAT.AID.Web.Services.PDF
             });
         }
 
-        // ------------------------------------------------------------
-        // HEADER WITH LOGOS
         // ------------------------------------------------------------
         private void ComposeHeader(IContainer container)
         {
@@ -102,8 +99,6 @@ namespace CAT.AID.Web.Services.PDF
         }
 
         // ------------------------------------------------------------
-        // MAIN BODY
-        // ------------------------------------------------------------
         private void ComposeBody(IContainer container)
         {
             container.Column(col =>
@@ -119,8 +114,6 @@ namespace CAT.AID.Web.Services.PDF
             });
         }
 
-        // ------------------------------------------------------------
-        // CANDIDATE DETAILS
         // ------------------------------------------------------------
         private void ComposeCandidateInfo(IContainer container)
         {
@@ -159,8 +152,6 @@ namespace CAT.AID.Web.Services.PDF
         }
 
         // ------------------------------------------------------------
-        // ASSESSMENT OVERVIEW TABLE
-        // ------------------------------------------------------------
         private void ComposeAssessmentOverview(IContainer container)
         {
             container.Column(col =>
@@ -192,7 +183,7 @@ namespace CAT.AID.Web.Services.PDF
                     {
                         var score = string.IsNullOrWhiteSpace(item.ScoreJson)
                             ? new AssessmentScoreDTO()
-                            : JsonSerializer.Deserialize<AssessmentScoreDTO>(item.ScoreJson) 
+                            : JsonSerializer.Deserialize<AssessmentScoreDTO>(item.ScoreJson)
                                 ?? new AssessmentScoreDTO();
 
                         double pct = score.MaxScore == 0 ? 0 : Math.Round(score.TotalScore * 100.0 / score.MaxScore, 1);
@@ -207,8 +198,6 @@ namespace CAT.AID.Web.Services.PDF
             });
         }
 
-        // ------------------------------------------------------------
-        // CHARTS: BAR + LINE
         // ------------------------------------------------------------
         private void ComposeCharts(IContainer container)
         {
@@ -231,8 +220,6 @@ namespace CAT.AID.Web.Services.PDF
             });
         }
 
-        // ------------------------------------------------------------
-        // SECTION COMPARISON (LATEST ASSESSMENT)
         // ------------------------------------------------------------
         private void ComposeSectionComparison(IContainer container)
         {
@@ -288,8 +275,6 @@ namespace CAT.AID.Web.Services.PDF
         }
 
         // ------------------------------------------------------------
-        // STRENGTHS & WEAKNESSES
-        // ------------------------------------------------------------
         private void ComposeStrengthWeakness(IContainer container)
         {
             container.Row(row =>
@@ -311,8 +296,6 @@ namespace CAT.AID.Web.Services.PDF
         }
 
         // ------------------------------------------------------------
-        // RECOMMENDATIONS
-        // ------------------------------------------------------------
         private void ComposeRecommendations(IContainer container)
         {
             container.Column(col =>
@@ -326,8 +309,6 @@ namespace CAT.AID.Web.Services.PDF
             });
         }
 
-        // ------------------------------------------------------------
-        // SIGNATURE AREA
         // ------------------------------------------------------------
         private void ComposeSignatures(IContainer container)
         {
