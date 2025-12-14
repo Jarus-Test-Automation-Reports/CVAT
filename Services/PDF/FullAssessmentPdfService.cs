@@ -1,11 +1,11 @@
 using CAT.AID.Models;
 using CAT.AID.Models.DTO;
-using CAT.AID.Web.Models.DTO;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System.Text.Json;
 
-namespace CAT.AID.Web.Services.Pdf
+namespace CAT.AID.Web.Services.PDF
 {
     public class FullAssessmentPdfService
     {
@@ -17,157 +17,212 @@ namespace CAT.AID.Web.Services.Pdf
             byte[] barChart,
             byte[] doughnutChart)
         {
-            // Defensive: ensure non-null inputs
+            // Ensure non-null inputs
             a ??= new Assessment { Candidate = new Candidate { FullName = "Unknown" } };
+            score ??= new AssessmentScoreDTO();
             sections ??= new List<AssessmentSection>();
             recommendations ??= new Dictionary<string, List<string>>();
-            score ??= new AssessmentScoreDTO();
 
-            // Parse saved answers once
-            Dictionary<string, string> answers = string.IsNullOrWhiteSpace(a.AssessmentResultJson)
+            Dictionary<string, string> answers =
+                string.IsNullOrWhiteSpace(a.AssessmentResultJson)
                 ? new Dictionary<string, string>()
                 : JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson)
                     ?? new Dictionary<string, string>();
 
-            using var ms = new MemoryStream();
-
-            var doc = new Document(PageSize.A4, 40, 40, 40, 40);
-
-            // Use PdfWriter within using so it gets disposed
-            var writer = PdfWriter.GetInstance(doc, ms);
-            try
+            var model = new PdfModel
             {
-                doc.Open();
+                Assessment = a,
+                Score = score,
+                Sections = sections,
+                Recommendations = recommendations,
+                Answers = answers,
+                BarChart = barChart,
+                DoughnutChart = doughnutChart
+            };
 
-                // ---------- FONT STYLES ----------
-                var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
-                var sectionFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
-                var textFont = FontFactory.GetFont(FontFactory.HELVETICA, 11);
-                var redBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.RED);
-                var greenBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.GREEN);
-                var blueBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12, new BaseColor(0, 64, 140));
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(40);
+                    page.Size(PageSizes.A4);
 
-                // ---------- TITLE ----------
-                doc.Add(new Paragraph("ASSESSMENT REPORT", titleFont) { Alignment = Element.ALIGN_CENTER });
+                    page.Header().Element(c => HeaderSection(c, model));
+                    page.Content().Element(c => BodySection(c, model));
+                    page.Footer().AlignCenter().Text(x =>
+                    {
+                        x.Span("Page ").FontSize(10);
+                        x.CurrentPageNumber().FontSize(10);
+                    });
+                });
+            }).GeneratePdf();
+        }
 
-                string submitted = a.SubmittedAt.HasValue
-                    ? a.SubmittedAt.Value.ToString("dd-MMM-yyyy")
-                    : "—";
-                doc.Add(new Paragraph($"{a.Candidate?.FullName} — {submitted}", textFont) { Alignment = Element.ALIGN_CENTER });
-                doc.Add(new Paragraph("\n"));
+        /* ===========================================
+           HEADER
+        ============================================ */
+        private void HeaderSection(IContainer container, PdfModel model)
+        {
+            container.Column(col =>
+            {
+                col.Spacing(5);
 
-                // ---------- SUMMARY ----------
-                doc.Add(new Paragraph("📌 SUMMARY", sectionFont));
-                doc.Add(new Paragraph($"Total Score: {score.TotalScore} / {score.MaxScore}", textFont));
-                double iqPercent = score.MaxScore > 0
-                    ? Math.Round((double)score.TotalScore / score.MaxScore * 100, 2)
+                col.Item().AlignCenter().Text("ASSESSMENT REPORT")
+                    .FontSize(20).Bold();
+
+                col.Item().AlignCenter().Text($"{model.Assessment.Candidate.FullName}")
+                    .FontSize(12);
+
+                col.Item().AlignCenter().Text($"Submitted: {model.Assessment.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}")
+                    .FontSize(10);
+
+                col.Item().PaddingTop(10).LineHorizontal(1);
+            });
+        }
+
+        /* ===========================================
+           BODY
+        ============================================ */
+        private void BodySection(IContainer container, PdfModel model)
+        {
+            container.Column(col =>
+            {
+                col.Spacing(25);
+
+                col.Item().Element(c => SummaryBlock(c, model));
+                col.Item().Element(c => RecommendationsBlock(c, model));
+                col.Item().Element(c => SectionBreakdown(c, model));
+                col.Item().Element(c => ChartsBlock(c, model));
+            });
+        }
+
+        /* ===========================================
+           SUMMARY BLOCK
+        ============================================ */
+        private void SummaryBlock(IContainer container, PdfModel model)
+        {
+            container.Column(col =>
+            {
+                col.Spacing(5);
+
+                col.Item().Text("📌 SUMMARY").FontSize(14).Bold();
+
+                double pct = model.Score.MaxScore > 0
+                    ? Math.Round((double)model.Score.TotalScore / model.Score.MaxScore * 100, 2)
                     : 0;
-                doc.Add(new Paragraph($"IQ %: {iqPercent}%", textFont));
-                doc.Add(new Paragraph($"Status: {a.Status}", textFont));
-                doc.Add(new Paragraph("\n"));
 
-                // ---------- RECOMMENDATIONS ----------
-                doc.Add(new Paragraph("🎯 RECOMMENDATIONS", sectionFont));
-                if (recommendations.Any())
-                {
-                    foreach (var sec in recommendations)
-                    {
-                        doc.Add(new Paragraph(sec.Key, redBold));
+                col.Item().Text($"Total Score: {model.Score.TotalScore} / {model.Score.MaxScore}");
+                col.Item().Text($"Percentage: {pct}%");
+                col.Item().Text($"Status: {model.Assessment.Status}");
+            });
+        }
 
-                        var ul = new List(List.UNORDERED);
-                        foreach (var rec in sec.Value)
-                            ul.Add(new ListItem(rec, textFont));
-                        doc.Add(ul);
-                    }
-                }
-                else
-                {
-                    doc.Add(new Paragraph("🌟 No recommendations required — all domains show strong performance.", greenBold));
-                }
-
-                doc.Add(new Paragraph("\n"));
-
-                // ---------- SECTION QUESTION BREAKDOWN ----------
-                doc.Add(new Paragraph("📑 SECTION BREAKDOWN", sectionFont));
-                doc.Add(new Paragraph("\n"));
-
-                foreach (var sec in sections)
-                {
-                    doc.Add(new Paragraph(sec.Category, blueBold));
-
-                    PdfPTable table = new PdfPTable(3)
-                    {
-                        WidthPercentage = 100
-                    };
-                    table.SetWidths(new float[] { 60f, 10f, 30f });
-
-                    // Header row (bold)
-                    var hdrFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11);
-                    table.AddCell(new PdfPCell(new Phrase("Question", hdrFont)) { Padding = 6 });
-                    table.AddCell(new PdfPCell(new Phrase("Score", hdrFont)) { Padding = 6, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table.AddCell(new PdfPCell(new Phrase("Comments", hdrFont)) { Padding = 6 });
-
-                    foreach (var q in sec.Questions)
-                    {
-                        answers.TryGetValue($"ANS_{q.Id}", out string ans);
-                        answers.TryGetValue($"SCORE_{q.Id}", out string scr);
-                        answers.TryGetValue($"CMT_{q.Id}", out string cmt);
-
-                        ans = string.IsNullOrWhiteSpace(ans) ? "-" : ans;
-                        scr = string.IsNullOrWhiteSpace(scr) ? "0" : scr;
-                        cmt = string.IsNullOrWhiteSpace(cmt) ? "-" : cmt;
-
-                        table.AddCell(new PdfPCell(new Phrase(q.Text, textFont)) { Padding = 6 });
-                        table.AddCell(new PdfPCell(new Phrase(scr, textFont)) { Padding = 6, HorizontalAlignment = Element.ALIGN_CENTER });
-                        table.AddCell(new PdfPCell(new Phrase(cmt, textFont)) { Padding = 6 });
-                    }
-
-                    doc.Add(table);
-                    doc.Add(new Paragraph("\n"));
-                }
-
-                // ---------- CHART IMAGES ----------
-                // iTextSharp Image.GetInstance accepts byte[] directly
-                if (barChart != null && barChart.Length > 0)
-                {
-                    try
-                    {
-                        var chart1 = iTextSharp.text.Image.GetInstance(barChart);
-                        chart1.ScaleToFit(420f, 250f);
-                        chart1.Alignment = Element.ALIGN_CENTER;
-                        doc.Add(chart1);
-                        doc.Add(new Paragraph("\n"));
-                    }
-                    catch
-                    {
-                        // ignore chart if invalid image bytes
-                    }
-                }
-
-                if (doughnutChart != null && doughnutChart.Length > 0)
-                {
-                    try
-                    {
-                        var chart2 = iTextSharp.text.Image.GetInstance(doughnutChart);
-                        chart2.ScaleToFit(300f, 200f);
-                        chart2.Alignment = Element.ALIGN_CENTER;
-                        doc.Add(chart2);
-                        doc.Add(new Paragraph("\n"));
-                    }
-                    catch
-                    {
-                        // ignore invalid chart bytes
-                    }
-                }
-            }
-            finally
+        /* ===========================================
+           RECOMMENDATIONS
+        ============================================ */
+        private void RecommendationsBlock(IContainer container, PdfModel model)
+        {
+            container.Column(col =>
             {
-                // ensure document & writer are closed
-                if (doc.IsOpen()) doc.Close();
-                writer?.Close();
-            }
+                col.Spacing(8);
+                col.Item().Text("🎯 RECOMMENDATIONS").FontSize(14).Bold();
 
-            return ms.ToArray();
+                if (!model.Recommendations.Any())
+                {
+                    col.Item().Text("No recommendations — strong performance.").Bold().FontColor(Colors.Green.Medium);
+                    return;
+                }
+
+                foreach (var sec in model.Recommendations)
+                {
+                    col.Item().Text(sec.Key).Bold().FontColor(Colors.Red.Darken2);
+
+                    col.Item().List(list =>
+                    {
+                        foreach (var entry in sec.Value)
+                            list.Item().Text(entry);
+                    });
+                }
+            });
+        }
+
+        /* ===========================================
+           SECTION QUESTION BREAKDOWN
+        ============================================ */
+        private void SectionBreakdown(IContainer container, PdfModel model)
+        {
+            container.Column(col =>
+            {
+                col.Spacing(15);
+                col.Item().Text("📑 SECTION BREAKDOWN").FontSize(14).Bold();
+
+                foreach (var sec in model.Sections)
+                {
+                    col.Item().Text(sec.Category).Bold().FontColor(Colors.Blue.Darken2);
+
+                    col.Item().Table(table =>
+                    {
+                        table.ColumnsDefinition(c =>
+                        {
+                            c.ConstantColumn(260);
+                            c.ConstantColumn(40);
+                            c.RelativeColumn();
+                        });
+
+                        table.Header(h =>
+                        {
+                            h.Cell().Text("Question").Bold();
+                            h.Cell().Text("Score").Bold();
+                            h.Cell().Text("Comments").Bold();
+                        });
+
+                        foreach (var q in sec.Questions)
+                        {
+                            model.Answers.TryGetValue($"SCORE_{q.Id}", out string scr);
+                            model.Answers.TryGetValue($"CMT_{q.Id}", out string cmt);
+
+                            table.Cell().Text(q.Text);
+                            table.Cell().AlignCenter().Text(scr ?? "0");
+                            table.Cell().Text(cmt ?? "-");
+                        }
+                    });
+                }
+            });
+        }
+
+        /* ===========================================
+           CHART IMAGES
+        ============================================ */
+        private void ChartsBlock(IContainer container, PdfModel model)
+        {
+            container.Column(col =>
+            {
+                col.Spacing(20);
+
+                if (model.BarChart?.Length > 0)
+                {
+                    col.Item().AlignCenter().Image(model.BarChart);
+                }
+
+                if (model.DoughnutChart?.Length > 0)
+                {
+                    col.Item().AlignCenter().Image(model.DoughnutChart);
+                }
+            });
+        }
+
+        /* ===========================================
+           INTERNAL MODEL
+        ============================================ */
+        private class PdfModel
+        {
+            public Assessment Assessment { get; set; }
+            public AssessmentScoreDTO Score { get; set; }
+            public List<AssessmentSection> Sections { get; set; }
+            public Dictionary<string, List<string>> Recommendations { get; set; }
+            public Dictionary<string, string> Answers { get; set; }
+            public byte[] BarChart { get; set; }
+            public byte[] DoughnutChart { get; set; }
         }
     }
 }
