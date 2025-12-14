@@ -9,8 +9,15 @@ namespace CAT.AID.Web.Services.PDF
 {
     public class FullAssessmentPdfService
     {
-        private readonly string LogoLeft = "wwwroot/Images/20240912282747915.png";
-        private readonly string LogoRight = "wwwroot/Images/202409121913074416.png";
+        private readonly string LogoLeft;
+        private readonly string LogoRight;
+
+        public FullAssessmentPdfService()
+        {
+            // Convert to absolute paths (Docker-safe)
+            LogoLeft  = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "20240912282747915.png");
+            LogoRight = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "202409121913074416.png");
+        }
 
         public byte[] Generate(
             Assessment a,
@@ -29,9 +36,9 @@ namespace CAT.AID.Web.Services.PDF
         }
     }
 
-    // ================================================================
-    //               QUESTPDF DOCUMENT IMPLEMENTATION
-    // ================================================================
+    // ============================================================================
+    //                            QUESTPDF DOCUMENT
+    // ============================================================================
     public class FullAssessmentReportDocument : BasePdfTemplate
     {
         private readonly Assessment A;
@@ -41,6 +48,10 @@ namespace CAT.AID.Web.Services.PDF
         private readonly Dictionary<string, string> Answers;
         private readonly byte[] BarChart;
         private readonly byte[] DoughnutChart;
+
+        private readonly string LeftLogo;
+        private readonly string RightLogo;
+
 
         public FullAssessmentReportDocument(
             Assessment a,
@@ -54,21 +65,25 @@ namespace CAT.AID.Web.Services.PDF
             : base("Comprehensive Vocational Assessment Report", leftLogo, rightLogo)
         {
             A = a;
-            Score = score;
-            Sections = sections;
-            Recommendations = recommendations;
+            Score = score ?? new AssessmentScoreDTO();
+            Sections = sections ?? new List<AssessmentSection>();
+            Recommendations = recommendations ?? new Dictionary<string, List<string>>();
+
             BarChart = barChart;
             DoughnutChart = doughnutChart;
 
             Answers = string.IsNullOrWhiteSpace(a.AssessmentResultJson)
                 ? new Dictionary<string, string>()
-                : JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson)
-                  ?? new Dictionary<string, string>();
+                : JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson) 
+                    ?? new Dictionary<string, string>();
+
+            LeftLogo = leftLogo;
+            RightLogo = rightLogo;
         }
 
-        // --------------------------------------------------------------------
-        // MAIN CONTENT BUILDER
-        // --------------------------------------------------------------------
+        // ============================================================================
+        // MAIN CONTENT
+        // ============================================================================
         public override void ComposeContent(IContainer container)
         {
             container.PaddingVertical(10).Column(col =>
@@ -87,13 +102,15 @@ namespace CAT.AID.Web.Services.PDF
                     col.Item().Element(c => SectionBreakdown(c, sec));
 
                 col.Item().Element(EvidenceSection);
+
                 col.Item().Element(SignatureSection);
             });
         }
 
-        // --------------------------------------------------------------------
+
+        // ============================================================================
         // COVER PAGE
-        // --------------------------------------------------------------------
+        // ============================================================================
         private void CoverPage(IContainer container)
         {
             container.Column(col =>
@@ -101,68 +118,55 @@ namespace CAT.AID.Web.Services.PDF
                 col.Spacing(10);
 
                 col.Item().AlignCenter().Text("Comprehensive Vocational Assessment Report")
-                    .FontSize(22)
-                    .Bold()
-                    .FontColor("#003366");
+                    .FontSize(22).Bold().FontColor("#003366");
 
-                col.Item().Text($"Candidate: {A.Candidate.FullName}")
-                    .FontSize(14).SemiBold();
-
-                col.Item().Text($"DOB: {A.Candidate.DOB:dd-MMM-yyyy}")
-                    .FontSize(12);
-
-                col.Item().Text($"Gender: {A.Candidate.Gender}")
-                    .FontSize(12);
-
-                col.Item().Text($"Disability: {A.Candidate.DisabilityType}")
-                    .FontSize(12);
-
-                col.Item().Text($"Address: {A.Candidate.CommunicationAddress}")
-                    .FontSize(12);
+                col.Item().Text($"Candidate: {A.Candidate.FullName}").FontSize(14).SemiBold();
+                col.Item().Text($"DOB: {A.Candidate.DOB:dd-MMM-yyyy}").FontSize(12);
+                col.Item().Text($"Gender: {A.Candidate.Gender}").FontSize(12);
+                col.Item().Text($"Disability: {A.Candidate.DisabilityType}").FontSize(12);
+                col.Item().Text($"Address: {A.Candidate.CommunicationAddress}").FontSize(12);
 
                 if (!string.IsNullOrWhiteSpace(A.Candidate.PhotoFilePath))
                 {
-                    col.Item().PaddingTop(10).AlignCenter().Image(A.Candidate.PhotoFilePath, ImageScaling.FitWidth);
+                    var imgPath = Path.Combine(Directory.GetCurrentDirectory(), A.Candidate.PhotoFilePath);
+
+                    if (File.Exists(imgPath))
+                    {
+                        col.Item().PaddingTop(10)
+                            .AlignCenter()
+                            .Image(imgPath, ImageScaling.FitWidth);
+                    }
                 }
             });
         }
 
-        // --------------------------------------------------------------------
+
+        // ============================================================================
         // SUMMARY SECTION
-        // --------------------------------------------------------------------
+        // ============================================================================
         private void SummarySection(IContainer container)
         {
             container.Column(col =>
             {
-                col.Spacing(8);
-
                 col.Item().Text("Assessment Summary")
                     .FontSize(18).Bold().FontColor("#003366");
 
-                col.Item().Text($"Total Score: {Score.TotalScore} / {Score.MaxScore}")
-                    .FontSize(12);
+                col.Item().Text($"Total Score: {Score.TotalScore} / {Score.MaxScore}");
+                double pct = Score.MaxScore > 0 ? (Score.TotalScore * 100.0 / Score.MaxScore) : 0;
 
-                double pct = (Score.TotalScore * 100.0 / Score.MaxScore);
-                col.Item().Text($"Percentage: {pct:F1}%")
-                    .FontSize(12);
+                col.Item().Text($"Percentage: {pct:F1}%");
+                col.Item().Text($"Assessment Status: {A.Status}");
+                col.Item().Text($"Submitted On: {A.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}");
 
-                col.Item().Text($"Assessment Status: {A.Status}")
-                    .FontSize(12);
-
-                col.Item().Text($"Submitted On: {A.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}")
-                    .FontSize(12);
-
-                if (Answers.TryGetValue("SUMMARY_COMMENTS", out var summaryComments))
-                {
-                    col.Item().PaddingTop(5).Text($"Summary Comments:\n{summaryComments}")
-                        .FontSize(12);
-                }
+                if (Answers.TryGetValue("SUMMARY_COMMENTS", out var summary))
+                    col.Item().PaddingTop(5).Text($"Summary Comments:\n{summary}");
             });
         }
 
-        // --------------------------------------------------------------------
-        // RECOMMENDATIONS SECTION
-        // --------------------------------------------------------------------
+
+        // ============================================================================
+        // RECOMMENDATIONS
+        // ============================================================================
         private void RecommendationsSection(IContainer container)
         {
             container.Column(col =>
@@ -172,21 +176,21 @@ namespace CAT.AID.Web.Services.PDF
 
                 foreach (var sec in Recommendations)
                 {
-                    col.Item().Text(sec.Key)
-                        .FontSize(14).Bold().FontColor("#003366");
+                    col.Item().Text(sec.Key).FontSize(14).Bold().FontColor("#003366");
 
                     col.Item().UnorderedList(list =>
                     {
-                        foreach (var item in sec.Value)
-                            list.Item().Text(item).FontSize(12);
+                        foreach (var rec in sec.Value)
+                            list.Item().Text(rec);
                     });
                 }
             });
         }
 
-        // --------------------------------------------------------------------
+
+        // ============================================================================
         // CHARTS
-        // --------------------------------------------------------------------
+        // ============================================================================
         private void ChartsSection(IContainer container)
         {
             container.Row(row =>
@@ -199,9 +203,10 @@ namespace CAT.AID.Web.Services.PDF
             });
         }
 
-        // --------------------------------------------------------------------
-        // SECTION BREAKDOWN TABLE
-        // --------------------------------------------------------------------
+
+        // ============================================================================
+        // SECTION BREAKDOWN
+        // ============================================================================
         private void SectionBreakdown(IContainer container, AssessmentSection sec)
         {
             container.Column(col =>
@@ -213,9 +218,9 @@ namespace CAT.AID.Web.Services.PDF
                 {
                     table.ColumnsDefinition(c =>
                     {
-                        c.RelativeColumn(3);
-                        c.RelativeColumn(1);
-                        c.RelativeColumn(3);
+                        c.RelativeColumn(3);  // Question
+                        c.RelativeColumn(1);  // Score
+                        c.RelativeColumn(3);  // Comments
                     });
 
                     table.Header(h =>
@@ -238,9 +243,10 @@ namespace CAT.AID.Web.Services.PDF
             });
         }
 
-        // --------------------------------------------------------------------
-        // EVIDENCE LIST
-        // --------------------------------------------------------------------
+
+        // ============================================================================
+        // EVIDENCE
+        // ============================================================================
         private void EvidenceSection(IContainer container)
         {
             var evidence = Answers
@@ -248,8 +254,7 @@ namespace CAT.AID.Web.Services.PDF
                 .Select(k => k.Value)
                 .ToList();
 
-            if (!evidence.Any())
-                return;
+            if (!evidence.Any()) return;
 
             container.Column(col =>
             {
@@ -259,14 +264,15 @@ namespace CAT.AID.Web.Services.PDF
                 col.Item().UnorderedList(list =>
                 {
                     foreach (var file in evidence)
-                        list.Item().Text(file).FontSize(12);
+                        list.Item().Text(file);
                 });
             });
         }
 
-        // --------------------------------------------------------------------
+
+        // ============================================================================
         // SIGNATURES
-        // --------------------------------------------------------------------
+        // ============================================================================
         private void SignatureSection(IContainer container)
         {
             container.PaddingTop(20).Row(row =>
