@@ -263,30 +263,35 @@ namespace CAT.AID.Web.Services.PDF
         // ----------------------------------------------------------------------
         // SIGNATURES
         // ----------------------------------------------------------------------
-        private void SignatureSection(IContainer container)
+        // ----------------------------------------------------------------------
+// SIGNATURES
+// ----------------------------------------------------------------------
+private void SignatureBlock(IContainer container)
+{
+    container.Column(col =>
+    {
+        col.Item().Text("Signatures")
+            .FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
+
+        col.Item().Row(row =>
         {
-            container.Column(col =>
+            row.RelativeItem().Column(c =>
             {
-                col.Item().Text("Signatures")
-                    .FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
-
-                col.Item().Row(row =>
-                {
-                    row.RelativeItem().Column(c =>
-                    {
-                        c.Item().Text("Assessor").Bold();
-                        c.Item().Text("____________________");
-                        c.Item().Text(A.Assessor?.FullName ?? "-");
-                    });
-
-                    row.RelativeItem().Column(c =>
-                    {
-                        c.Item().Text("Lead Assessor").Bold();
-                        c.Item().Text("____________________");
-                        c.Item().Text(A.LeadAssessor?.FullName ?? "-");
-                    });
-                });
+                c.Item().Text("Assessor").Bold();
+                c.Item().Text("____________________");
+                c.Item().Text(A.Assessor?.FullName ?? "-");
             });
-        }
+
+            row.RelativeItem().Column(c =>
+            {
+                c.Item().Text("Lead Assessor").Bold();
+                c.Item().Text("____________________");
+                c.Item().Text(A.LeadAssessor?.FullName ?? "-");
+            });
+        });
+    });
+}
+
     }
 }
+
