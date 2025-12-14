@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CAT.AID.Web.Models.DTO
+namespace CAT.AID.Models.DTO
+
 {
     public class AssessmentCompareVM
     {
@@ -10,3 +11,4 @@ namespace CAT.AID.Web.Models.DTO
         public Dictionary<int, int?> Scores { get; set; } = new();
     }
 }
+
