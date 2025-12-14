@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using CAT.AID.Web.Services.PDF;
+using CAT.AID.Models;
+using CAT.AID.Models.DTO;
+using CAT.AID.Web.Services.PDF;   // <-- ADD THIS
 
 namespace CAT.AID.Web.Controllers
 {
@@ -301,6 +303,7 @@ namespace CAT.AID.Web.Controllers
         }
     }
 }
+
 
 
 
