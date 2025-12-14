@@ -1,4 +1,4 @@
-﻿namespace CAT.AID.Models.DTO
+﻿namespace CAT.AID.Web.Models.DTO
 {
     public class ComparisonQuestionRowVM
     {
@@ -12,3 +12,4 @@
 
     }
 }
+
