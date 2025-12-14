@@ -3,9 +3,6 @@ using CAT.AID.Models.DTO;
 using CAT.AID.Web.Data;
 using CAT.AID.Web.Models;
 using CAT.AID.Web.Models.DTO;
-using CAT.AID.Web.Services;
-using CAT.AID.Web.Services.Pdf;
-using CAT.AID.Web.Services.Reports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +16,7 @@ namespace CAT.AID.Web.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _user;
-        private readonly IWebHostEnvironment _environment;
+        private readonly IWebHostEnvironment _env;
 
         public AssessmentsController(
             ApplicationDbContext db,
@@ -28,10 +25,12 @@ namespace CAT.AID.Web.Controllers
         {
             _db = db;
             _user = user;
-            _environment = env;
+            _env = env;
         }
 
-        // -------------------- 1. TASKS FOR ASSESSOR --------------------
+        // ---------------------------------------------------------
+        // 1. MY TASKS
+        // ---------------------------------------------------------
         [Authorize(Roles = "LeadAssessor, Assessor")]
         public async Task<IActionResult> MyTasks()
         {
@@ -65,8 +64,7 @@ namespace CAT.AID.Web.Controllers
                     ),
 
                     StatusMapping = g.ToDictionary(
-                        a => a.Id,
-                        a => a.Status.ToString()
+                        a => a.Id, a => a.Status.ToString()
                     )
                 })
                 .ToList();
@@ -75,35 +73,9 @@ namespace CAT.AID.Web.Controllers
             return View(grouped);
         }
 
-        // -------------------- COMPARE MULTIPLE ASSESSMENTS --------------------
-        [Authorize(Roles = "Assessor, Lead, Admin")]
-        [HttpGet]
-        public async Task<IActionResult> Compare(int candidateId, int[] ids)
-        {
-            if (ids == null || ids.Length < 2)
-                return BadRequest("At least two assessments must be selected.");
-
-            var assessments = await _db.Assessments
-                .Include(a => a.Candidate)
-                .Where(a => ids.Contains(a.Id))
-                .OrderBy(a => a.CreatedAt)
-                .ToListAsync();
-
-            if (!assessments.Any())
-                return NotFound();
-
-            var scoreData = assessments.ToDictionary(
-                a => a.Id,
-                a => string.IsNullOrWhiteSpace(a.ScoreJson)
-                    ? new AssessmentScoreDTO()
-                    : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson)
-            );
-
-            ViewBag.Assessments = assessments;
-            return View("CompareAssessments", scoreData);
-        }
-
-        // -------------------- 2. GET PERFORM ASSESSMENT --------------------
+        // ---------------------------------------------------------
+        // 2. LOAD PERFORM PAGE
+        // ---------------------------------------------------------
         [Authorize(Roles = "Assessor, LeadAssessor, Admin")]
         public async Task<IActionResult> Perform(int id)
         {
@@ -111,18 +83,22 @@ namespace CAT.AID.Web.Controllers
                 .Include(x => x.Candidate)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (a == null) return NotFound();
+            if (a == null)
+                return NotFound();
 
-            var jsonFile = Path.Combine(_environment.WebRootPath, "data", "assessment_questions.json");
-            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(System.IO.File.ReadAllText(jsonFile));
+            var jsonFile = Path.Combine(_env.WebRootPath, "data", "assessment_questions.json");
+            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(
+                System.IO.File.ReadAllText(jsonFile));
+
             ViewBag.Sections = sections;
-
             return View(a);
         }
 
-        // -------------------- 3. SUBMIT ASSESSMENT --------------------
+        // ---------------------------------------------------------
+        // 3. SUBMIT / SAVE ASSESSMENT
+        // ---------------------------------------------------------
         [HttpPost]
-        [Authorize(Roles = "Assessor, Lead")]
+        [Authorize(Roles = "Assessor, LeadAssessor")]
         public async Task<IActionResult> Perform(int id, string actionType)
         {
             var a = await _db.Assessments.FindAsync(id);
@@ -130,69 +106,91 @@ namespace CAT.AID.Web.Controllers
             if (!a.IsEditableByAssessor) return Unauthorized();
 
             var data = new Dictionary<string, string>();
+
+            // ---------------------------
+            // Collect answers & comments
+            // ---------------------------
             foreach (var key in Request.Form.Keys)
+            {
                 if (key.StartsWith("ANS_") ||
                     key.StartsWith("SCORE_") ||
                     key.StartsWith("CMT_") ||
                     key == "SUMMARY_COMMENTS")
+                {
                     data[key] = Request.Form[key];
+                }
+            }
 
-            // File uploads
-            var uploadFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            // ---------------------------
+            // Multi-file uploads handling
+            // ---------------------------
+            string uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
             if (!Directory.Exists(uploadFolder))
                 Directory.CreateDirectory(uploadFolder);
 
             foreach (var file in Request.Form.Files)
             {
-                if (file.Length > 0)
-                {
-                    string name = $"{Guid.NewGuid()}_{file.FileName}";
-                    string path = Path.Combine(uploadFolder, name);
+                if (!file.Name.StartsWith("FILE_UPLOAD_")) continue;
+                if (file.Length == 0) continue;
 
-                    using var stream = System.IO.File.Create(path);
-                    await file.CopyToAsync(stream);
+                // Extract Question ID
+                string qId = file.Name.Replace("FILE_UPLOAD_", "");
 
-                    data[file.Name] = name;
-                }
+                int index = 0;
+                while (data.ContainsKey($"FILE_{qId}_{index}")) index++;
+
+                string storedName = $"{Guid.NewGuid()}_{file.FileName}";
+                string storedPath = Path.Combine(uploadFolder, storedName);
+
+                using var stream = System.IO.File.Create(storedPath);
+                await file.CopyToAsync(stream);
+
+                data[$"FILE_{qId}_{index}"] = storedName;
             }
 
+            // ---------------------------
+            // Save JSON in DB
+            // ---------------------------
             a.AssessmentResultJson = JsonSerializer.Serialize(data);
 
-            // Build Score JSON
-            var questionFile = Path.Combine(_environment.WebRootPath, "data", "assessment_questions.json");
-            var sectionsData = JsonSerializer.Deserialize<List<AssessmentSection>>(System.IO.File.ReadAllText(questionFile));
+            // ---------------------------
+            // SCORE CALCULATION
+            // ---------------------------
+            string qFile = Path.Combine(_env.WebRootPath, "data", "assessment_questions.json");
+            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(
+                System.IO.File.ReadAllText(qFile));
 
             var scoreDto = new AssessmentScoreDTO();
-            int totalMaxScore = 0;
 
-            foreach (var sec in sectionsData)
+            foreach (var sec in sections)
             {
-                int sectionTotal = 0;
-                var questionScores = new Dictionary<string, int>();
+                int sectionScore = 0;
+                var questionScoreMap = new Dictionary<string, int>();
 
                 foreach (var q in sec.Questions)
                 {
                     string key = $"SCORE_{q.Id}";
-                    int maxPerQuestion = 3;
-                    totalMaxScore += maxPerQuestion;
+                    int maxScore = 3;
 
-                    if (data.TryGetValue(key, out string val) && int.TryParse(val, out int scoreVal))
+                    if (data.TryGetValue(key, out string val) && int.TryParse(val, out int sc))
                     {
-                        sectionTotal += scoreVal;
-                        questionScores[q.Text] = scoreVal;
+                        sectionScore += sc;
+                        questionScoreMap[q.Text] = sc;
                     }
+
+                    scoreDto.MaxScore += maxScore;
                 }
 
-                scoreDto.SectionScores[sec.Category] = sectionTotal;
-                scoreDto.SectionQuestionScores[sec.Category] = questionScores;
+                scoreDto.SectionScores[sec.Category] = sectionScore;
+                scoreDto.SectionQuestionScores[sec.Category] = questionScoreMap;
             }
 
             scoreDto.TotalScore = scoreDto.SectionScores.Sum(x => x.Value);
-            scoreDto.MaxScore = totalMaxScore;
-
             a.ScoreJson = JsonSerializer.Serialize(scoreDto);
 
-            // Status logic
+            // ---------------------------
+            // Status update
+            // ---------------------------
             if (actionType == "save")
             {
                 a.Status = AssessmentStatus.InProgress;
@@ -209,81 +207,9 @@ namespace CAT.AID.Web.Controllers
             return RedirectToAction(nameof(MyTasks));
         }
 
-        // -------------------- SUMMARY PAGE --------------------
-        public IActionResult Summary(int id)
-        {
-            var a = _db.Assessments
-                .Include(a => a.Candidate)
-                .Include(a => a.Assessor)
-                .FirstOrDefault(a => a.Id == id);
-
-            if (a == null) return NotFound();
-
-            var sections = _db.AssessmentSections.ToList();
-            var score = JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson);
-
-            var recFile = Path.Combine(_environment.WebRootPath, "data", "recommendations.json");
-            var recommendationLibrary = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(System.IO.File.ReadAllText(recFile));
-
-            var sectionMax = sections.ToDictionary(s => s.Category, s => s.Questions.Count * 3);
-
-            var recommendations = new Dictionary<string, List<string>>();
-            var weakDetails = new Dictionary<string, List<(string Question, int Score)>>();
-
-            foreach (var sec in score.SectionScores)
-            {
-                double pct = (sec.Value / (double)sectionMax[sec.Key]) * 100;
-
-                if (pct < 100 && recommendationLibrary.ContainsKey(sec.Key))
-                    recommendations[sec.Key] = recommendationLibrary[sec.Key];
-
-                var weakList = new List<(string Question, int Score)>();
-
-                foreach (var q in sections.First(s => s.Category == sec.Key).Questions)
-                {
-                    var saved = JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson);
-                    saved.TryGetValue($"SCORE_{q.Id}", out string scr);
-
-                    int sc = int.TryParse(scr, out int x) ? x : 0;
-
-                    if (sc < 3)
-                        weakList.Add((q.Text, sc));
-                }
-
-                if (weakList.Any())
-                    weakDetails[sec.Key] = weakList;
-            }
-
-            ViewBag.Recommendations = recommendations;
-            ViewBag.WeakDetails = weakDetails;
-            ViewBag.Sections = sections;
-
-            return View(a);
-        }
-
-        // -------------------- EXPORT PDF (OLD REPORT) --------------------
-        [Authorize(Roles = "Assessor, LeadAssessor, Admin")]
-        public async Task<IActionResult> ExportPdf(int id)
-        {
-            var a = await _db.Assessments.Include(x => x.Candidate).FirstOrDefaultAsync(x => x.Id == id);
-            if (a == null) return NotFound();
-
-            var pdf = ReportGenerator.BuildAssessmentReport(a);
-            return File(pdf, "application/pdf", $"Assessment_{a.Id}.pdf");
-        }
-
-        // -------------------- EXPORT EXCEL --------------------
-        [Authorize]
-        public async Task<IActionResult> ExportExcel(int id)
-        {
-            var a = await _db.Assessments.Include(x => x.Candidate).FirstOrDefaultAsync(x => x.Id == id);
-            if (a == null) return NotFound();
-
-            var file = ExcelGenerator.BuildScoreSheet(a);
-            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Scores_{a.Id}.xlsx");
-        }
-
-        // -------------------- VIEW ASSESSMENT --------------------
+        // ---------------------------------------------------------
+        // 4. VIEW ASSESSMENT (FULL DETAILS)
+        // ---------------------------------------------------------
         [Authorize(Roles = "Assessor, LeadAssessor, Admin")]
         public async Task<IActionResult> View(int id)
         {
@@ -298,8 +224,9 @@ namespace CAT.AID.Web.Controllers
                 ? new Dictionary<string, string>()
                 : JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson);
 
-            var qfile = Path.Combine(_environment.WebRootPath, "data", "assessment_questions.json");
-            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(System.IO.File.ReadAllText(qfile));
+            var qjson = Path.Combine(_env.WebRootPath, "data", "assessment_questions.json");
+            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(
+                System.IO.File.ReadAllText(qjson));
 
             ViewBag.Sections = sections;
             ViewBag.Answers = answers;
@@ -307,33 +234,9 @@ namespace CAT.AID.Web.Controllers
             return View("ViewAssessment", a);
         }
 
-        // -------------------- RECOMMENDATION VIEW --------------------
-        [Authorize(Roles = "Assessor, LeadAssessor, Admin")]
-        public async Task<IActionResult> Recommendations(int id)
-        {
-            var a = await _db.Assessments.Include(x => x.Candidate).FirstOrDefaultAsync(x => x.Id == id);
-            if (a == null) return NotFound();
-
-            var score = JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson);
-
-            var mapping = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(
-                System.IO.File.ReadAllText(Path.Combine(_environment.WebRootPath, "data", "recommendations.json"))
-            );
-
-            var result = new Dictionary<string, List<string>>();
-
-            foreach (var sec in score.SectionScores)
-            {
-                double pct = (sec.Value / (score.MaxScore / score.SectionScores.Count)) * 100;
-                if (pct < 60)
-                    result[sec.Key] = mapping[sec.Key];
-            }
-
-            ViewBag.Score = score;
-            return View(result);
-        }
-
-        // -------------------- 6. REVIEW PAGE --------------------
+        // ---------------------------------------------------------
+        // 5. REVIEW PAGE
+        // ---------------------------------------------------------
         [Authorize(Roles = "LeadAssessor, Admin")]
         public async Task<IActionResult> Review(int id)
         {
@@ -348,21 +251,19 @@ namespace CAT.AID.Web.Controllers
                 ? new Dictionary<string, string>()
                 : JsonSerializer.Deserialize<Dictionary<string, string>>(a.AssessmentResultJson);
 
-            var qfile = Path.Combine(_environment.WebRootPath, "data", "assessment_questions.json");
-            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(System.IO.File.ReadAllText(qfile));
+            var qjson = Path.Combine(_env.WebRootPath, "data", "assessment_questions.json");
+            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(
+                System.IO.File.ReadAllText(qjson));
 
             ViewBag.Sections = sections;
             ViewBag.Answers = answers;
 
-            ViewBag.Assessors = await _db.Users
-                .Where(u => u.Location == a.Candidate.CommunicationAddress)
-                .ToListAsync();
-
             return View(a);
         }
 
-        // -------------------- EXPORT FULL REPORT PDF --------------------
-        [Authorize]
+        // ---------------------------------------------------------
+        // 6. EXPORT FULL PDF
+        // ---------------------------------------------------------
         [HttpPost]
         public async Task<IActionResult> ExportReportPdf(int id)
         {
@@ -377,103 +278,26 @@ namespace CAT.AID.Web.Controllers
                 ? new AssessmentScoreDTO()
                 : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson);
 
-            var qfile = Path.Combine(_environment.WebRootPath, "data", "assessment_questions.json");
-            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(
-                System.IO.File.ReadAllText(qfile));
+            var qf = Path.Combine(_env.WebRootPath, "data", "assessment_questions.json");
+            var sections = JsonSerializer.Deserialize<List<AssessmentSection>>(System.IO.File.ReadAllText(qf));
 
-            var recFile = Path.Combine(_environment.WebRootPath, "data", "recommendations.json");
-            var recommendations = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(
-                System.IO.File.ReadAllText(recFile));
+            var recFile = Path.Combine(_env.WebRootPath, "data", "recommendations.json");
+            var recLib = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(System.IO.File.ReadAllText(recFile));
 
+            // Charts
             string barChartRaw = Request.Form["barChartImage"];
             string doughnutChartRaw = Request.Form["doughnutChartImage"];
 
             byte[] barChart = string.IsNullOrWhiteSpace(barChartRaw) ? Array.Empty<byte>() :
-                Convert.FromBase64String(barChartRaw.Split(',')[1]);
+                Convert.FromBase64String(barChartRaw);
 
             byte[] doughnutChart = string.IsNullOrWhiteSpace(doughnutChartRaw) ? Array.Empty<byte>() :
-                Convert.FromBase64String(doughnutChartRaw.Split(',')[1]);
+                Convert.FromBase64String(doughnutChartRaw);
 
             var pdf = new FullAssessmentPdfService()
-                .Generate(a, score, sections, recommendations, barChart, doughnutChart);
+                .Generate(a, score, sections, recLib, barChart, doughnutChart);
 
             return File(pdf, "application/pdf", $"Assessment_{a.Id}.pdf");
-        }
-
-        // -------------------- POST REVIEW ACTION --------------------
-        [Authorize(Roles = "LeadAssessor, Admin")]
-        [HttpPost]
-        public async Task<IActionResult> Review(int id, string leadComments, string action, string? newAssessorId)
-        {
-            var a = await _db.Assessments.FindAsync(id);
-            if (a == null) return NotFound();
-
-            a.LeadComments = leadComments;
-            a.ReviewedAt = DateTime.UtcNow;
-
-            if (!string.IsNullOrEmpty(newAssessorId))
-            {
-                a.AssessorId = newAssessorId;
-                a.Status = AssessmentStatus.Assigned;
-            }
-
-            if (action == "approve") a.Status = AssessmentStatus.Approved;
-            if (action == "reject") a.Status = AssessmentStatus.Rejected;
-            if (action == "sendback") a.Status = AssessmentStatus.SentBack;
-
-            if (action == "lead-edit")
-            {
-                a.Status = AssessmentStatus.InProgress;
-                a.AssessorId = _user.GetUserId(User)!;
-            }
-
-            await _db.SaveChangesAsync();
-            return RedirectToAction("ReviewQueue");
-        }
-
-        // -------------------- REVIEW QUEUE --------------------
-        [Authorize(Roles = "LeadAssessor, Admin")]
-        public async Task<IActionResult> ReviewQueue()
-        {
-            var list = await _db.Assessments
-                .Include(a => a.Candidate)
-                .Where(a => a.Status == AssessmentStatus.Submitted)
-                .OrderByDescending(a => a.Id)
-                .ToListAsync();
-
-            return View(list);
-        }
-
-        // -------------------- UPDATE STATUS --------------------
-        [Authorize(Roles = "LeadAssessor, Admin")]
-        [HttpPost]
-        public async Task<IActionResult> UpdateStatus(int id, string action)
-        {
-            var a = await _db.Assessments.FindAsync(id);
-            if (a == null) return NotFound();
-
-            if (action == "approve") a.Status = AssessmentStatus.Approved;
-            else if (action == "reject") a.Status = AssessmentStatus.Rejected;
-            else if (action == "sendback") a.Status = AssessmentStatus.SentBack;
-
-            a.ReviewedAt = DateTime.UtcNow;
-            await _db.SaveChangesAsync();
-
-            TempData["msg"] = $"Assessment {action} successful!";
-            return RedirectToAction(nameof(ReviewQueue));
-        }
-
-        // -------------------- 8. HISTORY --------------------
-        [Authorize(Roles = "LeadAssessor, Admin")]
-        public async Task<IActionResult> History(int candidateId)
-        {
-            var list = await _db.Assessments
-                .Include(a => a.Candidate)
-                .Where(a => a.CandidateId == candidateId)
-                .OrderByDescending(a => a.Id)
-                .ToListAsync();
-
-            return View(list);
         }
     }
 }
