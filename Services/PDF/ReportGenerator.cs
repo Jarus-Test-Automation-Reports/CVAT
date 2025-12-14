@@ -10,7 +10,6 @@ namespace CAT.AID.Web.Services.PDF
 {
     public class ReportGenerator
     {
-        // FIXED: Convert logo paths to full absolute paths
         private static readonly string LogoLeft =
             Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "20240912282747915.png");
 
@@ -19,20 +18,18 @@ namespace CAT.AID.Web.Services.PDF
 
         public static byte[] BuildAssessmentReport(Assessment a)
         {
-            // Parse score JSON safely
             var score = string.IsNullOrWhiteSpace(a.ScoreJson)
                 ? new AssessmentScoreDTO()
                 : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson)
-                  ?? new AssessmentScoreDTO();
+                    ?? new AssessmentScoreDTO();
 
-            // FIXED: absolute path for questions JSON
             var questionFile = Path.Combine(
                 Directory.GetCurrentDirectory(),
                 "wwwroot", "data", "assessment_questions.json");
 
             var sections = File.Exists(questionFile)
                 ? JsonSerializer.Deserialize<List<AssessmentSection>>(File.ReadAllText(questionFile))
-                  ?? new List<AssessmentSection>()
+                    ?? new List<AssessmentSection>()
                 : new List<AssessmentSection>();
 
             return new SimpleAssessmentPdf(a, score, sections, LogoLeft, LogoRight)
@@ -40,9 +37,10 @@ namespace CAT.AID.Web.Services.PDF
         }
     }
 
-    // =====================================================================
-    //                 QUESTPDF DOCUMENT (UNIFORM TEMPLATE)
-    // =====================================================================
+
+    // ============================================================================
+    //                           SIMPLE ASSESSMENT PDF
+    // ============================================================================
     public class SimpleAssessmentPdf : BasePdfTemplate
     {
         private readonly Assessment A;
@@ -62,94 +60,89 @@ namespace CAT.AID.Web.Services.PDF
             Sections = sections;
         }
 
-        // ================================================================
+
+        // ============================================================================
         public override void ComposeContent(IContainer container)
         {
             container.Column(col =>
             {
-                col.Spacing(20);
-
                 col.Item().Element(CandidateSection);
                 col.Item().Element(ScoreSummarySection);
                 col.Item().Element(SectionScoresTable);
             });
         }
 
-        // ================================================================
-        // CANDIDATE DETAILS
-        // ================================================================
+
+        // ============================================================================
+        //                            CANDIDATE DETAILS
+        // ============================================================================
         private void CandidateSection(IContainer container)
         {
-            container.Column(col =>
+            container.Section(section =>
             {
-                col.Spacing(5);
+                section.Title("Candidate Details");
 
-                col.Item().Text("Candidate Details")
-                    .FontSize(18).Bold().FontColor("#003366");
-
-                col.Item().Text($"Name: {A.Candidate.FullName}");
-                col.Item().Text($"DOB: {A.Candidate.DOB:dd-MMM-yyyy}");
-                col.Item().Text($"Gender: {A.Candidate.Gender}");
-                col.Item().Text($"Disability: {A.Candidate.DisabilityType}");
-                col.Item().Text($"Address: {A.Candidate.CommunicationAddress}");
-
-                // FIX: Resolve candidate photo path to absolute
-                if (!string.IsNullOrWhiteSpace(A.Candidate.PhotoFilePath))
+                section.Content().Column(col =>
                 {
-                    var absPhotoPath = Path.Combine(Directory.GetCurrentDirectory(), A.Candidate.PhotoFilePath);
+                    col.Item().Text($"Name: {A.Candidate.FullName}");
+                    col.Item().Text($"DOB: {A.Candidate.DOB:dd-MMM-yyyy}");
+                    col.Item().Text($"Gender: {A.Candidate.Gender}");
+                    col.Item().Text($"Disability: {A.Candidate.DisabilityType}");
+                    col.Item().Text($"Address: {A.Candidate.CommunicationAddress}");
 
-                    if (File.Exists(absPhotoPath))
+                    if (!string.IsNullOrWhiteSpace(A.Candidate.PhotoFilePath))
                     {
-                        col.Item().PaddingTop(10)
-                            .AlignCenter()
-                            .Image(absPhotoPath, ImageScaling.FitWidth);
+                        var absPath = Path.Combine(Directory.GetCurrentDirectory(), A.Candidate.PhotoFilePath);
+
+                        if (File.Exists(absPath))
+                            col.Item().AlignCenter().Image(absPath);
                     }
-                }
+                });
             });
         }
 
-        // ================================================================
-        // SCORE SUMMARY
-        // ================================================================
+
+        // ============================================================================
+        //                            SCORE SUMMARY
+        // ============================================================================
         private void ScoreSummarySection(IContainer container)
         {
-            container.Column(col =>
+            container.Section(section =>
             {
-                col.Spacing(5);
-
-                col.Item().Text("Assessment Summary")
-                    .FontSize(18).Bold().FontColor("#003366");
-
-                col.Item().Text($"Total Score: {Score.TotalScore}");
-                col.Item().Text($"Maximum Score: {Score.MaxScore}");
+                section.Title("Assessment Summary");
 
                 double pct = Score.MaxScore > 0
                     ? (Score.TotalScore * 100.0 / Score.MaxScore)
                     : 0;
 
-                col.Item().Text($"Percentage: {pct:F1}%");
-                col.Item().Text($"Status: {A.Status}");
-                col.Item().Text($"Submitted On: {A.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}");
+                section.Content().Column(col =>
+                {
+                    col.Item().Text($"Total Score: {Score.TotalScore}");
+                    col.Item().Text($"Maximum Score: {Score.MaxScore}");
+                    col.Item().Text($"Percentage: {pct:F1}%");
+                    col.Item().Text($"Status: {A.Status}");
+                    col.Item().Text($"Submitted On: {A.SubmittedAt?.ToString("dd-MMM-yyyy") ?? "--"}");
+                });
             });
         }
 
-        // ================================================================
-        // SECTION SCORES TABLE
-        // ================================================================
+
+        // ============================================================================
+        //                         SECTION SCORES TABLE
+        // ============================================================================
         private void SectionScoresTable(IContainer container)
         {
-            container.Column(col =>
+            container.Section(section =>
             {
-                col.Item().Text("Section Scores")
-                    .FontSize(18).Bold().FontColor("#003366");
+                section.Title("Section Scores");
 
-                col.Item().Table(table =>
+                section.Content().Table(table =>
                 {
                     table.ColumnsDefinition(c =>
                     {
-                        c.RelativeColumn(3); // Section Name
-                        c.RelativeColumn(1); // Score
-                        c.RelativeColumn(1); // Max
+                        c.RelativeColumn(3);
+                        c.RelativeColumn(1);
+                        c.RelativeColumn(1);
                     });
 
                     table.Header(h =>
@@ -165,8 +158,8 @@ namespace CAT.AID.Web.Services.PDF
                         int max = sec.Questions.Count * 3;
 
                         table.Cell().Text(sec.Category);
-                        table.Cell().AlignCenter().Text(scr.ToString());
-                        table.Cell().AlignCenter().Text(max.ToString());
+                        table.Cell().Text(scr.ToString());
+                        table.Cell().Text(max.ToString());
                     }
                 });
             });
