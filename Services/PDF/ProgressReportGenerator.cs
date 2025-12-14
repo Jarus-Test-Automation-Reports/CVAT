@@ -13,6 +13,10 @@ namespace CAT.AID.Web.Services.PDF
         private readonly byte[]? BarChart;
         private readonly byte[]? LineChart;
 
+        private readonly string LogoLeft;
+        private readonly string LogoRight;
+        private readonly string NoPhoto;
+
         public ProgressReportGenerator(
             Candidate candidate,
             List<Assessment> history,
@@ -23,78 +27,88 @@ namespace CAT.AID.Web.Services.PDF
             History = history ?? new List<Assessment>();
             BarChart = barChart;
             LineChart = lineChart;
+
+            // Absolute paths (Docker-safe)
+            var root = Directory.GetCurrentDirectory();
+            LogoLeft  = Path.Combine(root, "wwwroot", "Images", "20240912282747915.png");
+            LogoRight = Path.Combine(root, "wwwroot", "Images", "202409121913074416.png");
+            NoPhoto   = Path.Combine(root, "wwwroot", "Images", "no-photo.png");
+
+            // Register System fonts (for Indian languages)
+            QuestPDF.Settings.License = LicenseType.Community;
+            FontManager.RegisterFont(File.OpenRead(Path.Combine(root, "wwwroot", "fonts", "NotoSans-Regular.ttf")));
+            FontManager.RegisterFont(File.OpenRead(Path.Combine(root, "wwwroot", "fonts", "NotoSans-Bold.ttf")));
         }
 
-        // Metadata
         public DocumentMetadata GetMetadata() => new DocumentMetadata
         {
             Title = "Progress Assessment Report",
-            Author = "CAT-AID System"
+            Author = "CAT-AID System",
+            Creator = "CAT.AID.Web",
         };
 
-        // Document root
+        public DocumentSettings GetSettings() => DocumentSettings.Default;
+
+        // ------------------------------------------------------------
+        // ROOT DOCUMENT
+        // ------------------------------------------------------------
         public void Compose(IDocumentContainer container)
         {
             container.Page(page =>
             {
+                page.Size(PageSizes.A4);
                 page.Margin(30);
+                page.DefaultTextStyle(x => x.FontFamily("NotoSans").FontSize(11));
 
                 page.Header().Element(ComposeHeader);
-
                 page.Content().PaddingVertical(10).Element(ComposeBody);
-
                 page.Footer().AlignCenter().Text(t =>
                 {
                     t.Span("Page ");
                     t.CurrentPageNumber();
-                    t.Span(" / ");
+                    t.Span(" of ");
                     t.TotalPages();
                 });
             });
         }
 
         // ------------------------------------------------------------
-        // HEADER
+        // HEADER WITH LOGOS
         // ------------------------------------------------------------
         private void ComposeHeader(IContainer container)
         {
-            var logoLeft  = Path.Combine("wwwroot", "Images", "20240912282747915.png");
-            var logoRight = Path.Combine("wwwroot", "Images", "202409121913074416.png");
-
             container.Row(row =>
             {
-                row.RelativeItem().Height(50).AlignLeft().Element(x =>
+                row.RelativeItem().Height(55).Element(x =>
                 {
-                    if (File.Exists(logoLeft))
-                        x.Image(logoLeft);
+                    if (File.Exists(LogoLeft))
+                        x.Image(LogoLeft, ImageScaling.FitArea);
                 });
 
-                row.ConstantItem(300).AlignCenter().Column(col =>
+                row.RelativeItem().AlignCenter().Column(col =>
                 {
                     col.Item().Text("Progress Assessment Report")
-                        .FontSize(18).SemiBold().FontColor(Colors.Blue.Darken2);
-
-                    col.Item().Text("Comprehensive Vocational Assessment Report")
+                        .FontSize(18).Bold().FontColor(Colors.Blue.Darken2);
+                    col.Item().Text("Comprehensive Vocational Assessment Tracking")
                         .FontSize(12);
                 });
 
-                row.RelativeItem().Height(50).AlignRight().Element(x =>
+                row.RelativeItem().Height(55).Element(x =>
                 {
-                    if (File.Exists(logoRight))
-                        x.Image(logoRight);
+                    if (File.Exists(LogoRight))
+                        x.Image(LogoRight, ImageScaling.FitArea);
                 });
             });
         }
 
         // ------------------------------------------------------------
-        // BODY CONTENT
+        // MAIN BODY
         // ------------------------------------------------------------
         private void ComposeBody(IContainer container)
         {
             container.Column(col =>
             {
                 col.Spacing(15);
-
                 col.Item().Element(ComposeCandidateInfo);
                 col.Item().Element(ComposeAssessmentOverview);
                 col.Item().Element(ComposeCharts);
@@ -106,52 +120,53 @@ namespace CAT.AID.Web.Services.PDF
         }
 
         // ------------------------------------------------------------
-        // CANDIDATE SECTION
+        // CANDIDATE DETAILS
         // ------------------------------------------------------------
         private void ComposeCandidateInfo(IContainer container)
         {
+            var photo = Candidate.PhotoFilePath;
+            var photoPath = string.IsNullOrWhiteSpace(photo)
+                ? NoPhoto
+                : Path.Combine(Directory.GetCurrentDirectory(), photo);
+
+            if (!File.Exists(photoPath))
+                photoPath = NoPhoto;
+
             container.Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10)
                 .Column(col =>
                 {
                     col.Item().Text("Candidate Details")
-                        .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
+                        .FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
 
                     col.Item().Row(row =>
                     {
-                        row.RelativeItem().Column(left =>
+                        row.RelativeItem().Column(info =>
                         {
-                            left.Item().Text(t =>
-                            {
-                                t.Span("Name: ").SemiBold();            t.Span(Candidate.FullName + "\n");
-                                t.Span("Gender: ").SemiBold();          t.Span(Candidate.Gender + "\n");
-                                t.Span("DOB: ").SemiBold();             t.Span(Candidate.DOB.ToShortDateString() + "\n");
-                                t.Span("Disability: ").SemiBold();      t.Span(Candidate.DisabilityType + "\n");
-                                t.Span("Education: ").SemiBold();       t.Span(Candidate.Education + "\n");
-                                t.Span("Area: ").SemiBold();            t.Span(Candidate.ResidentialArea + "\n");
-                                t.Span("Contact: ").SemiBold();         t.Span(Candidate.ContactNumber + "\n");
-                                t.Span("Address: ").SemiBold();         t.Span(Candidate.CommunicationAddress + "\n");
-                            });
+                            info.Item().Text($"Name: {Candidate.FullName}");
+                            info.Item().Text($"Gender: {Candidate.Gender}");
+                            info.Item().Text($"DOB: {Candidate.DOB:dd-MMM-yyyy}");
+                            info.Item().Text($"Disability: {Candidate.DisabilityType}");
+                            info.Item().Text($"Education: {Candidate.Education}");
+                            info.Item().Text($"Area: {Candidate.ResidentialArea}");
+                            info.Item().Text($"Contact: {Candidate.ContactNumber}");
+                            info.Item().Text($"Address: {Candidate.CommunicationAddress}");
                         });
 
-                        row.ConstantItem(120).Height(140).Border(1).Element(img =>
-                        {
-                            var path = Candidate.PhotoFilePath ?? "wwwroot/Images/no-photo.png";
-                            if (File.Exists(path))
-                                img.Image(path);
-                        });
+                        row.ConstantItem(120).Height(140).Border(1).Padding(3)
+                            .Image(photoPath, ImageScaling.FitArea);
                     });
                 });
         }
 
         // ------------------------------------------------------------
-        // OVERVIEW TABLE
+        // ASSESSMENT OVERVIEW TABLE
         // ------------------------------------------------------------
         private void ComposeAssessmentOverview(IContainer container)
         {
             container.Column(col =>
             {
                 col.Item().Text("Assessment Overview")
-                    .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
+                    .FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
 
                 col.Item().Table(table =>
                 {
@@ -164,35 +179,36 @@ namespace CAT.AID.Web.Services.PDF
                         c.RelativeColumn();
                     });
 
-                    table.Header(header =>
+                    table.Header(h =>
                     {
-                        header.Cell().Text("Date").SemiBold();
-                        header.Cell().Text("Score").SemiBold();
-                        header.Cell().Text("Max").SemiBold();
-                        header.Cell().Text("%").SemiBold();
-                        header.Cell().Text("Status").SemiBold();
+                        h.Cell().Text("Date").Bold();
+                        h.Cell().Text("Score").Bold();
+                        h.Cell().Text("Max").Bold();
+                        h.Cell().Text("%").Bold();
+                        h.Cell().Text("Status").Bold();
                     });
 
-                    foreach (var a in History.OrderBy(x => x.CreatedAt))
+                    foreach (var item in History.OrderBy(x => x.CreatedAt))
                     {
-                        var score = string.IsNullOrWhiteSpace(a.ScoreJson)
+                        var score = string.IsNullOrWhiteSpace(item.ScoreJson)
                             ? new AssessmentScoreDTO()
-                            : JsonSerializer.Deserialize<AssessmentScoreDTO>(a.ScoreJson)!;
+                            : JsonSerializer.Deserialize<AssessmentScoreDTO>(item.ScoreJson) 
+                                ?? new AssessmentScoreDTO();
 
-                        double pct = score.MaxScore > 0 ? Math.Round(score.TotalScore * 100.0 / score.MaxScore, 1) : 0;
+                        double pct = score.MaxScore == 0 ? 0 : Math.Round(score.TotalScore * 100.0 / score.MaxScore, 1);
 
-                        table.Cell().Text(a.CreatedAt.ToShortDateString());
+                        table.Cell().Text(item.CreatedAt.ToShortDateString());
                         table.Cell().Text(score.TotalScore.ToString());
                         table.Cell().Text(score.MaxScore.ToString());
                         table.Cell().Text($"{pct}%");
-                        table.Cell().Text(a.Status.ToString());
+                        table.Cell().Text(item.Status.ToString());
                     }
                 });
             });
         }
 
         // ------------------------------------------------------------
-        // CHARTS
+        // CHARTS: BAR + LINE
         // ------------------------------------------------------------
         private void ComposeCharts(IContainer container)
         {
@@ -202,7 +218,7 @@ namespace CAT.AID.Web.Services.PDF
             container.Column(col =>
             {
                 col.Item().Text("Progress Charts")
-                    .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
+                    .FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
 
                 col.Item().Row(row =>
                 {
@@ -216,22 +232,23 @@ namespace CAT.AID.Web.Services.PDF
         }
 
         // ------------------------------------------------------------
-        // SECTION COMPARISON
+        // SECTION COMPARISON (LATEST ASSESSMENT)
         // ------------------------------------------------------------
         private void ComposeSectionComparison(IContainer container)
         {
             var latest = History.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
-            if (latest == null) return;
+            if (latest == null || string.IsNullOrWhiteSpace(latest.ScoreJson))
+                return;
 
             var score = JsonSerializer.Deserialize<AssessmentScoreDTO>(latest.ScoreJson);
-            if (score == null || score.SectionScores == null) return;
+            if (score?.SectionScores == null)
+                return;
 
             container.Column(col =>
             {
                 col.Item().Text("Section-wise Comparison")
-                    .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
+                    .FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
 
-                // table
                 col.Item().Table(table =>
                 {
                     table.ColumnsDefinition(c =>
@@ -242,8 +259,8 @@ namespace CAT.AID.Web.Services.PDF
 
                     table.Header(h =>
                     {
-                        h.Cell().Text("Section").SemiBold();
-                        h.Cell().Text("Score").SemiBold();
+                        h.Cell().Text("Section").Bold();
+                        h.Cell().Text("Score").Bold();
                     });
 
                     foreach (var sec in score.SectionScores)
@@ -253,20 +270,17 @@ namespace CAT.AID.Web.Services.PDF
                     }
                 });
 
-                // visual cards
                 col.Item().PaddingTop(10).Text("Visual Summary:").SemiBold();
 
                 col.Item().Row(row =>
                 {
-                    row.Spacing(10);
-
                     foreach (var sec in score.SectionScores)
                     {
-                        row.RelativeItem().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(8)
-                            .Column(c =>
+                        row.RelativeItem().Border(1).BorderColor(Colors.Grey.Lighten2)
+                            .Padding(8).Column(c =>
                             {
                                 c.Item().Text(sec.Key).SemiBold();
-                                c.Item().Text("Score: " + sec.Value);
+                                c.Item().Text($"Score: {sec.Value}");
                             });
                     }
                 });
@@ -274,24 +288,24 @@ namespace CAT.AID.Web.Services.PDF
         }
 
         // ------------------------------------------------------------
-        // STRENGTH & WEAKNESS
+        // STRENGTHS & WEAKNESSES
         // ------------------------------------------------------------
         private void ComposeStrengthWeakness(IContainer container)
         {
             container.Row(row =>
             {
-                row.RelativeItem().Border(1).Padding(8).Column(col =>
+                row.RelativeItem().Border(1).Padding(8).Column(c =>
                 {
-                    col.Item().Text("Strengths").SemiBold();
-                    col.Item().Text("• Consistent improvement");
-                    col.Item().Text("• Strong learning curve");
+                    c.Item().Text("Strengths").Bold();
+                    c.Item().Text("• Consistent improvement");
+                    c.Item().Text("• Positive learning curve");
                 });
 
-                row.RelativeItem().Border(1).Padding(8).Column(col =>
+                row.RelativeItem().Border(1).Padding(8).Column(c =>
                 {
-                    col.Item().Text("Weaknesses").SemiBold();
-                    col.Item().Text("• Needs reinforcement in difficult tasks");
-                    col.Item().Text("• Areas requiring targeted training");
+                    c.Item().Text("Weaknesses").Bold();
+                    c.Item().Text("• Requires reinforcement");
+                    c.Item().Text("• Needs targeted training");
                 });
             });
         }
@@ -304,16 +318,16 @@ namespace CAT.AID.Web.Services.PDF
             container.Column(col =>
             {
                 col.Item().Text("Recommendations")
-                    .FontSize(14).SemiBold().FontColor(Colors.Blue.Darken2);
+                    .FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
 
-                col.Item().Text("• Provide vocational exposure");
-                col.Item().Text("• Reinforce through structured practice");
-                col.Item().Text("• Monitor every 3 months");
+                col.Item().Text("• Provide regular vocational exposure");
+                col.Item().Text("• Reinforce practical skills");
+                col.Item().Text("• Monitor progress every 3 months");
             });
         }
 
         // ------------------------------------------------------------
-        // SIGNATURES
+        // SIGNATURE AREA
         // ------------------------------------------------------------
         private void ComposeSignatures(IContainer container)
         {
@@ -321,13 +335,13 @@ namespace CAT.AID.Web.Services.PDF
             {
                 row.RelativeItem().Column(c =>
                 {
-                    c.Item().Text("________________________").SemiBold();
+                    c.Item().Text("________________________");
                     c.Item().Text("Assessor");
                 });
 
                 row.RelativeItem().Column(c =>
                 {
-                    c.Item().Text("________________________").SemiBold();
+                    c.Item().Text("________________________");
                     c.Item().Text("Lead Assessor");
                 });
             });
