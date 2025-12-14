@@ -1,4 +1,5 @@
-﻿namespace CAT.AID.Web.Models.DTO
+﻿namespace CAT.AID.Models.DTO
+
 {
     public class ComparisonReportVM
     {
@@ -14,4 +15,5 @@
         public List<Assessment> Assessments { get; set; } = new();
     }
 }
+
 
