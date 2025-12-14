@@ -34,13 +34,10 @@ namespace CAT.AID.Web.Services.PDF
                 page.Margin(40);
                 page.DefaultTextStyle(x => x.FontSize(11).FontFamily("Arial"));
 
-                // ---------------- HEADER ----------------
                 page.Header().Element(ComposeHeader);
 
-                // ---------------- CONTENT ----------------
                 page.Content().Element(ComposeContent);
 
-                // ---------------- FOOTER ----------------
                 page.Footer().AlignCenter().Text(t =>
                 {
                     t.Span("Page ");
@@ -59,25 +56,27 @@ namespace CAT.AID.Web.Services.PDF
                 row.ConstantItem(100).Height(60).Element(e =>
                 {
                     if (File.Exists(_logoLeft))
-                        e.Image(_logoLeft);   // new Image API
+                        e.Image(_logoLeft);
                 });
 
-                // Title
-                row.RelativeItem().AlignCenter().Text(_title)
-                    .FontSize(18)
-                    .Bold()
-                    .FontColor(Colors.Blue.Darken2);
+                // CENTER TITLE — fixed version
+                row.RelativeItem().Column(col =>
+                {
+                    col.Item().AlignCenter().Text(_title)
+                        .FontSize(18)
+                        .Bold()
+                        .FontColor(Colors.Blue.Darken2);
+                });
 
                 // Right Logo
                 row.ConstantItem(100).Height(60).Element(e =>
                 {
                     if (File.Exists(_logoRight))
-                        e.Image(_logoRight);  // new Image API
+                        e.Image(_logoRight);
                 });
             });
         }
 
-        // Child class must implement this
         public abstract void ComposeContent(IContainer container);
     }
 }
