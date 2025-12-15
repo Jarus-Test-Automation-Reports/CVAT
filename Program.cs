@@ -13,9 +13,15 @@ QuestPDF.Settings.License = LicenseType.Community;
 // EPPlus
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-// DB
+// -------------------------------------------------------------------
+// ✅ Render requires ENV variable override for connection string
+// -------------------------------------------------------------------
+var connectionString =
+    Environment.GetEnvironmentVariable("DefaultConnection")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -34,15 +40,22 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Seed roles + admin
+// -------------------------------------------------------------------
+// ✅ Auto-run migrations on Render (important!)
+// -------------------------------------------------------------------
 using (var scope = app.Services.CreateScope())
 {
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     await SeedData.InitializeAsync(userManager, roleManager);
 }
 
-// ❌ REMOVE HTTPS REDIRECTION ON RENDER
+// -------------------------------------------------------------------
+// ❌ Disable HTTPS redirection for Render
+// -------------------------------------------------------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
@@ -53,13 +66,13 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// MVC First
+// MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
-// Razor pages
+// Razor Pages
 app.MapRazorPages();
 
 app.Run();
