@@ -46,7 +46,7 @@ namespace CAT.AID.Web.Services.PDF
                         t.Span(" of ");
                         t.TotalPages();
                     })
-                    .FontSize(10);
+                    ;
             });
         }
 
